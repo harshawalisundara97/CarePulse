@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.carepulse.app.ui.screens.customer
 
 import androidx.compose.animation.AnimatedVisibility

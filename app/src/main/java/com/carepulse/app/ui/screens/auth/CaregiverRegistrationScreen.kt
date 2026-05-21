@@ -1,3 +1,5 @@
+@file:OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+
 package com.carepulse.app.ui.screens.auth
 
 import androidx.compose.foundation.layout.Arrangement
