@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.theme.InkPrimary
@@ -171,7 +172,8 @@ fun PastelChip(
     label: String,
     selected: Boolean = false,
     onClick: (() -> Unit)? = null,
-    color: Color = SoftLavender
+    color: Color = SoftLavender,
+    leadingIcon: ImageVector? = null
 ) {
     val bg = if (selected) PastelMint else color
     val base = Modifier
@@ -179,12 +181,21 @@ fun PastelChip(
         .clip(RoundedCornerShape(14.dp))
     val tappable = if (onClick != null) base.clickable { onClick() } else base
     Surface(shape = RoundedCornerShape(14.dp), color = bg, modifier = tappable) {
-        Text(
-            label,
+        Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            style = MaterialTheme.typography.labelLarge,
-            color = InkPrimary
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (leadingIcon != null) {
+                Icon(leadingIcon, contentDescription = null,
+                    tint = InkPrimary, modifier = Modifier.size(16.dp))
+            }
+            Text(
+                label,
+                style = MaterialTheme.typography.labelLarge,
+                color = InkPrimary
+            )
+        }
     }
 }
 

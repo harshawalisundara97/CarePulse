@@ -122,10 +122,10 @@ fun PulseDashboardScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     VitalCard(
                         Modifier.weight(1f),
-                        icon = Icons.Filled.WaterDrop,
+                        icon = today.mood.icon,
                         title = "Mood",
-                        value = today.mood.emoji,
-                        unit = today.mood.label,
+                        value = today.mood.label,
+                        unit = "today",
                         accent = today.mood.color
                     )
                     VitalCard(

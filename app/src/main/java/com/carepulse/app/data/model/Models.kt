@@ -1,6 +1,12 @@
 package com.carepulse.app.data.model
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SentimentDissatisfied
+import androidx.compose.material.icons.filled.SentimentNeutral
+import androidx.compose.material.icons.filled.SentimentSatisfied
+import androidx.compose.material.icons.filled.SentimentVerySatisfied
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 
 /** App user roles. */
 enum class UserRole { CUSTOMER, CAREGIVER }
@@ -55,11 +61,11 @@ data class VitalsLog(
     val notes: String
 )
 
-enum class Mood(val emoji: String, val label: String, val color: Color) {
-    HAPPY("😊", "Happy",     Color(0xFFA8E6CF)),
-    CALM ("😌", "Calm",      Color(0xFFDED2F9)),
-    TIRED("😴", "Tired",     Color(0xFFFFD3B6)),
-    SAD  ("😟", "Sad",       Color(0xFFFFB6B6))
+enum class Mood(val icon: ImageVector, val label: String, val color: Color) {
+    HAPPY(Icons.Filled.SentimentVerySatisfied, "Happy", Color(0xFFA8E6CF)),
+    CALM (Icons.Filled.SentimentSatisfied,     "Calm",  Color(0xFFDED2F9)),
+    TIRED(Icons.Filled.SentimentNeutral,       "Tired", Color(0xFFFFD3B6)),
+    SAD  (Icons.Filled.SentimentDissatisfied,  "Sad",   Color(0xFFFFB6B6))
 }
 
 /** End-of-shift handover report from a caregiver to the family. */

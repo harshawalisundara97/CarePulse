@@ -162,8 +162,12 @@ fun ShiftSummaryScreen(
                     Text("Mood", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Mood.values().forEach { m ->
-                            PastelChip("${m.emoji} ${m.label}",
-                                selected = m == mood, onClick = { mood = m })
+                            PastelChip(
+                                label = m.label,
+                                selected = m == mood,
+                                onClick = { mood = m },
+                                leadingIcon = m.icon
+                            )
                         }
                     }
                     Spacer(Modifier.height(10.dp))
