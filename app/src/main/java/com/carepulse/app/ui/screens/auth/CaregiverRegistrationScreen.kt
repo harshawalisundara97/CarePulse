@@ -82,7 +82,8 @@ fun CaregiverRegistrationScreen(vm: CarePulseViewModel, onDone: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            CarePulseTextField(value = name, onValueChange = { name = it }, label = "Full name")
+            CarePulseTextField(value = name, onValueChange = { name = it }, label = "Full name",
+                capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words)
             CarePulseTextField(value = area, onValueChange = { area = it }, label = "Service area / Zip", placeholder = "Downtown · 90210")
             CarePulseTextField(value = qualifications, onValueChange = { qualifications = it }, label = "Qualifications", placeholder = "Registered Nurse, 5 yrs experience")
             CarePulseTextField(value = hourlyRate, onValueChange = { hourlyRate = it.filter { c -> c.isDigit() } }, label = "Hourly rate (USD)")

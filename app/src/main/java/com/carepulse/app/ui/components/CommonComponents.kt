@@ -32,6 +32,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -79,7 +81,9 @@ fun CarePulseTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    placeholder: String = ""
+    placeholder: String = "",
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.None,
+    singleLine: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -87,6 +91,8 @@ fun CarePulseTextField(
         label = { Text(label) },
         placeholder = { Text(placeholder) },
         modifier = modifier.fillMaxWidth(),
+        singleLine = singleLine,
+        keyboardOptions = KeyboardOptions(capitalization = capitalization),
         shape = RoundedCornerShape(18.dp),
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,

@@ -109,7 +109,12 @@ fun LoginScreen(
             Spacer(Modifier.height(8.dp))
 
             if (isSignUp) {
-                CarePulseTextField(value = name, onValueChange = { name = it }, label = "Full name")
+                CarePulseTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Full name",
+                    capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
+                )
             }
             CarePulseTextField(value = email, onValueChange = { email = it }, label = "Email")
             CarePulseTextField(value = password, onValueChange = { password = it }, label = "Password")

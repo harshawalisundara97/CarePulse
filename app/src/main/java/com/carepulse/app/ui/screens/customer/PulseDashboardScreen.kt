@@ -69,7 +69,7 @@ import com.carepulse.app.viewmodel.CarePulseViewModel
 fun PulseDashboardScreen(
     vm: CarePulseViewModel,
     onVideoCall: () -> Unit,
-    onBack: () -> Unit
+    onBack: (() -> Unit)? = null
 ) {
     val vitalsList by vm.vitals.collectAsState()
     val reports by vm.reports.collectAsState()
@@ -80,8 +80,10 @@ fun PulseDashboardScreen(
             TopAppBar(
                 title = { Text("Pulse Dashboard", color = InkPrimary, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                    if (onBack != null) {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
