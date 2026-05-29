@@ -70,27 +70,34 @@ class FirestoreCarePulseRepository(
     // ---- Writes ------------------------------------------------------------
 
     override suspend fun addCaregiver(caregiver: Caregiver) {
-        caregiversCol.document(caregiver.id).set(caregiver.toMap()).await()
+        runCatching { caregiversCol.document(caregiver.id).set(caregiver.toMap()).await() }
     }
 
     override suspend fun addBooking(booking: Booking) {
-        bookingsCol.document(booking.id).set(booking.toMap()).await()
+        runCatching { bookingsCol.document(booking.id).set(booking.toMap()).await() }
     }
 
     override suspend fun submitShiftReport(report: ShiftReport) {
-        reportsCol.document(report.id).set(report.toMap()).await()
-        // Mirror the vitals snapshot into the timeline the family dashboard reads.
-        vitalsCol.add(report.vitals.toMap()).await()
+        runCatching {
+            reportsCol.document(report.id).set(report.toMap()).await()
+            // Mirror the vitals snapshot into the timeline the family dashboard reads.
+            vitalsCol.add(report.vitals.toMap()).await()
+        }
     }
 
     override suspend fun saveUserProfile(profile: UserProfile) {
-        usersCol.document(profile.uid).set(profile.toMap()).await()
+        runCatching { usersCol.document(profile.uid).set(profile.toMap()).await() }
     }
 
-    override suspend fun getUserProfile(uid: String): UserProfile? {
+    /**
+     * Returns null on any failure (offline, permission denied, missing doc) so
+     * a network hiccup can never crash the app. Callers treat null as
+     * "profile not loaded yet".
+     */
+    override suspend fun getUserProfile(uid: String): UserProfile? = runCatching {
         val doc = usersCol.document(uid).get().await()
-        return if (doc.exists()) doc.toUserProfile() else null
-    }
+        if (doc.exists()) doc.toUserProfile() else null
+    }.getOrNull()
 
     /** Writes the default caregiver roster if the collection is empty. */
     suspend fun seedCaregiversIfEmpty() {
