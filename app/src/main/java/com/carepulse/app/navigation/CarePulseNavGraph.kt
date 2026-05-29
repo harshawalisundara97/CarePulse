@@ -1,12 +1,23 @@
 package com.carepulse.app.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.carepulse.app.data.auth.AuthState
+import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.screens.auth.CaregiverRegistrationScreen
 import com.carepulse.app.ui.screens.auth.LoginScreen
 import com.carepulse.app.ui.screens.caregiver.CaregiverDashboardScreen
@@ -21,6 +32,7 @@ import com.carepulse.app.viewmodel.CarePulseViewModel
 
 /** Type-safe route constants for the nav graph. */
 object Routes {
+    const val Splash = "splash"
     const val RoleSelection = "role-selection"
     const val Login = "login/{role}"
     fun login(role: String) = "login/$role"
@@ -44,16 +56,40 @@ object Routes {
 @Composable
 fun CarePulseNavGraph() {
     val navController = rememberNavController()
-    val vm: CarePulseViewModel = viewModel()
+    val vm: CarePulseViewModel = viewModel(factory = CarePulseViewModel.Factory)
 
-    NavHost(navController = navController, startDestination = Routes.RoleSelection) {
+    fun clearTo(route: String) {
+        navController.navigate(route) {
+            popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+        }
+    }
+
+    NavHost(navController = navController, startDestination = Routes.Splash) {
+
+        // --- Session gate: routes signed-in users straight to their dashboard.
+        composable(Routes.Splash) {
+            val authState by vm.authState.collectAsState()
+            val profile by vm.profile.collectAsState()
+            LaunchedEffect(authState, profile) {
+                when (authState) {
+                    is AuthState.SignedIn -> profile?.let { p ->
+                        clearTo(
+                            if (p.role == UserRole.CAREGIVER) Routes.CaregiverDashboard
+                            else Routes.CustomerDashboard
+                        )
+                    }
+                    AuthState.SignedOut -> clearTo(Routes.RoleSelection)
+                    AuthState.Loading -> Unit
+                }
+            }
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
 
         composable(Routes.RoleSelection) {
             RoleSelectionScreen(
-                onRoleSelected = { role ->
-                    vm.setRole(role)
-                    navController.navigate(Routes.login(role.name))
-                }
+                onRoleSelected = { role -> navController.navigate(Routes.login(role.name)) }
             )
         }
 
@@ -64,17 +100,14 @@ fun CarePulseNavGraph() {
             val role = entry.arguments?.getString("role") ?: "CUSTOMER"
             LoginScreen(
                 role = role,
-                onLogin = { name ->
-                    vm.setDisplayName(name)
-                    if (role == "CAREGIVER") {
-                        navController.navigate(Routes.CaregiverRegistration) {
-                            popUpTo(Routes.RoleSelection) { inclusive = false }
-                        }
+                vm = vm,
+                onAuthSuccess = { isNewCaregiver ->
+                    val target = if (role == "CAREGIVER") {
+                        if (isNewCaregiver) Routes.CaregiverRegistration else Routes.CaregiverDashboard
                     } else {
-                        navController.navigate(Routes.CustomerDashboard) {
-                            popUpTo(Routes.RoleSelection) { inclusive = false }
-                        }
+                        Routes.CustomerDashboard
                     }
+                    clearTo(target)
                 },
                 onBack = { navController.popBackStack() }
             )
@@ -83,11 +116,7 @@ fun CarePulseNavGraph() {
         composable(Routes.CaregiverRegistration) {
             CaregiverRegistrationScreen(
                 vm = vm,
-                onDone = {
-                    navController.navigate(Routes.CaregiverDashboard) {
-                        popUpTo(Routes.RoleSelection) { inclusive = true }
-                    }
-                }
+                onDone = { clearTo(Routes.CaregiverDashboard) }
             )
         }
 
@@ -95,7 +124,8 @@ fun CarePulseNavGraph() {
             CustomerDashboardScreen(
                 vm = vm,
                 onOpenCaregiver = { id -> navController.navigate(Routes.caregiverDetail(id)) },
-                onOpenPulse = { navController.navigate(Routes.PulseDashboard) }
+                onOpenPulse = { navController.navigate(Routes.PulseDashboard) },
+                onSignOut = { vm.signOut(); clearTo(Routes.RoleSelection) }
             )
         }
 
@@ -142,7 +172,8 @@ fun CarePulseNavGraph() {
         composable(Routes.CaregiverDashboard) {
             CaregiverDashboardScreen(
                 vm = vm,
-                onClockOut = { navController.navigate(Routes.ShiftSummary) }
+                onClockOut = { navController.navigate(Routes.ShiftSummary) },
+                onSignOut = { vm.signOut(); clearTo(Routes.RoleSelection) }
             )
         }
 

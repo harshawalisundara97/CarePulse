@@ -5,6 +5,14 @@ import androidx.compose.ui.graphics.Color
 /** App user roles. */
 enum class UserRole { CUSTOMER, CAREGIVER }
 
+/** Account profile stored in Firestore at `users/{uid}` — drives session routing. */
+data class UserProfile(
+    val uid: String,
+    val email: String?,
+    val displayName: String,
+    val role: UserRole
+)
+
 /** A registered caregiver profile. */
 data class Caregiver(
     val id: String,
@@ -29,7 +37,9 @@ data class Booking(
     val dateLabel: String,              // "Mon, Jun 3"
     val timeSlot: String,               // "9:00 AM - 1:00 PM"
     val totalCost: Int,
-    val status: BookingStatus = BookingStatus.CONFIRMED
+    val status: BookingStatus = BookingStatus.CONFIRMED,
+    val customerUid: String? = null,    // owner, for Firestore querying
+    val caregiverUid: String? = null
 )
 
 enum class BookingStatus { CONFIRMED, IN_PROGRESS, COMPLETED }

@@ -53,7 +53,8 @@ object MockCarePulseRepository {
 
     // ---- Seed data ---------------------------------------------------------
 
-    private fun seedCaregivers(): List<Caregiver> = listOf(
+    /** Public so the Firestore repository can seed an empty database. */
+    fun seedCaregivers(): List<Caregiver> = listOf(
         Caregiver(
             id = "cg-1", name = "Amara Patel", avatarSeed = 1,
             area = "Downtown · 90210",

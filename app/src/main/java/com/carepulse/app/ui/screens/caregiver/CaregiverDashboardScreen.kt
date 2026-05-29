@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,7 +49,11 @@ import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CaregiverDashboardScreen(vm: CarePulseViewModel, onClockOut: () -> Unit) {
+fun CaregiverDashboardScreen(
+    vm: CarePulseViewModel,
+    onClockOut: () -> Unit,
+    onSignOut: () -> Unit = {}
+) {
     val displayName by vm.displayName.collectAsState()
 
     Scaffold(
@@ -59,6 +64,11 @@ fun CaregiverDashboardScreen(vm: CarePulseViewModel, onClockOut: () -> Unit) {
                         Text("Good morning,", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
                         Text(displayName, style = MaterialTheme.typography.headlineMedium,
                             color = InkPrimary, fontWeight = FontWeight.Bold)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onSignOut) {
+                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = InkSecondary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
