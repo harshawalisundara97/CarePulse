@@ -72,5 +72,11 @@ class AuthRepository(
             result.user ?: error("Google sign-in returned no user")
         }
 
+    /** Sends Firebase's password-reset email to the given address. */
+    suspend fun sendPasswordReset(email: String): Result<Unit> =
+        runCatching {
+            auth.sendPasswordResetEmail(email.trim()).await()
+        }
+
     fun signOut() = auth.signOut()
 }

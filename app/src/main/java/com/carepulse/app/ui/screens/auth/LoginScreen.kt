@@ -40,6 +40,7 @@ import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.CreamBackground
 import com.carepulse.app.ui.theme.InkPrimary
 import com.carepulse.app.ui.theme.InkSecondary
+import com.carepulse.app.ui.theme.PastelMintDeep
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,6 +62,7 @@ fun LoginScreen(
 
     val loading by vm.authLoading.collectAsState()
     val error by vm.authError.collectAsState()
+    val info by vm.authInfo.collectAsState()
     val profile by vm.profile.collectAsState()
     val context = LocalContext.current
 
@@ -119,9 +121,24 @@ fun LoginScreen(
             CarePulseTextField(value = email, onValueChange = { email = it }, label = "Email")
             CarePulseTextField(value = password, onValueChange = { password = it }, label = "Password")
 
+            if (!isSignUp) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    TextButton(
+                        onClick = { vm.clearAuthError(); vm.resetPassword(email) },
+                        enabled = !loading
+                    ) {
+                        Text("Forgot password?")
+                    }
+                }
+            }
+
             error?.let {
                 Text(it, color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall)
+            }
+            info?.let {
+                Text(it, color = PastelMintDeep,
+                    style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(Modifier.height(8.dp))
@@ -163,7 +180,7 @@ fun LoginScreen(
                     if (isSignUp) "Already have an account?" else "New to CarePulse?",
                     style = MaterialTheme.typography.bodyMedium, color = InkSecondary
                 )
-                TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError() }) {
+                TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError(); vm.clearAuthInfo() }) {
                     Text(if (isSignUp) "Sign in" else "Create account")
                 }
             }

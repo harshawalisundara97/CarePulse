@@ -54,6 +54,10 @@ class CarePulseViewModel(
     private val _authError = MutableStateFlow<String?>(null)
     val authError: StateFlow<String?> = _authError.asStateFlow()
 
+    /** One-shot confirmation message (e.g. "Reset email sent"). */
+    private val _authInfo = MutableStateFlow<String?>(null)
+    val authInfo: StateFlow<String?> = _authInfo.asStateFlow()
+
     val role: StateFlow<UserRole?> =
         _profile.map { it?.role }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -83,6 +87,24 @@ class CarePulseViewModel(
     }
 
     fun clearAuthError() { _authError.value = null }
+    fun clearAuthInfo() { _authInfo.value = null }
+
+    /** Sends a password-reset email and reports success/failure via state. */
+    fun resetPassword(email: String) {
+        val target = email.trim()
+        if (target.isBlank()) {
+            _authError.value = "Enter your email first"
+            return
+        }
+        viewModelScope.launch {
+            _authLoading.value = true
+            _authError.value = null
+            auth.sendPasswordReset(target)
+                .onSuccess { _authInfo.value = "Password reset email sent to $target" }
+                .onFailure { _authError.value = it.message ?: "Could not send reset email" }
+            _authLoading.value = false
+        }
+    }
 
     fun signIn(email: String, password: String) = launchAuth {
         val user = auth.signInEmail(email, password).getOrThrow()
