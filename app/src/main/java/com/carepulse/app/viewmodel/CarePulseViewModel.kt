@@ -66,7 +66,14 @@ class CarePulseViewModel(
                 _authState.value = state
                 when (state) {
                     is AuthState.SignedIn -> if (_profile.value?.uid != state.uid) {
+                        // Self-heal: if no profile doc exists yet (e.g. created before
+                        // Firestore was enabled), fall back to a minimal profile and
+                        // persist it, so the session gate never gets stuck loading.
                         _profile.value = repo.getUserProfile(state.uid)
+                            ?: UserProfile(
+                                state.uid, state.email,
+                                state.displayName.orEmpty(), UserRole.CUSTOMER
+                            ).also { repo.saveUserProfile(it) }
                     }
                     AuthState.SignedOut -> _profile.value = null
                     AuthState.Loading -> Unit
