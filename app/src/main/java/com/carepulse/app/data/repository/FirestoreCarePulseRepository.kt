@@ -245,17 +245,25 @@ private fun DocumentSnapshot.toReport(): ShiftReport {
 
 private fun UserProfile.toMap(): Map<String, Any?> = mapOf(
     "uid" to uid, "email" to email, "displayName" to displayName,
-    "role" to role.name, "agencyId" to agencyId
+    "role" to role.name, "agencyId" to agencyId,
+    "roles" to enrolledRoles.map { it.name }
 )
 
-private fun DocumentSnapshot.toUserProfile(): UserProfile = UserProfile(
-    uid = getString("uid") ?: id,
-    email = getString("email"),
-    displayName = getString("displayName").orEmpty(),
-    role = runCatching { UserRole.valueOf(getString("role").orEmpty()) }
-        .getOrDefault(UserRole.CUSTOMER),
-    agencyId = getString("agencyId")
-)
+@Suppress("UNCHECKED_CAST")
+private fun DocumentSnapshot.toUserProfile(): UserProfile {
+    val active = runCatching { UserRole.valueOf(getString("role").orEmpty()) }
+        .getOrDefault(UserRole.CUSTOMER)
+    val roleNames = get("roles") as? List<String> ?: emptyList()
+    val roles = roleNames.mapNotNull { runCatching { UserRole.valueOf(it) }.getOrNull() }
+    return UserProfile(
+        uid = getString("uid") ?: id,
+        email = getString("email"),
+        displayName = getString("displayName").orEmpty(),
+        role = active,
+        agencyId = getString("agencyId"),
+        roles = roles
+    )
+}
 
 private fun Agency.toMap(): Map<String, Any?> = mapOf(
     "id" to id, "name" to name, "city" to city, "address" to address,

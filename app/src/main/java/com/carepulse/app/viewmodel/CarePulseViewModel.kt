@@ -116,9 +116,36 @@ class CarePulseViewModel(
 
     fun signUp(email: String, password: String, name: String, role: UserRole) = launchAuth {
         val user = auth.signUpEmail(email, password, name).getOrThrow()
-        val p = UserProfile(user.uid, user.email, name.ifBlank { user.displayName.orEmpty() }, role)
+        val p = UserProfile(
+            user.uid, user.email, name.ifBlank { user.displayName.orEmpty() },
+            role, roles = listOf(role)
+        )
         repo.saveUserProfile(p)
         _profile.value = p
+    }
+
+    /**
+     * Switches the active role for the current account. If the role isn't enrolled
+     * yet it is added (creating an agency tenant when needed), so one email can act
+     * as Family, Caregiver, and Agency.
+     */
+    fun selectRole(role: UserRole, agencyName: String = "") {
+        val p = _profile.value ?: return
+        if (p.role == role) return
+        viewModelScope.launch {
+            var agencyId = p.agencyId
+            if (role == UserRole.AGENCY && agencyId == null) {
+                agencyId = UUID.randomUUID().toString()
+                repo.addAgency(Agency(id = agencyId, name = agencyName.ifBlank { p.displayName }))
+            }
+            val updated = p.copy(
+                role = role,
+                agencyId = agencyId,
+                roles = (p.enrolledRoles + role).distinct()
+            )
+            _profile.value = updated
+            repo.saveUserProfile(updated)
+        }
     }
 
     /** Registers a new caregiving company + its first admin account. */
@@ -127,7 +154,10 @@ class CarePulseViewModel(
             val user = auth.signUpEmail(email, password, adminName).getOrThrow()
             val agencyId = UUID.randomUUID().toString()
             repo.addAgency(Agency(id = agencyId, name = agencyName))
-            val p = UserProfile(user.uid, user.email, adminName, UserRole.AGENCY, agencyId)
+            val p = UserProfile(
+                user.uid, user.email, adminName, UserRole.AGENCY, agencyId,
+                roles = listOf(UserRole.AGENCY)
+            )
             repo.saveUserProfile(p)
             _profile.value = p
         }

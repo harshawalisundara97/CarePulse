@@ -11,14 +11,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 /** App user roles. */
 enum class UserRole { CUSTOMER, CAREGIVER, AGENCY }
 
-/** Account profile stored in Firestore at `users/{uid}` — drives session routing. */
+/**
+ * Account profile stored in Firestore at `users/{uid}` — drives session routing.
+ * One email/account can hold multiple [roles]; [role] is the currently active one.
+ */
 data class UserProfile(
     val uid: String,
     val email: String?,
     val displayName: String,
-    val role: UserRole,
-    val agencyId: String? = null        // tenant the user belongs to (admins/caregivers)
-)
+    val role: UserRole,                 // currently active role
+    val agencyId: String? = null,       // tenant the user belongs to (admins/caregivers)
+    val roles: List<UserRole> = emptyList()  // all roles this account is enrolled in
+) {
+    /** Enrolled roles, always including the active [role] (handles legacy docs). */
+    val enrolledRoles: List<UserRole>
+        get() = (roles + role).distinct()
+}
 
 /** A caregiving company (tenant) stored at `agencies/{id}`. */
 data class Agency(
