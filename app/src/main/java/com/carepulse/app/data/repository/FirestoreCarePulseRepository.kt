@@ -1,5 +1,6 @@
 package com.carepulse.app.data.repository
 
+import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.BookingStatus
 import com.carepulse.app.data.model.Caregiver
@@ -41,6 +42,7 @@ class FirestoreCarePulseRepository(
     private val vitalsCol = db.collection("vitals")
     private val reportsCol = db.collection("reports")
     private val usersCol = db.collection("users")
+    private val agenciesCol = db.collection("agencies")
 
     // ---- Real-time flows ---------------------------------------------------
 
@@ -98,6 +100,20 @@ class FirestoreCarePulseRepository(
         val doc = usersCol.document(uid).get().await()
         if (doc.exists()) doc.toUserProfile() else null
     }.getOrNull()
+
+    override suspend fun addAgency(agency: Agency) {
+        runCatching { agenciesCol.document(agency.id).set(agency.toMap()).await() }
+    }
+
+    override suspend fun getAgency(id: String): Agency? = runCatching {
+        val doc = agenciesCol.document(id).get().await()
+        if (doc.exists()) doc.toAgency() else null
+    }.getOrNull()
+
+    override suspend fun listPublicAgencies(): List<Agency> = runCatching {
+        agenciesCol.whereEqualTo("isPublic", true).get().await()
+            .documents.mapNotNull { runCatching { it.toAgency() }.getOrNull() }
+    }.getOrDefault(emptyList())
 
     /** Writes the default caregiver roster if the collection is empty. */
     suspend fun seedCaregiversIfEmpty() {
@@ -228,7 +244,8 @@ private fun DocumentSnapshot.toReport(): ShiftReport {
 }
 
 private fun UserProfile.toMap(): Map<String, Any?> = mapOf(
-    "uid" to uid, "email" to email, "displayName" to displayName, "role" to role.name
+    "uid" to uid, "email" to email, "displayName" to displayName,
+    "role" to role.name, "agencyId" to agencyId
 )
 
 private fun DocumentSnapshot.toUserProfile(): UserProfile = UserProfile(
@@ -236,5 +253,22 @@ private fun DocumentSnapshot.toUserProfile(): UserProfile = UserProfile(
     email = getString("email"),
     displayName = getString("displayName").orEmpty(),
     role = runCatching { UserRole.valueOf(getString("role").orEmpty()) }
-        .getOrDefault(UserRole.CUSTOMER)
+        .getOrDefault(UserRole.CUSTOMER),
+    agencyId = getString("agencyId")
+)
+
+private fun Agency.toMap(): Map<String, Any?> = mapOf(
+    "id" to id, "name" to name, "city" to city, "address" to address,
+    "nearHospital" to nearHospital, "phone" to phone, "isPublic" to isPublic,
+    "createdAt" to System.currentTimeMillis()
+)
+
+private fun DocumentSnapshot.toAgency(): Agency = Agency(
+    id = getString("id") ?: id,
+    name = getString("name").orEmpty(),
+    city = getString("city").orEmpty(),
+    address = getString("address").orEmpty(),
+    nearHospital = getString("nearHospital").orEmpty(),
+    phone = getString("phone").orEmpty(),
+    isPublic = getBoolean("isPublic") ?: true
 )

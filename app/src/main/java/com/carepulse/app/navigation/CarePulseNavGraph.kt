@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.EventNote
 import androidx.compose.material.icons.filled.ChatBubbleOutline
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.MonitorHeart
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -36,6 +39,10 @@ import androidx.navigation.navArgument
 import com.carepulse.app.data.auth.AuthState
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.screens.activity.ActivityScreen
+import com.carepulse.app.ui.screens.agency.AgencyBillingScreen
+import com.carepulse.app.ui.screens.agency.AgencyCaregiversScreen
+import com.carepulse.app.ui.screens.agency.AgencyDashboardScreen
+import com.carepulse.app.ui.screens.agency.AgencyRequestsScreen
 import com.carepulse.app.ui.screens.auth.CaregiverRegistrationScreen
 import com.carepulse.app.ui.screens.auth.LoginScreen
 import com.carepulse.app.ui.screens.caregiver.CaregiverDashboardScreen
@@ -81,14 +88,27 @@ object Routes {
 /** One bottom-navigation tab. */
 private data class TabItem(val route: String, val label: String, val icon: ImageVector)
 
-private val tabs = listOf(
-    TabItem(Routes.Home, "Home", Icons.Filled.Home),
-    TabItem(Routes.Pulse, "Pulse", Icons.Filled.MonitorHeart),
-    TabItem(Routes.Messages, "Messages", Icons.Filled.ChatBubbleOutline),
-    TabItem(Routes.Activity, "Activity", Icons.AutoMirrored.Filled.EventNote),
-    TabItem(Routes.Settings, "Settings", Icons.Filled.Settings)
+/** Tab labels/icons differ by role; the underlying routes stay the same. */
+private fun tabsFor(role: UserRole?): List<TabItem> = when (role) {
+    UserRole.AGENCY -> listOf(
+        TabItem(Routes.Home, "Dashboard", Icons.Filled.Home),
+        TabItem(Routes.Pulse, "Caregivers", Icons.Filled.Groups),
+        TabItem(Routes.Messages, "Requests", Icons.Filled.Inbox),
+        TabItem(Routes.Activity, "Billing", Icons.Filled.Payments),
+        TabItem(Routes.Settings, "Settings", Icons.Filled.Settings)
+    )
+    else -> listOf(
+        TabItem(Routes.Home, "Home", Icons.Filled.Home),
+        TabItem(Routes.Pulse, "Pulse", Icons.Filled.MonitorHeart),
+        TabItem(Routes.Messages, "Messages", Icons.Filled.ChatBubbleOutline),
+        TabItem(Routes.Activity, "Activity", Icons.AutoMirrored.Filled.EventNote),
+        TabItem(Routes.Settings, "Settings", Icons.Filled.Settings)
+    )
+}
+
+private val tabRoutes = setOf(
+    Routes.Home, Routes.Pulse, Routes.Messages, Routes.Activity, Routes.Settings
 )
-private val tabRoutes = tabs.map { it.route }.toSet()
 
 @Composable
 fun CarePulseNavGraph() {
@@ -98,6 +118,7 @@ fun CarePulseNavGraph() {
     val backStack by navController.currentBackStackEntryAsState()
     val currentRoute = backStack?.destination?.route
     val showBottomBar = currentRoute in tabRoutes
+    val role by vm.role.collectAsState()
 
     fun clearTo(route: String) {
         navController.navigate(route) {
@@ -109,7 +130,11 @@ fun CarePulseNavGraph() {
         containerColor = CreamBackground,
         bottomBar = {
             if (showBottomBar) {
-                BottomBar(navController = navController, currentRoute = currentRoute)
+                BottomBar(
+                    navController = navController,
+                    currentRoute = currentRoute,
+                    tabs = tabsFor(role)
+                )
             }
         }
     ) { scaffoldPadding ->
@@ -166,16 +191,15 @@ fun CarePulseNavGraph() {
 
             // --- Tabs --------------------------------------------------------
             composable(Routes.Home) {
-                val role by vm.role.collectAsState()
                 val signOut = { vm.signOut(); clearTo(Routes.RoleSelection) }
-                if (role == UserRole.CAREGIVER) {
-                    CaregiverDashboardScreen(
+                when (role) {
+                    UserRole.AGENCY -> AgencyDashboardScreen(vm = vm)
+                    UserRole.CAREGIVER -> CaregiverDashboardScreen(
                         vm = vm,
                         onClockOut = { navController.navigate(Routes.ShiftSummary) },
                         onSignOut = signOut
                     )
-                } else {
-                    CustomerDashboardScreen(
+                    else -> CustomerDashboardScreen(
                         vm = vm,
                         onOpenCaregiver = { id -> navController.navigate(Routes.caregiverDetail(id)) },
                         onOpenPulse = { navController.navigate(Routes.Pulse) { launchSingleTop = true } },
@@ -185,16 +209,26 @@ fun CarePulseNavGraph() {
             }
 
             composable(Routes.Pulse) {
-                PulseDashboardScreen(
-                    vm = vm,
-                    onVideoCall = { navController.navigate(Routes.VideoCall) },
-                    onBack = null
-                )
+                if (role == UserRole.AGENCY) {
+                    AgencyCaregiversScreen(vm = vm)
+                } else {
+                    PulseDashboardScreen(
+                        vm = vm,
+                        onVideoCall = { navController.navigate(Routes.VideoCall) },
+                        onBack = null
+                    )
+                }
             }
 
-            composable(Routes.Messages) { MessagesScreen(vm = vm) }
+            composable(Routes.Messages) {
+                if (role == UserRole.AGENCY) AgencyRequestsScreen(vm = vm)
+                else MessagesScreen(vm = vm)
+            }
 
-            composable(Routes.Activity) { ActivityScreen(vm = vm) }
+            composable(Routes.Activity) {
+                if (role == UserRole.AGENCY) AgencyBillingScreen(vm = vm)
+                else ActivityScreen(vm = vm)
+            }
 
             composable(Routes.Settings) {
                 SettingsScreen(
@@ -246,7 +280,11 @@ fun CarePulseNavGraph() {
 }
 
 @Composable
-private fun BottomBar(navController: NavHostController, currentRoute: String?) {
+private fun BottomBar(
+    navController: NavHostController,
+    currentRoute: String?,
+    tabs: List<TabItem>
+) {
     NavigationBar(containerColor = Color.White) {
         tabs.forEach { tab ->
             NavigationBarItem(

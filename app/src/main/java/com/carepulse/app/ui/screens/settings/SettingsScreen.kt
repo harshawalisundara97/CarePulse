@@ -56,6 +56,7 @@ fun SettingsScreen(vm: CarePulseViewModel, onSignOut: () -> Unit) {
     val roleLabel = when (profile?.role) {
         UserRole.CAREGIVER -> "Caregiver"
         UserRole.CUSTOMER -> "Family member"
+        UserRole.AGENCY -> "Agency admin"
         null -> ""
     }
 

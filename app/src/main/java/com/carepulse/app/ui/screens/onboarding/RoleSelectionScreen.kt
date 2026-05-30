@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MedicalServices
@@ -114,6 +115,13 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                         subtitle = "Offer your care services and grow your practice.",
                         gradient = listOf(SoftLavender, SoftPeach),
                         onClick = { onRoleSelected(UserRole.CAREGIVER) }
+                    )
+                    RoleCard(
+                        icon = Icons.Filled.Business,
+                        title = "We're an Agency",
+                        subtitle = "Manage your caregivers, requests and bookings.",
+                        gradient = listOf(Color(0xFFB6E2FF), PastelMint),
+                        onClick = { onRoleSelected(UserRole.AGENCY) }
                     )
                 }
             }

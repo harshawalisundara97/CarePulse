@@ -1,5 +1,6 @@
 package com.carepulse.app.data.repository
 
+import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.Caregiver
 import com.carepulse.app.data.model.ShiftReport
@@ -27,4 +28,10 @@ interface CarePulseRepository {
     // --- Account profiles (users/{uid}) — drives session routing ----------
     suspend fun saveUserProfile(profile: UserProfile)
     suspend fun getUserProfile(uid: String): UserProfile?
+
+    // --- Agencies (tenants) -----------------------------------------------
+    suspend fun addAgency(agency: Agency)
+    suspend fun getAgency(id: String): Agency?
+    /** Public directory of agencies for families to choose from. */
+    suspend fun listPublicAgencies(): List<Agency>
 }

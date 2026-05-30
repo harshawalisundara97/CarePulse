@@ -9,14 +9,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
 /** App user roles. */
-enum class UserRole { CUSTOMER, CAREGIVER }
+enum class UserRole { CUSTOMER, CAREGIVER, AGENCY }
 
 /** Account profile stored in Firestore at `users/{uid}` — drives session routing. */
 data class UserProfile(
     val uid: String,
     val email: String?,
     val displayName: String,
-    val role: UserRole
+    val role: UserRole,
+    val agencyId: String? = null        // tenant the user belongs to (admins/caregivers)
+)
+
+/** A caregiving company (tenant) stored at `agencies/{id}`. */
+data class Agency(
+    val id: String,
+    val name: String,
+    val city: String = "",
+    val address: String = "",
+    val nearHospital: String = "",
+    val phone: String = "",
+    val isPublic: Boolean = true        // listed in the family-facing directory
 )
 
 /** A registered caregiver profile. */

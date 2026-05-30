@@ -10,6 +10,7 @@ import com.carepulse.app.CarePulseApplication
 import com.carepulse.app.data.auth.AuthRepository
 import com.carepulse.app.data.auth.AuthState
 import com.carepulse.app.data.auth.GoogleSignInHelper
+import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.Caregiver
 import com.carepulse.app.data.model.MedicationItem
@@ -119,6 +120,17 @@ class CarePulseViewModel(
         repo.saveUserProfile(p)
         _profile.value = p
     }
+
+    /** Registers a new caregiving company + its first admin account. */
+    fun signUpAgency(email: String, password: String, adminName: String, agencyName: String) =
+        launchAuth {
+            val user = auth.signUpEmail(email, password, adminName).getOrThrow()
+            val agencyId = UUID.randomUUID().toString()
+            repo.addAgency(Agency(id = agencyId, name = agencyName))
+            val p = UserProfile(user.uid, user.email, adminName, UserRole.AGENCY, agencyId)
+            repo.saveUserProfile(p)
+            _profile.value = p
+        }
 
     fun signInWithGoogle(context: Context, role: UserRole) = launchAuth {
         val token = googleHelper.getGoogleIdToken(context).getOrThrow()

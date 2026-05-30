@@ -53,9 +53,11 @@ fun LoginScreen(
 ) {
     val userRole = runCatching { UserRole.valueOf(role) }.getOrDefault(UserRole.CUSTOMER)
     val isCaregiver = userRole == UserRole.CAREGIVER
+    val isAgency = userRole == UserRole.AGENCY
 
     var isSignUp by remember { mutableStateOf(true) }
     var name by remember { mutableStateOf("") }
+    var agencyName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var submitted by remember { mutableStateOf(false) }
@@ -74,7 +76,11 @@ fun LoginScreen(
         }
     }
 
-    val title = if (isCaregiver) "Caregiver" else "Family"
+    val title = when {
+        isAgency -> "Agency"
+        isCaregiver -> "Caregiver"
+        else -> "Family"
+    }
 
     Scaffold(
         topBar = {
@@ -102,19 +108,28 @@ fun LoginScreen(
                 style = MaterialTheme.typography.headlineLarge, color = InkPrimary
             )
             Text(
-                if (isCaregiver)
-                    "Manage your shifts and patients."
-                else
-                    "Find a caregiver and check in on your loved ones.",
+                when {
+                    isAgency -> "Manage your caregivers, requests and bookings."
+                    isCaregiver -> "Manage your shifts and patients."
+                    else -> "Find a caregiver and check in on your loved ones."
+                },
                 style = MaterialTheme.typography.bodyMedium, color = InkSecondary
             )
             Spacer(Modifier.height(8.dp))
 
             if (isSignUp) {
+                if (isAgency) {
+                    CarePulseTextField(
+                        value = agencyName,
+                        onValueChange = { agencyName = it },
+                        label = "Company name",
+                        capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
+                    )
+                }
                 CarePulseTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = "Full name",
+                    label = if (isAgency) "Your name (admin)" else "Full name",
                     capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
                 )
             }
@@ -151,22 +166,28 @@ fun LoginScreen(
                 },
                 onClick = {
                     submitted = true
-                    if (isSignUp) vm.signUp(email, password, name, userRole)
-                    else vm.signIn(email, password)
+                    when {
+                        isSignUp && isAgency -> vm.signUpAgency(email, password, name, agencyName)
+                        isSignUp -> vm.signUp(email, password, name, userRole)
+                        else -> vm.signIn(email, password)
+                    }
                 },
                 enabled = !loading && email.isNotBlank() && password.isNotBlank() &&
-                    (!isSignUp || name.isNotBlank())
+                    (!isSignUp || name.isNotBlank()) &&
+                    (!isSignUp || !isAgency || agencyName.isNotBlank())
             )
 
-            OutlinedButton(
-                onClick = {
-                    submitted = true
-                    vm.signInWithGoogle(context, userRole)
-                },
-                enabled = !loading,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Continue with Google", color = InkPrimary, fontWeight = FontWeight.SemiBold)
+            if (!isAgency) {
+                OutlinedButton(
+                    onClick = {
+                        submitted = true
+                        vm.signInWithGoogle(context, userRole)
+                    },
+                    enabled = !loading,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Continue with Google", color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                }
             }
 
             if (loading) {

@@ -38,6 +38,43 @@ scheduling, and billing — then sells it to caregiving companies across Sri Lan
 
 ---
 
+## 2.1 Go-to-Market Strategy
+
+**Core play: land-and-expand from one hospital cluster.**
+
+1. **Pick one hospital** (e.g. a large Colombo hospital) with several agencies nearby.
+2. **Give 1–2 agencies the product free for 2–3 months** as pilot partners; sit with
+   them and make it work on their real bookings.
+3. **Turn them into a reference customer** — agency owners trust other owners far more
+   than salespeople. Word-of-mouth near a hospital sells the rest.
+4. **Expand hospital by hospital**, each cluster a beachhead.
+
+**Wedge vs. retention:**
+- **Attract with daily family updates** (photos/vitals/mood) — families love it, so
+  agencies that offer it win more clients. This is the marketing hook.
+- **Retain on office time saved** — instant gender/skill matching, roster at a glance,
+  billing tracked, no paper. This is why the owner pays every month.
+- *Demo the family updates to win attention; close on time-saved.*
+
+**Pricing:**
+- **Free tier** (1–2 caregivers) so any agency starts at zero risk.
+- **Low monthly per-agency**, tiered by caregiver count (5 / 15 / 30+).
+- **Family app stays 100% free** — families are the viral growth engine, not revenue.
+- Bill in **LKR**, support local payment methods.
+
+**Sri Lanka-specific essentials:**
+- **Sinhala + Tamil + English** in-app (non-negotiable for adoption).
+- **WhatsApp-based onboarding & support.**
+- **In-person tablet demos** at the office.
+- **Works on cheap Android + flaky data** — keep the app offline-tolerant.
+- **Sub-minute onboarding** — adding/assigning a caregiver must be trivial; office
+  staff are not technical.
+
+**One-line strategy:** *Build a pilot-ready version, give it free to 2 agencies near
+one hospital, make them love it, and let owner word-of-mouth sell the rest.*
+
+---
+
 ## 3. The Three Roles
 
 | Role | Who | What they do |
