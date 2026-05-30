@@ -3,9 +3,12 @@ package com.carepulse.app.data.repository
 import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.BookingStatus
+import com.carepulse.app.data.model.CareRequest
+import com.carepulse.app.data.model.CareType
 import com.carepulse.app.data.model.Caregiver
 import com.carepulse.app.data.model.Gender
 import com.carepulse.app.data.model.MedicationItem
+import com.carepulse.app.data.model.RequestStatus
 import com.carepulse.app.data.model.Mood
 import com.carepulse.app.data.model.ShiftReport
 import com.carepulse.app.data.model.UserProfile
@@ -44,6 +47,7 @@ class FirestoreCarePulseRepository(
     private val reportsCol = db.collection("reports")
     private val usersCol = db.collection("users")
     private val agenciesCol = db.collection("agencies")
+    private val careRequestsCol = db.collection("careRequests")
 
     // ---- Real-time flows ---------------------------------------------------
 
@@ -65,6 +69,11 @@ class FirestoreCarePulseRepository(
     override val reports: StateFlow<List<ShiftReport>> =
         reportsCol.orderBy("createdAt", Query.Direction.DESCENDING)
             .snapshots { it.toReport() }
+            .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    override val careRequests: StateFlow<List<CareRequest>> =
+        careRequestsCol.orderBy("createdAt", Query.Direction.DESCENDING)
+            .snapshots { it.toCareRequest() }
             .stateIn(scope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     override fun caregiverById(id: String): Caregiver? =
@@ -115,6 +124,14 @@ class FirestoreCarePulseRepository(
         agenciesCol.whereEqualTo("isPublic", true).get().await()
             .documents.mapNotNull { runCatching { it.toAgency() }.getOrNull() }
     }.getOrDefault(emptyList())
+
+    override suspend fun addCareRequest(request: CareRequest) {
+        runCatching { careRequestsCol.document(request.id).set(request.toMap()).await() }
+    }
+
+    override suspend fun updateCareRequest(request: CareRequest) {
+        runCatching { careRequestsCol.document(request.id).set(request.toMap()).await() }
+    }
 
     /** Writes the default caregiver roster if the collection is empty. */
     suspend fun seedCaregiversIfEmpty() {
@@ -269,6 +286,35 @@ private fun DocumentSnapshot.toUserProfile(): UserProfile {
         roles = roles
     )
 }
+
+private fun CareRequest.toMap(): Map<String, Any?> = mapOf(
+    "id" to id, "agencyId" to agencyId, "familyUid" to familyUid,
+    "familyName" to familyName, "patientName" to patientName,
+    "patientGender" to patientGender.name, "preferredGender" to preferredGender.name,
+    "careType" to careType.name, "notes" to notes, "status" to status.name,
+    "assignedCaregiverId" to assignedCaregiverId,
+    "assignedCaregiverName" to assignedCaregiverName,
+    "createdAt" to System.currentTimeMillis()
+)
+
+private fun DocumentSnapshot.toCareRequest(): CareRequest = CareRequest(
+    id = getString("id") ?: id,
+    agencyId = getString("agencyId").orEmpty(),
+    familyUid = getString("familyUid"),
+    familyName = getString("familyName").orEmpty(),
+    patientName = getString("patientName").orEmpty(),
+    patientGender = runCatching { Gender.valueOf(getString("patientGender").orEmpty()) }
+        .getOrDefault(Gender.FEMALE),
+    preferredGender = runCatching { Gender.valueOf(getString("preferredGender").orEmpty()) }
+        .getOrDefault(Gender.FEMALE),
+    careType = runCatching { CareType.valueOf(getString("careType").orEmpty()) }
+        .getOrDefault(CareType.HOME),
+    notes = getString("notes").orEmpty(),
+    status = runCatching { RequestStatus.valueOf(getString("status").orEmpty()) }
+        .getOrDefault(RequestStatus.PENDING),
+    assignedCaregiverId = getString("assignedCaregiverId"),
+    assignedCaregiverName = getString("assignedCaregiverName")
+)
 
 private fun Agency.toMap(): Map<String, Any?> = mapOf(
     "id" to id, "name" to name, "city" to city, "address" to address,

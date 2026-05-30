@@ -12,9 +12,12 @@ import com.carepulse.app.data.auth.AuthState
 import com.carepulse.app.data.auth.GoogleSignInHelper
 import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
+import com.carepulse.app.data.model.CareRequest
+import com.carepulse.app.data.model.CareType
 import com.carepulse.app.data.model.Caregiver
 import com.carepulse.app.data.model.Gender
 import com.carepulse.app.data.model.MedicationItem
+import com.carepulse.app.data.model.RequestStatus
 import com.carepulse.app.data.model.Mood
 import com.carepulse.app.data.model.ShiftReport
 import com.carepulse.app.data.model.UserProfile
@@ -217,6 +220,74 @@ class CarePulseViewModel(
             val agencyId = profile?.agencyId ?: return@combine emptyList()
             all.filter { it.agencyId == agencyId }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    // --- Care requests (family ↔ agency) -----------------------------------
+
+    /** Public directory of agencies for families to choose from. */
+    private val _agencies = MutableStateFlow<List<Agency>>(emptyList())
+    val agencies: StateFlow<List<Agency>> = _agencies.asStateFlow()
+
+    fun loadAgencies() {
+        viewModelScope.launch { _agencies.value = repo.listPublicAgencies() }
+    }
+
+    /** Care requests addressed to the signed-in agency. */
+    val agencyRequests: StateFlow<List<CareRequest>> =
+        combine(repo.careRequests, _profile) { all, profile ->
+            val agencyId = profile?.agencyId ?: return@combine emptyList()
+            all.filter { it.agencyId == agencyId }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Care requests this family has submitted. */
+    val familyRequests: StateFlow<List<CareRequest>> =
+        combine(repo.careRequests, _profile) { all, profile ->
+            val uid = profile?.uid ?: return@combine emptyList()
+            all.filter { it.familyUid == uid }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Family submits a care request to a chosen agency. */
+    fun submitCareRequest(
+        agencyId: String,
+        patientName: String,
+        patientGender: Gender,
+        preferredGender: Gender,
+        careType: CareType,
+        notes: String
+    ) {
+        val profile = _profile.value
+        viewModelScope.launch {
+            repo.addCareRequest(
+                CareRequest(
+                    id = UUID.randomUUID().toString(),
+                    agencyId = agencyId,
+                    familyUid = profile?.uid,
+                    familyName = profile?.displayName ?: "Family member",
+                    patientName = patientName.trim(),
+                    patientGender = patientGender,
+                    preferredGender = preferredGender,
+                    careType = careType,
+                    notes = notes.trim()
+                )
+            )
+        }
+    }
+
+    /** Agency assigns a caregiver to a pending request. */
+    fun assignCaregiver(request: CareRequest, caregiver: Caregiver) {
+        viewModelScope.launch {
+            repo.updateCareRequest(
+                request.copy(
+                    status = RequestStatus.ASSIGNED,
+                    assignedCaregiverId = caregiver.id,
+                    assignedCaregiverName = caregiver.name
+                )
+            )
+        }
+    }
+
+    /** Caregivers matching a request's required gender (for assignment). */
+    fun matchesFor(request: CareRequest): List<Caregiver> =
+        agencyCaregivers.value.filter { it.gender == request.preferredGender }
 
     /** Agency admin adds a caregiver to their own roster. */
     fun addAgencyCaregiver(

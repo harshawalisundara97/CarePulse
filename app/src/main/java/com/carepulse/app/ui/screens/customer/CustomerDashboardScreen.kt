@@ -25,12 +25,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +65,7 @@ import com.carepulse.app.ui.theme.CreamBackground
 import com.carepulse.app.ui.theme.InkPrimary
 import com.carepulse.app.ui.theme.InkSecondary
 import com.carepulse.app.ui.theme.PastelMint
+import com.carepulse.app.ui.theme.PastelMintDeep
 import com.carepulse.app.ui.theme.SoftLavender
 import com.carepulse.app.ui.theme.SoftPeach
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -74,6 +77,7 @@ fun CustomerDashboardScreen(
     vm: CarePulseViewModel,
     onOpenCaregiver: (String) -> Unit,
     onOpenPulse: () -> Unit,
+    onRequestCare: () -> Unit = {},
     onSignOut: () -> Unit = {}
 ) {
     val caregivers by vm.caregivers.collectAsState()
@@ -113,6 +117,15 @@ fun CustomerDashboardScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onRequestCare,
+                containerColor = PastelMintDeep,
+                contentColor = Color.White,
+                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                text = { Text("Request care") }
             )
         },
         containerColor = CreamBackground

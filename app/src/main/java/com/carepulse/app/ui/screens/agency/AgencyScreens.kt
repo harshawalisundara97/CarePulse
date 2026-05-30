@@ -2,6 +2,7 @@
 
 package com.carepulse.app.ui.screens.agency
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -43,10 +45,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.carepulse.app.data.model.CareRequest
 import com.carepulse.app.data.model.Gender
+import com.carepulse.app.data.model.RequestStatus
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
+import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.CreamBackground
 import com.carepulse.app.ui.theme.InkPrimary
 import com.carepulse.app.ui.theme.InkSecondary
@@ -218,10 +223,109 @@ private fun AddCaregiverDialog(
 
 @Composable
 fun AgencyRequestsScreen(vm: CarePulseViewModel) {
-    AgencyScaffold("Requests") {
-        EmptyState(Icons.Filled.Inbox, "No care requests yet",
-            "When families request a caregiver, they'll appear here for you to assign.")
+    val requests by vm.agencyRequests.collectAsState()
+    var assignTarget by remember { mutableStateOf<CareRequest?>(null) }
+
+    AgencyScaffold("Requests") { mod ->
+        if (requests.isEmpty()) {
+            EmptyState(Icons.Filled.Inbox, "No care requests yet",
+                "When families request a caregiver, they'll appear here for you to assign.")
+        } else {
+            LazyColumn(mod, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                items(requests) { req ->
+                    PastelCard {
+                        Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(req.patientName.ifBlank { "Patient" },
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                                    Text("From ${req.familyName}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = InkSecondary)
+                                }
+                                PastelChip(req.status.name.lowercase()
+                                    .replaceFirstChar { it.uppercase() })
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            Text(
+                                "Needs: ${req.preferredGender.name.lowercase()} caregiver · " +
+                                    req.careType.name.lowercase(),
+                                style = MaterialTheme.typography.bodyMedium, color = InkSecondary
+                            )
+                            if (req.notes.isNotBlank()) {
+                                Text(req.notes, style = MaterialTheme.typography.bodySmall,
+                                    color = InkSecondary)
+                            }
+                            Spacer(Modifier.height(10.dp))
+                            if (req.status == RequestStatus.PENDING) {
+                                PrimaryButton(text = "Assign caregiver",
+                                    onClick = { assignTarget = req })
+                            } else {
+                                Text("Assigned to ${req.assignedCaregiverName ?: "—"}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = PastelMintDeep, fontWeight = FontWeight.SemiBold)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
+
+    assignTarget?.let { req ->
+        val matches = vm.matchesFor(req)
+        AssignDialog(
+            request = req,
+            matches = matches,
+            onDismiss = { assignTarget = null },
+            onAssign = { cg -> vm.assignCaregiver(req, cg); assignTarget = null }
+        )
+    }
+}
+
+@Composable
+private fun AssignDialog(
+    request: CareRequest,
+    matches: List<com.carepulse.app.data.model.Caregiver>,
+    onDismiss: () -> Unit,
+    onAssign: (com.carepulse.app.data.model.Caregiver) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Assign a ${request.preferredGender.name.lowercase()} caregiver") },
+        text = {
+            if (matches.isEmpty()) {
+                Text("No matching caregivers on your roster. Add a " +
+                    "${request.preferredGender.name.lowercase()} caregiver first.",
+                    style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    matches.forEach { cg ->
+                        Surface(
+                            color = Color.Transparent,
+                            modifier = Modifier.fillMaxWidth().clickable { onAssign(cg) }
+                        ) {
+                            Row(
+                                Modifier.padding(vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(cg.name, style = MaterialTheme.typography.bodyLarge,
+                                        color = InkPrimary)
+                                    Text(cg.area, style = MaterialTheme.typography.bodySmall,
+                                        color = InkSecondary)
+                                }
+                                PastelChip("\$${cg.hourlyRate}/hr")
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Close") } }
+    )
 }
 
 @Composable

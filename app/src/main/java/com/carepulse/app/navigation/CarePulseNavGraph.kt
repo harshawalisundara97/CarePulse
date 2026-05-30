@@ -48,6 +48,7 @@ import com.carepulse.app.ui.screens.auth.LoginScreen
 import com.carepulse.app.ui.screens.caregiver.CaregiverDashboardScreen
 import com.carepulse.app.ui.screens.caregiver.ShiftSummaryScreen
 import com.carepulse.app.ui.screens.customer.BookingScreen
+import com.carepulse.app.ui.screens.customer.CareRequestScreen
 import com.carepulse.app.ui.screens.customer.CaregiverDetailScreen
 import com.carepulse.app.ui.screens.customer.CustomerDashboardScreen
 import com.carepulse.app.ui.screens.customer.PulseDashboardScreen
@@ -83,6 +84,7 @@ object Routes {
     fun booking(id: String) = "booking/$id"
     const val VideoCall = "video-call"
     const val ShiftSummary = "shift-summary"
+    const val CareRequest = "care-request"
 }
 
 /** One bottom-navigation tab. */
@@ -203,6 +205,7 @@ fun CarePulseNavGraph() {
                         vm = vm,
                         onOpenCaregiver = { id -> navController.navigate(Routes.caregiverDetail(id)) },
                         onOpenPulse = { navController.navigate(Routes.Pulse) { launchSingleTop = true } },
+                        onRequestCare = { navController.navigate(Routes.CareRequest) },
                         onSignOut = signOut
                     )
                 }
@@ -260,6 +263,14 @@ fun CarePulseNavGraph() {
                     caregiverId = id,
                     vm = vm,
                     onComplete = { navController.popBackStack(Routes.Home, inclusive = false) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Routes.CareRequest) {
+                CareRequestScreen(
+                    vm = vm,
+                    onSubmitted = { navController.popBackStack() },
                     onBack = { navController.popBackStack() }
                 )
             }

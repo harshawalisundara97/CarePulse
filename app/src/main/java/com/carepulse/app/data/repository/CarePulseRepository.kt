@@ -2,6 +2,7 @@ package com.carepulse.app.data.repository
 
 import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
+import com.carepulse.app.data.model.CareRequest
 import com.carepulse.app.data.model.Caregiver
 import com.carepulse.app.data.model.ShiftReport
 import com.carepulse.app.data.model.UserProfile
@@ -34,4 +35,9 @@ interface CarePulseRepository {
     suspend fun getAgency(id: String): Agency?
     /** Public directory of agencies for families to choose from. */
     suspend fun listPublicAgencies(): List<Agency>
+
+    // --- Care requests (family → agency) ----------------------------------
+    val careRequests: StateFlow<List<CareRequest>>
+    suspend fun addCareRequest(request: CareRequest)
+    suspend fun updateCareRequest(request: CareRequest)
 }

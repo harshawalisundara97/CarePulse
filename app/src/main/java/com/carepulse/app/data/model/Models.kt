@@ -59,6 +59,31 @@ data class Caregiver(
     val agencyId: String? = null        // owning agency (tenant)
 )
 
+/** Where care is delivered. */
+enum class CareType { HOSPITAL, HOME }
+
+/** Lifecycle of a family's care request. */
+enum class RequestStatus { PENDING, ASSIGNED, DECLINED }
+
+/**
+ * A family's request to a caregiving agency for a caregiver.
+ * The agency reviews it and assigns a gender/skill-matched caregiver.
+ */
+data class CareRequest(
+    val id: String,
+    val agencyId: String,
+    val familyUid: String?,
+    val familyName: String,
+    val patientName: String,
+    val patientGender: Gender,
+    val preferredGender: Gender,        // required caregiver gender
+    val careType: CareType,
+    val notes: String = "",
+    val status: RequestStatus = RequestStatus.PENDING,
+    val assignedCaregiverId: String? = null,
+    val assignedCaregiverName: String? = null
+)
+
 /** A booking the customer creates for a caregiver. */
 data class Booking(
     val id: String,
