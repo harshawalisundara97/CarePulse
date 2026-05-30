@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive-icon foreground: white heart + mint ECG pulse line.
+     108x108 viewport; content kept inside the centre ~66dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Heart -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,74
+            C54,74 31,58.5 31,45.5
+            C31,38 36.2,33.5 42.5,33.5
+            C47.6,33.5 51.8,36.7 54,41
+            C56.2,36.7 60.4,33.5 65.5,33.5
+            C71.8,33.5 77,38 77,45.5
+            C77,58.5 54,74 54,74 Z" />
+
+    <!-- ECG / heartbeat line -->
+    <path
+        android:strokeColor="#7BC8AA"
+        android:strokeWidth="3.4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M36,51 L46,51 L50,42.5 L55,60 L59.5,48 L63,51 L72,51" />
+</vector>
