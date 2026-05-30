@@ -4,6 +4,7 @@ import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.BookingStatus
 import com.carepulse.app.data.model.Caregiver
+import com.carepulse.app.data.model.Gender
 import com.carepulse.app.data.model.MedicationItem
 import com.carepulse.app.data.model.Mood
 import com.carepulse.app.data.model.ShiftReport
@@ -143,7 +144,8 @@ private fun Caregiver.toMap(): Map<String, Any?> = mapOf(
     "id" to id, "name" to name, "avatarSeed" to avatarSeed, "area" to area,
     "qualifications" to qualifications, "specializations" to specializations,
     "hourlyRate" to hourlyRate, "rating" to rating.toDouble(),
-    "ratingCount" to ratingCount, "bio" to bio, "availability" to availability
+    "ratingCount" to ratingCount, "bio" to bio, "availability" to availability,
+    "gender" to gender.name, "agencyId" to agencyId
 )
 
 @Suppress("UNCHECKED_CAST")
@@ -158,7 +160,10 @@ private fun DocumentSnapshot.toCaregiver(): Caregiver = Caregiver(
     rating = (getDouble("rating") ?: 0.0).toFloat(),
     ratingCount = (getLong("ratingCount") ?: 0L).toInt(),
     bio = getString("bio").orEmpty(),
-    availability = get("availability") as? List<String> ?: emptyList()
+    availability = get("availability") as? List<String> ?: emptyList(),
+    gender = runCatching { Gender.valueOf(getString("gender").orEmpty()) }
+        .getOrDefault(Gender.FEMALE),
+    agencyId = getString("agencyId")
 )
 
 private fun Booking.toMap(): Map<String, Any?> = mapOf(

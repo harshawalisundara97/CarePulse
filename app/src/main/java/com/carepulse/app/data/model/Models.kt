@@ -39,6 +39,9 @@ data class Agency(
     val isPublic: Boolean = true        // listed in the family-facing directory
 )
 
+/** Caregiver gender — used for gender-matching a patient to a caregiver. */
+enum class Gender { FEMALE, MALE }
+
 /** A registered caregiver profile. */
 data class Caregiver(
     val id: String,
@@ -51,7 +54,9 @@ data class Caregiver(
     val rating: Float,
     val ratingCount: Int,
     val bio: String,
-    val availability: List<String>      // ["Mon AM", "Tue PM", ...]
+    val availability: List<String>,     // ["Mon AM", "Tue PM", ...]
+    val gender: Gender = Gender.FEMALE,
+    val agencyId: String? = null        // owning agency (tenant)
 )
 
 /** A booking the customer creates for a caregiver. */

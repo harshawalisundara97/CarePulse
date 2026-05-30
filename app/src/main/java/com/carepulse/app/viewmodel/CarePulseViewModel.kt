@@ -13,6 +13,7 @@ import com.carepulse.app.data.auth.GoogleSignInHelper
 import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.Caregiver
+import com.carepulse.app.data.model.Gender
 import com.carepulse.app.data.model.MedicationItem
 import com.carepulse.app.data.model.Mood
 import com.carepulse.app.data.model.ShiftReport
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -208,6 +210,43 @@ class CarePulseViewModel(
     fun setSpecializationFilter(value: String?) { _specializationFilter.value = value }
 
     fun caregiverById(id: String): Caregiver? = repo.caregiverById(id)
+
+    /** Caregivers belonging to the signed-in agency admin's company. */
+    val agencyCaregivers: StateFlow<List<Caregiver>> =
+        combine(repo.caregivers, _profile) { all, profile ->
+            val agencyId = profile?.agencyId ?: return@combine emptyList()
+            all.filter { it.agencyId == agencyId }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    /** Agency admin adds a caregiver to their own roster. */
+    fun addAgencyCaregiver(
+        name: String,
+        gender: Gender,
+        area: String,
+        hourlyRate: Int,
+        skill: String
+    ) {
+        val agencyId = _profile.value?.agencyId ?: return
+        viewModelScope.launch {
+            repo.addCaregiver(
+                Caregiver(
+                    id = UUID.randomUUID().toString(),
+                    name = name.trim(),
+                    avatarSeed = name.hashCode(),
+                    area = area.trim(),
+                    qualifications = emptyList(),
+                    specializations = if (skill.isBlank()) emptyList() else listOf(skill.trim()),
+                    hourlyRate = hourlyRate,
+                    rating = 0f,
+                    ratingCount = 0,
+                    bio = "",
+                    availability = emptyList(),
+                    gender = gender,
+                    agencyId = agencyId
+                )
+            )
+        }
+    }
 
     fun confirmBooking(caregiver: Caregiver, patientName: String, date: String, time: String, hours: Int) {
         viewModelScope.launch {
