@@ -119,6 +119,28 @@ once they request, their data lives under that agency.
 
 ---
 
+## 5.1 Filling a job: two models (assign **or** open-job alerts)
+
+Caregivers don't have to sit at the office — they work from their phone like
+PickMe/Uber drivers. A job can be filled two ways:
+
+**A) Direct assign (office style):** Agency admin picks an available, gender/skill-
+matched caregiver and assigns them. Caregiver gets a notification to accept.
+
+**B) Open-job broadcast (gig style):**
+```
+1. Agency posts an OPEN JOB (patient need, gender required, location, time, pay).
+2. Nearby available caregivers get a PUSH ALERT (FCM + location radius).
+3. A caregiver taps ACCEPT.
+4. Agency CONFIRMS that caregiver (first-come or agency picks among applicants).
+5. Caregiver travels to the patient and STARTS the job (check-in).
+```
+
+Both coexist: small agencies use direct assign; busy ones broadcast to fill fast.
+Caregivers see a **home feed of nearby open jobs** and their alerts.
+
+---
+
 ## 6. Tech Stack
 
 | Layer | Choice |
@@ -165,7 +187,8 @@ Models (data classes, all carry agencyId where relevant)
 | `users` | uid, role (ADMIN/CAREGIVER/FAMILY), agencyId, displayName, email, photoUrl, gender |
 | `caregivers` | id, agencyId, name, **gender**, skills[], qualifications, experienceYrs, hourlyRate, rating, **status** (AVAILABLE/ON_DUTY/OFF), photoUrl |
 | `careRequests` | id, agencyId, familyUid, patientName, **patientGender**, **preferredCaregiverGender**, careType (HOSPITAL/HOME), needs, startDate, endDate, status (PENDING/ASSIGNED/DECLINED) |
-| `assignments` | id, agencyId, requestId, caregiverId, familyUid, status (ASSIGNED/IN_PROGRESS/COMPLETED), startedAt, endedAt, totalCost |
+| `jobPostings` | id, agencyId, requestId, requiredGender, skills[], careType, location(lat/lng), startTime, pay, status (OPEN/FILLED/CANCELLED), applicants[] |
+| `assignments` | id, agencyId, requestId, jobPostingId?, caregiverId, familyUid, status (ASSIGNED/ACCEPTED/IN_PROGRESS/COMPLETED), startedAt, endedAt, totalCost |
 | `vitals` | assignmentId, agencyId, dateLabel, heartRate, bloodPressure, mood, mealsEaten, notes, photoUrls[] |
 | `reports` | id, assignmentId, agencyId, caregiverName, dateLabel, daySummary, behaviorNotes, medicationsGiven[] |
 | `conversations` / `messages` | per assignment, participants, text, sentAt |
@@ -191,7 +214,7 @@ Splash · RoleSelection *(Family vs Caregiver vs Agency-login)* · Login/Sign-up
 ### 9.3 🧑‍⚕️ Caregiver — 5 tabs
 | Tab | Purpose |
 |-----|---------|
-| **Home** | Current/next assignment, **Start/End shift**, availability toggle |
+| **Home** | **Nearby open jobs feed** + alerts (accept), current/next assignment, **Start/End shift**, availability toggle |
 | **Pulse** | Log patient vitals/mood/meals/photos |
 | **Messages** | Chat with assigned family |
 | **Activity** | Past assignments & shift reports |
@@ -241,6 +264,13 @@ name capitalization, forgot-password reset.
 - [ ] **Real chat** (conversations + messages, real-time)
 - [ ] **Push notifications** (new request, assignment, update, message)
 
+### 🔜 Phase 2.5 — Caregiver marketplace (Uber/PickMe style)
+- [ ] Agency posts **open jobs** (`jobPostings`)
+- [ ] Caregiver **nearby-jobs feed** (location radius) on Home
+- [ ] **Push alerts** to nearby available caregivers (FCM + location)
+- [ ] Caregiver **Accept** → agency **Confirm** → caregiver **check-in/start**
+- [ ] Availability toggle drives who receives alerts
+
 ### 🔜 Phase 3 — Scheduling & Billing
 - [ ] Assignments **calendar** for agency
 - [ ] Shift check-in/out, hours tracking
@@ -262,6 +292,24 @@ name capitalization, forgot-password reset.
 Camera/photo picker (updates & profiles) · FCM push · local notifications (med
 reminders) · location (nearby agencies, distance) · biometric login · dialer intent
 (call) · share intent (reports).
+
+---
+
+## 12.1 Platforms — Android now, iOS later
+
+Today the app is **native Android** (Kotlin + Jetpack Compose). Firebase already works
+for iOS, so the **backend is reusable**. Options for iOS:
+
+| Approach | Reuse | Notes |
+|----------|-------|-------|
+| **Compose Multiplatform / KMP** (recommended) | Highest — reuse Kotlin models, repos, ViewModels, and most Compose UI on iOS | Natural fit since we're already Kotlin + Compose. Needs a Mac + Xcode. iOS support is newer but production-ready. |
+| **Flutter** (rewrite in Dart) | Backend only — UI rewritten | One codebase for both, big ecosystem, but throws away the Compose work. |
+| **Native SwiftUI** (separate app) | Backend only | Best iOS feel, but double the code and maintenance. |
+
+**Recommendation:** Finish the **Android pilot first** (validate with real agencies),
+then add iOS via **Compose Multiplatform** — migrating the existing Kotlin/Compose code
+rather than rewriting. Requires a Mac with Xcode + an Apple Developer account ($99/yr).
+Don't split effort across two platforms before the product is proven.
 
 ---
 
