@@ -40,4 +40,5 @@ interface CarePulseRepository {
     val careRequests: StateFlow<List<CareRequest>>
     suspend fun addCareRequest(request: CareRequest)
     suspend fun updateCareRequest(request: CareRequest)
+    suspend fun saveFcmToken(uid: String, token: String)
 }

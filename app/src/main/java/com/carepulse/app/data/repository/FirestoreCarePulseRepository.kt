@@ -133,6 +133,12 @@ class FirestoreCarePulseRepository(
         runCatching { careRequestsCol.document(request.id).set(request.toMap()).await() }
     }
 
+    override suspend fun saveFcmToken(uid: String, token: String) {
+        runCatching {
+            usersCol.document(uid).update("fcmToken", token).await()
+        }
+    }
+
     /** Writes the default caregiver roster if the collection is empty. */
     suspend fun seedCaregiversIfEmpty() {
         val snap = caregiversCol.limit(1).get().await()
