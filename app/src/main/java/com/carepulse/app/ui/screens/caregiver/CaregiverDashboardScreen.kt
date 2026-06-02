@@ -57,6 +57,13 @@ fun CaregiverDashboardScreen(
     onEditProfile: () -> Unit = {}
 ) {
     val displayName by vm.displayName.collectAsState()
+    val allBookings by vm.bookings.collectAsState()
+    val profile by vm.profile.collectAsState()
+    val myShifts = allBookings.filter {
+        it.caregiverUid == profile?.uid &&
+        (it.status == com.carepulse.app.data.model.BookingStatus.CONFIRMED ||
+         it.status == com.carepulse.app.data.model.BookingStatus.IN_PROGRESS)
+    }
 
     Scaffold(
         topBar = {
@@ -148,6 +155,40 @@ fun CaregiverDashboardScreen(
                                 Text(n, style = MaterialTheme.typography.bodyLarge,
                                     color = InkPrimary, fontWeight = FontWeight.SemiBold)
                                 Text(t, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (myShifts.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "Upcoming shifts",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = InkPrimary,
+                    fontWeight = FontWeight.SemiBold
+                )
+                myShifts.forEach { shift ->
+                    Spacer(Modifier.height(8.dp))
+                    com.carepulse.app.ui.components.PastelCard {
+                        Column {
+                            Text(
+                                shift.patientName,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = InkPrimary
+                            )
+                            Text(
+                                "${shift.dateLabel} · ${shift.timeSlot}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = InkSecondary
+                            )
+                            if (shift.status == com.carepulse.app.data.model.BookingStatus.CONFIRMED) {
+                                Spacer(Modifier.height(8.dp))
+                                com.carepulse.app.ui.components.PrimaryButton(
+                                    text = "Clock in",
+                                    onClick = { vm.clockIn(shift.id) }
+                                )
                             }
                         }
                     }

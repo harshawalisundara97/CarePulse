@@ -330,9 +330,70 @@ private fun AssignDialog(
 
 @Composable
 fun AgencyBillingScreen(vm: CarePulseViewModel) {
-    AgencyScaffold("Billing") {
-        EmptyState(Icons.Filled.Payments, "No billing yet",
-            "Booking costs and payments will be tracked here.")
+    val bookings by vm.agencyBookings.collectAsState()
+    val totalEarnings = bookings.sumOf { it.totalCost }
+    val grouped = bookings.groupBy { it.caregiverUid ?: it.caregiverId }
+
+    AgencyScaffold("Billing") { mod ->
+        if (bookings.isEmpty()) {
+            EmptyState(
+                Icons.Filled.Payments,
+                "No bookings yet",
+                "Booking costs and payments will be tracked here."
+            )
+        } else {
+            LazyColumn(mod, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                item {
+                    PastelCard {
+                        Column {
+                            Text(
+                                "Total earnings",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = InkSecondary
+                            )
+                            Text(
+                                "LKR $totalEarnings",
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = PastelMintDeep,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+                grouped.forEach { (cgKey, cgBookings) ->
+                    item {
+                        Text(
+                            cgKey ?: "Unknown caregiver",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = InkSecondary,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                    items(cgBookings) { b ->
+                        PastelCard {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(Modifier.weight(1f)) {
+                                    Text(
+                                        b.patientName,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = InkPrimary
+                                    )
+                                    Text(
+                                        "${b.dateLabel} · ${b.timeSlot}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = InkSecondary
+                                    )
+                                }
+                                PastelChip("LKR ${b.totalCost}")
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

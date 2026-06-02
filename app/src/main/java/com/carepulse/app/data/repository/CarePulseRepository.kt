@@ -4,6 +4,7 @@ import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.CareRequest
 import com.carepulse.app.data.model.Caregiver
+import com.carepulse.app.data.model.BookingStatus
 import com.carepulse.app.data.model.Review
 import com.carepulse.app.data.model.ShiftReport
 import com.carepulse.app.data.model.UserProfile
@@ -49,4 +50,7 @@ interface CarePulseRepository {
 
     // --- Caregiver self-update -------------------------------------------------
     suspend fun saveCaregiver(caregiver: Caregiver)
+
+    // --- Booking status --------------------------------------------------------
+    suspend fun updateBookingStatus(bookingId: String, status: BookingStatus)
 }

@@ -477,6 +477,32 @@ class CarePulseViewModel(
         }
     }
 
+    // --- Booking status ---------------------------------------------------------
+
+    fun clockIn(bookingId: String) {
+        viewModelScope.launch {
+            repo.updateBookingStatus(bookingId, com.carepulse.app.data.model.BookingStatus.IN_PROGRESS)
+        }
+    }
+
+    fun completeBooking(bookingId: String) {
+        viewModelScope.launch {
+            repo.updateBookingStatus(bookingId, com.carepulse.app.data.model.BookingStatus.COMPLETED)
+        }
+    }
+
+    val familyBookings: kotlinx.coroutines.flow.StateFlow<List<com.carepulse.app.data.model.Booking>> =
+        combine(repo.bookings, _profile) { all, profile ->
+            val uid = profile?.uid ?: return@combine emptyList()
+            all.filter { it.customerUid == uid }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val agencyBookings: kotlinx.coroutines.flow.StateFlow<List<com.carepulse.app.data.model.Booking>> =
+        combine(repo.bookings, _profile) { all, profile ->
+            val agencyId = profile?.agencyId ?: return@combine emptyList()
+            all.filter { it.agencyId == agencyId }
+        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
     companion object {
         val Factory = viewModelFactory {
             initializer {

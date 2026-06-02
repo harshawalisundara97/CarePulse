@@ -189,6 +189,12 @@ class FirestoreCarePulseRepository(
         runCatching { caregiversCol.document(caregiver.id).set(caregiver.toMap()).await() }
     }
 
+    override suspend fun updateBookingStatus(bookingId: String, status: BookingStatus) {
+        runCatching {
+            bookingsCol.document(bookingId).update("status", status.name).await()
+        }
+    }
+
     /** Writes the default caregiver roster if the collection is empty. */
     suspend fun seedCaregiversIfEmpty() {
         val snap = caregiversCol.limit(1).get().await()
@@ -244,7 +250,7 @@ private fun Booking.toMap(): Map<String, Any?> = mapOf(
     "patientName" to patientName, "dateLabel" to dateLabel, "timeSlot" to timeSlot,
     "totalCost" to totalCost, "status" to status.name,
     "customerUid" to customerUid, "caregiverUid" to caregiverUid,
-    "createdAt" to System.currentTimeMillis()
+    "agencyId" to agencyId, "createdAt" to System.currentTimeMillis()
 )
 
 private fun DocumentSnapshot.toBooking(): Booking = Booking(
@@ -258,7 +264,8 @@ private fun DocumentSnapshot.toBooking(): Booking = Booking(
     status = runCatching { BookingStatus.valueOf(getString("status").orEmpty()) }
         .getOrDefault(BookingStatus.CONFIRMED),
     customerUid = getString("customerUid"),
-    caregiverUid = getString("caregiverUid")
+    caregiverUid = getString("caregiverUid"),
+    agencyId = getString("agencyId")
 )
 
 private fun VitalsLog.toMap(): Map<String, Any?> = mapOf(

@@ -95,7 +95,8 @@ data class Booking(
     val totalCost: Int,
     val status: BookingStatus = BookingStatus.CONFIRMED,
     val customerUid: String? = null,    // owner, for Firestore querying
-    val caregiverUid: String? = null
+    val caregiverUid: String? = null,
+    val agencyId: String? = null        // for agency billing queries
 )
 
 enum class BookingStatus { CONFIRMED, IN_PROGRESS, COMPLETED }
