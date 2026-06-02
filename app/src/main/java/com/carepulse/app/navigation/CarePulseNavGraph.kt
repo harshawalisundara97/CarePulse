@@ -88,6 +88,7 @@ object Routes {
     const val CareRequest = "care-request"
     const val Conversation = "conversation/{chatId}"
     fun conversation(chatId: String) = "conversation/$chatId"
+    const val EditProfile = "edit-profile"
 }
 
 /** One bottom-navigation tab. */
@@ -202,7 +203,8 @@ fun CarePulseNavGraph() {
                     UserRole.CAREGIVER -> CaregiverDashboardScreen(
                         vm = vm,
                         onClockOut = { navController.navigate(Routes.ShiftSummary) },
-                        onSignOut = signOut
+                        onSignOut = signOut,
+                        onEditProfile = { navController.navigate(Routes.EditProfile) }
                     )
                     else -> CustomerDashboardScreen(
                         vm = vm,
@@ -290,6 +292,13 @@ fun CarePulseNavGraph() {
                     chatId = chatId,
                     vm = vm,
                     onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Routes.EditProfile) {
+                com.carepulse.app.ui.screens.caregiver.EditProfileScreen(
+                    vm = vm,
+                    onDone = { navController.popBackStack() }
                 )
             }
 

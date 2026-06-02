@@ -33,6 +33,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +67,11 @@ fun CaregiverDetailScreen(
     onBack: () -> Unit
 ) {
     val c = vm.caregiverById(caregiverId) ?: return
+
+    var reviews by remember { mutableStateOf<List<com.carepulse.app.data.model.Review>>(emptyList()) }
+    LaunchedEffect(caregiverId) {
+        reviews = vm.reviewsFor(caregiverId)
+    }
 
     Scaffold(
         topBar = {
@@ -151,6 +161,38 @@ fun CaregiverDetailScreen(
                     Spacer(Modifier.height(8.dp))
                     // Mini calendar layout: 7 columns for next week, rows for AM / PM
                     AvailabilityCalendar(c.availability)
+                }
+            }
+
+            if (reviews.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    "Reviews",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = InkPrimary,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(8.dp))
+                reviews.forEach { review ->
+                    com.carepulse.app.ui.components.PastelCard {
+                        Column {
+                            RatingRow(review.rating, 0)
+                            if (review.text.isNotBlank()) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    review.text,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = InkPrimary
+                                )
+                            }
+                            Text(
+                                "— ${review.reviewerName}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = InkSecondary
+                            )
+                        }
+                    }
+                    Spacer(Modifier.height(6.dp))
                 }
             }
 

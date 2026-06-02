@@ -433,6 +433,50 @@ class CarePulseViewModel(
         viewModelScope.launch { chatRepo.loopInCaregiver(chatId, caregiverId) }
     }
 
+    // --- Reviews ---------------------------------------------------------------
+
+    fun submitReview(caregiverId: String, bookingId: String, rating: Float, text: String) {
+        val p = _profile.value ?: return
+        viewModelScope.launch {
+            repo.addReview(
+                com.carepulse.app.data.model.Review(
+                    id = UUID.randomUUID().toString(),
+                    caregiverId = caregiverId,
+                    familyUid = p.uid,
+                    reviewerName = p.displayName,
+                    bookingId = bookingId,
+                    rating = rating,
+                    text = text.trim()
+                )
+            )
+        }
+    }
+
+    suspend fun reviewsFor(caregiverId: String): List<com.carepulse.app.data.model.Review> =
+        repo.reviewsFor(caregiverId)
+
+    // --- Caregiver self-edit ---------------------------------------------------
+
+    fun updateCaregiverProfile(
+        bio: String,
+        specializations: List<String>,
+        hourlyRate: Int,
+        availability: List<String>
+    ) {
+        val uid = currentUid ?: return
+        viewModelScope.launch {
+            val existing = repo.caregivers.value.firstOrNull { it.id == uid } ?: return@launch
+            repo.saveCaregiver(
+                existing.copy(
+                    bio = bio,
+                    specializations = specializations,
+                    hourlyRate = hourlyRate,
+                    availability = availability
+                )
+            )
+        }
+    }
+
     companion object {
         val Factory = viewModelFactory {
             initializer {

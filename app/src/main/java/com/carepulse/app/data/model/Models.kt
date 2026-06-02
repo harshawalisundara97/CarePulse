@@ -157,3 +157,15 @@ data class ChatMessage(
     val text: String,
     val timestamp: Long = System.currentTimeMillis()
 )
+
+/** A family's star rating for a caregiver after a completed booking. */
+data class Review(
+    val id: String,
+    val caregiverId: String,
+    val familyUid: String,
+    val reviewerName: String,
+    val bookingId: String,
+    val rating: Float,          // 1.0–5.0
+    val text: String = "",
+    val createdAt: Long = System.currentTimeMillis()
+)

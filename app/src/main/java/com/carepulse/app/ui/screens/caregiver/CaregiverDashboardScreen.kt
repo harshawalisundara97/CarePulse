@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +53,8 @@ import com.carepulse.app.viewmodel.CarePulseViewModel
 fun CaregiverDashboardScreen(
     vm: CarePulseViewModel,
     onClockOut: () -> Unit,
-    onSignOut: () -> Unit = {}
+    onSignOut: () -> Unit = {},
+    onEditProfile: () -> Unit = {}
 ) {
     val displayName by vm.displayName.collectAsState()
 
@@ -67,6 +69,9 @@ fun CaregiverDashboardScreen(
                     }
                 },
                 actions = {
+                    IconButton(onClick = onEditProfile) {
+                        Icon(Icons.Filled.Edit, contentDescription = "Edit profile", tint = InkSecondary)
+                    }
                     IconButton(onClick = onSignOut) {
                         Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = InkSecondary)
                     }

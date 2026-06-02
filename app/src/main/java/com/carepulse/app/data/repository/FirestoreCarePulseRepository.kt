@@ -10,6 +10,7 @@ import com.carepulse.app.data.model.Gender
 import com.carepulse.app.data.model.MedicationItem
 import com.carepulse.app.data.model.RequestStatus
 import com.carepulse.app.data.model.Mood
+import com.carepulse.app.data.model.Review
 import com.carepulse.app.data.model.ShiftReport
 import com.carepulse.app.data.model.UserProfile
 import com.carepulse.app.data.model.UserRole
@@ -48,6 +49,7 @@ class FirestoreCarePulseRepository(
     private val usersCol = db.collection("users")
     private val agenciesCol = db.collection("agencies")
     private val careRequestsCol = db.collection("careRequests")
+    private val reviewsCol = db.collection("reviews")
 
     // ---- Real-time flows ---------------------------------------------------
 
@@ -137,6 +139,54 @@ class FirestoreCarePulseRepository(
         runCatching {
             usersCol.document(uid).update("fcmToken", token).await()
         }
+    }
+
+    override suspend fun addReview(review: Review) {
+        runCatching {
+            reviewsCol.document(review.id).set(mapOf(
+                "caregiverId" to review.caregiverId,
+                "familyUid" to review.familyUid,
+                "reviewerName" to review.reviewerName,
+                "bookingId" to review.bookingId,
+                "rating" to review.rating,
+                "text" to review.text,
+                "createdAt" to review.createdAt
+            )).await()
+            // Recalculate average rating on the caregiver doc
+            val existing = reviewsCol
+                .whereEqualTo("caregiverId", review.caregiverId)
+                .get().await()
+            val allRatings = existing.documents.mapNotNull { it.getDouble("rating")?.toFloat() }
+            if (allRatings.isNotEmpty()) {
+                val avg = allRatings.average().toFloat()
+                caregiversCol.document(review.caregiverId).update(
+                    "rating", avg,
+                    "ratingCount", allRatings.size
+                ).await()
+            }
+        }
+    }
+
+    override suspend fun reviewsFor(caregiverId: String): List<Review> = runCatching {
+        reviewsCol.whereEqualTo("caregiverId", caregiverId)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .get().await()
+            .documents.mapNotNull { doc ->
+                Review(
+                    id = doc.id,
+                    caregiverId = doc.getString("caregiverId") ?: return@mapNotNull null,
+                    familyUid = doc.getString("familyUid") ?: "",
+                    reviewerName = doc.getString("reviewerName") ?: "",
+                    bookingId = doc.getString("bookingId") ?: "",
+                    rating = doc.getDouble("rating")?.toFloat() ?: 0f,
+                    text = doc.getString("text") ?: "",
+                    createdAt = doc.getLong("createdAt") ?: 0L
+                )
+            }
+    }.getOrDefault(emptyList())
+
+    override suspend fun saveCaregiver(caregiver: Caregiver) {
+        runCatching { caregiversCol.document(caregiver.id).set(caregiver.toMap()).await() }
     }
 
     /** Writes the default caregiver roster if the collection is empty. */

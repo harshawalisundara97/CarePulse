@@ -4,6 +4,7 @@ import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.CareRequest
 import com.carepulse.app.data.model.Caregiver
+import com.carepulse.app.data.model.Review
 import com.carepulse.app.data.model.ShiftReport
 import com.carepulse.app.data.model.UserProfile
 import com.carepulse.app.data.model.VitalsLog
@@ -41,4 +42,11 @@ interface CarePulseRepository {
     suspend fun addCareRequest(request: CareRequest)
     suspend fun updateCareRequest(request: CareRequest)
     suspend fun saveFcmToken(uid: String, token: String)
+
+    // --- Reviews ---------------------------------------------------------------
+    suspend fun addReview(review: Review)
+    suspend fun reviewsFor(caregiverId: String): List<Review>
+
+    // --- Caregiver self-update -------------------------------------------------
+    suspend fun saveCaregiver(caregiver: Caregiver)
 }
