@@ -4,6 +4,7 @@ import android.app.Application
 import com.carepulse.app.data.auth.AuthRepository
 import com.carepulse.app.data.auth.GoogleSignInHelper
 import com.carepulse.app.data.repository.FirestoreCarePulseRepository
+import com.carepulse.app.data.repository.FirestoreChatRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,6 +25,10 @@ class CarePulseApplication : Application() {
 
     val repository: FirestoreCarePulseRepository by lazy {
         FirestoreCarePulseRepository(applicationScope)
+    }
+
+    val chatRepository: FirestoreChatRepository by lazy {
+        FirestoreChatRepository(applicationScope)
     }
 
     val googleSignInHelper: GoogleSignInHelper by lazy {

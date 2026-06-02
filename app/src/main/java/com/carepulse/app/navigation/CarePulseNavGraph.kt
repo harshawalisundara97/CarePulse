@@ -53,6 +53,7 @@ import com.carepulse.app.ui.screens.customer.CaregiverDetailScreen
 import com.carepulse.app.ui.screens.customer.CustomerDashboardScreen
 import com.carepulse.app.ui.screens.customer.PulseDashboardScreen
 import com.carepulse.app.ui.screens.customer.VideoCallScreen
+import com.carepulse.app.ui.screens.messages.ConversationScreen
 import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
@@ -85,6 +86,8 @@ object Routes {
     const val VideoCall = "video-call"
     const val ShiftSummary = "shift-summary"
     const val CareRequest = "care-request"
+    const val Conversation = "conversation/{chatId}"
+    fun conversation(chatId: String) = "conversation/$chatId"
 }
 
 /** One bottom-navigation tab. */
@@ -225,7 +228,10 @@ fun CarePulseNavGraph() {
 
             composable(Routes.Messages) {
                 if (role == UserRole.AGENCY) AgencyRequestsScreen(vm = vm)
-                else MessagesScreen(vm = vm)
+                else MessagesScreen(
+                    vm = vm,
+                    onOpenChat = { chatId -> navController.navigate(Routes.conversation(chatId)) }
+                )
             }
 
             composable(Routes.Activity) {
@@ -271,6 +277,18 @@ fun CarePulseNavGraph() {
                 CareRequestScreen(
                     vm = vm,
                     onSubmitted = { navController.popBackStack() },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                Routes.Conversation,
+                arguments = listOf(navArgument("chatId") { type = NavType.StringType })
+            ) { entry ->
+                val chatId = entry.arguments?.getString("chatId") ?: return@composable
+                ConversationScreen(
+                    chatId = chatId,
+                    vm = vm,
                     onBack = { navController.popBackStack() }
                 )
             }

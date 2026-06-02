@@ -134,3 +134,26 @@ data class MedicationItem(
     val dose: String,
     val administered: Boolean
 )
+
+/**
+ * A chat thread between a family and an agency.
+ * chatId = "{agencyId}_{familyUid}" — deterministic so both sides find the same doc.
+ */
+data class Chat(
+    val id: String,
+    val agencyId: String,
+    val familyUid: String,
+    val agencyName: String = "",
+    val familyName: String = "",
+    val caregiverId: String? = null,     // set when agency loops in a caregiver
+    val lastMessage: String = "",
+    val lastMessageAt: Long = 0L         // epoch millis
+)
+
+data class ChatMessage(
+    val id: String,
+    val senderUid: String,
+    val senderName: String,
+    val text: String,
+    val timestamp: Long = System.currentTimeMillis()
+)

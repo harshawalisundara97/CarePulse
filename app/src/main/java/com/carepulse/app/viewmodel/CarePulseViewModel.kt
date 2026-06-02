@@ -43,7 +43,8 @@ import java.util.UUID
 class CarePulseViewModel(
     private val auth: AuthRepository,
     private val repo: CarePulseRepository,
-    private val googleHelper: GoogleSignInHelper
+    private val googleHelper: GoogleSignInHelper,
+    private val chatRepo: com.carepulse.app.data.repository.FirestoreChatRepository
 ) : ViewModel() {
 
     // --- Auth / session -----------------------------------------------------
@@ -398,11 +399,50 @@ class CarePulseViewModel(
         }
     }
 
+    // --- Chat -------------------------------------------------------------------
+
+    fun messagesIn(chatId: String): kotlinx.coroutines.flow.StateFlow<List<com.carepulse.app.data.model.ChatMessage>> =
+        chatRepo.messagesIn(chatId)
+
+    fun sendMessage(agencyId: String, agencyName: String, text: String) {
+        val profile = _profile.value ?: return
+        val familyUid = profile.uid
+        val chatId = "${agencyId}_${familyUid}"
+        viewModelScope.launch {
+            val msg = com.carepulse.app.data.model.ChatMessage(
+                id = java.util.UUID.randomUUID().toString(),
+                senderUid = familyUid,
+                senderName = profile.displayName,
+                text = text.trim(),
+                timestamp = System.currentTimeMillis()
+            )
+            val chat = com.carepulse.app.data.model.Chat(
+                id = chatId,
+                agencyId = agencyId,
+                familyUid = familyUid,
+                agencyName = agencyName,
+                familyName = profile.displayName,
+                lastMessage = text.trim(),
+                lastMessageAt = System.currentTimeMillis()
+            )
+            chatRepo.sendMessage(chatId, msg, chat)
+        }
+    }
+
+    fun loopInCaregiver(chatId: String, caregiverId: String) {
+        viewModelScope.launch { chatRepo.loopInCaregiver(chatId, caregiverId) }
+    }
+
     companion object {
         val Factory = viewModelFactory {
             initializer {
                 val app = this[APPLICATION_KEY] as CarePulseApplication
-                CarePulseViewModel(app.authRepository, app.repository, app.googleSignInHelper)
+                CarePulseViewModel(
+                    app.authRepository,
+                    app.repository,
+                    app.googleSignInHelper,
+                    app.chatRepository
+                )
             }
         }
     }
