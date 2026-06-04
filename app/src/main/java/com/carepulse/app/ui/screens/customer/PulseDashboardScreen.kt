@@ -55,13 +55,12 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.VitalsLog
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.PulseRed
-import com.carepulse.app.ui.theme.SoftLavender
-import com.carepulse.app.ui.theme.SoftPeach
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.BorderLine
+import com.carepulse.app.ui.theme.DangerRed
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,18 +77,18 @@ fun PulseDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Pulse Dashboard", color = InkPrimary, fontWeight = FontWeight.Bold) },
+                title = { Text("Pulse Dashboard", color = TextPrimary, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     if (onBack != null) {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
                         }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier
@@ -110,7 +109,7 @@ fun PulseDashboardScreen(
                         title = "Heart rate",
                         value = "${today.heartRate}",
                         unit = "bpm",
-                        accent = PulseRed
+                        accent = DangerRed
                     )
                     VitalCard(
                         Modifier.weight(1f),
@@ -118,7 +117,7 @@ fun PulseDashboardScreen(
                         title = "Blood pressure",
                         value = "${today.bloodPressureSystolic}/${today.bloodPressureDiastolic}",
                         unit = "mmHg",
-                        accent = SoftLavender
+                        accent = BorderLine
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -136,14 +135,14 @@ fun PulseDashboardScreen(
                         title = "Meals",
                         value = "${today.mealsEaten}/3",
                         unit = "today",
-                        accent = SoftPeach
+                        accent = BorderLine
                     )
                 }
 
                 PastelCard {
                     Column {
                         Text("Heart rate this week", style = MaterialTheme.typography.titleMedium,
-                            color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                            color = TextPrimary, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(8.dp))
                         HeartRateChart(vitalsList.take(7).map { it.heartRate.toFloat() }.reversed())
                     }
@@ -156,12 +155,12 @@ fun PulseDashboardScreen(
                     Column {
                         Text("Shift Summary · ${report.dateLabel}",
                             style = MaterialTheme.typography.titleMedium,
-                            color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                            color = TextPrimary, fontWeight = FontWeight.SemiBold)
                         Spacer(Modifier.height(4.dp))
                         Text("By ${report.caregiverName}",
-                            style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                            style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                         Spacer(Modifier.height(8.dp))
-                        Text(report.daySummary, style = MaterialTheme.typography.bodyLarge, color = InkPrimary)
+                        Text(report.daySummary, style = MaterialTheme.typography.bodyLarge, color = TextPrimary)
                         Spacer(Modifier.height(10.dp))
                         report.medicationsGiven.forEach { m ->
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -169,12 +168,12 @@ fun PulseDashboardScreen(
                                     Modifier
                                         .size(10.dp)
                                         .clip(RoundedCornerShape(5.dp))
-                                        .background(if (m.administered) PastelMint else SoftPeach)
+                                        .background(if (m.administered) TealLight else BorderLine)
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text("${m.name} · ${m.dose}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = InkPrimary)
+                                    color = TextPrimary)
                             }
                         }
                     }
@@ -192,7 +191,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .background(Brush.horizontalGradient(listOf(SoftLavender, PastelMint)))
+            .background(Brush.horizontalGradient(listOf(BorderLine, TealLight)))
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -200,8 +199,8 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(name, style = MaterialTheme.typography.titleLarge,
-                color = InkPrimary, fontWeight = FontWeight.Bold)
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkPrimary.copy(alpha = 0.75f))
+                color = TextPrimary, fontWeight = FontWeight.Bold)
+            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.75f))
         }
         IconButton(
             onClick = onVideoCall,
@@ -210,7 +209,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
                 .clip(androidx.compose.foundation.shape.CircleShape)
                 .background(Color.White)
         ) {
-            Icon(Icons.Filled.VideoCall, null, tint = InkPrimary)
+            Icon(Icons.Filled.VideoCall, null, tint = TextPrimary)
         }
     }
 }
@@ -239,15 +238,15 @@ private fun VitalCard(
                         .background(accent.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, null, tint = InkPrimary, modifier = Modifier.size(16.dp))
+                    Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(16.dp))
                 }
                 Spacer(Modifier.width(8.dp))
-                Text(title, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                Text(title, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
             }
             Spacer(Modifier.height(8.dp))
             Text(value, style = MaterialTheme.typography.headlineMedium,
-                color = InkPrimary, fontWeight = FontWeight.Bold)
-            Text(unit, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                color = TextPrimary, fontWeight = FontWeight.Bold)
+            Text(unit, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         }
     }
 }
@@ -282,7 +281,7 @@ private fun HeartRateChart(values: List<Float>) {
         clipRect(right = w * progress) {
             drawPath(
                 path = path,
-                brush = Brush.horizontalGradient(listOf(PulseRed, PastelMint)),
+                brush = Brush.horizontalGradient(listOf(DangerRed, TealLight)),
                 style = Stroke(width = 6f)
             )
         }
@@ -290,7 +289,7 @@ private fun HeartRateChart(values: List<Float>) {
         values.forEachIndexed { i, v ->
             val x = padding + stepX * i
             val y = h - padding - ((v - min) / (max - min)) * (h - padding * 2)
-            drawCircle(color = InkPrimary, radius = 4f, center = Offset(x, y))
+            drawCircle(color = TextPrimary, radius = 4f, center = Offset(x, y))
         }
     }
 }

@@ -52,12 +52,10 @@ import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.PastelMintDeep
-import com.carepulse.app.ui.theme.SoftLavender
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.delay
 
@@ -82,16 +80,16 @@ fun BookingScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Book ${caregiver.name}", color = InkPrimary) },
+                title = { Text("Book ${caregiver.name}", color = TextPrimary) },
                 navigationIcon = {
                     IconButton(onClick = { if (step == 0) onBack() else step-- }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).padding(20.dp)) {
             AnimatedContent(
@@ -135,13 +133,13 @@ private fun StepPick(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("1 of 3 — Select date & time",
-            style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+            style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         Text("When do you need care?",
-            style = MaterialTheme.typography.headlineMedium, color = InkPrimary, fontWeight = FontWeight.Bold)
+            style = MaterialTheme.typography.headlineMedium, color = TextPrimary, fontWeight = FontWeight.Bold)
 
         PastelCard {
             Column {
-                Text("Date", style = MaterialTheme.typography.titleMedium, color = InkPrimary)
+                Text("Date", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
                 Spacer(Modifier.height(8.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     dates.forEach { d ->
@@ -152,7 +150,7 @@ private fun StepPick(
         }
         PastelCard {
             Column {
-                Text("Time slot", style = MaterialTheme.typography.titleMedium, color = InkPrimary)
+                Text("Time slot", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
                 Spacer(Modifier.height(8.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     times.forEach { t ->
@@ -174,30 +172,30 @@ private fun StepConfirm(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("2 of 3 — Confirm details",
-            style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+            style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         Text("Almost done", style = MaterialTheme.typography.headlineMedium,
-            color = InkPrimary, fontWeight = FontWeight.Bold)
+            color = TextPrimary, fontWeight = FontWeight.Bold)
 
         PastelCard {
             Column {
                 Row {
-                    Text("Caregiver", Modifier.weight(1f), color = InkSecondary)
-                    Text(caregiverName, color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Caregiver", Modifier.weight(1f), color = TextSecondary)
+                    Text(caregiverName, color = TextPrimary, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(Modifier.height(6.dp))
                 Row {
-                    Text("Date", Modifier.weight(1f), color = InkSecondary)
-                    Text(date, color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Date", Modifier.weight(1f), color = TextSecondary)
+                    Text(date, color = TextPrimary, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(Modifier.height(6.dp))
                 Row {
-                    Text("Time", Modifier.weight(1f), color = InkSecondary)
-                    Text(time, color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Time", Modifier.weight(1f), color = TextSecondary)
+                    Text(time, color = TextPrimary, fontWeight = FontWeight.SemiBold)
                 }
                 androidx.compose.material3.HorizontalDivider(Modifier.padding(vertical = 10.dp))
                 Row {
-                    Text("Estimated total (4 hrs)", Modifier.weight(1f), color = InkSecondary)
-                    Text("\$${hourlyRate * 4}", color = InkPrimary, fontWeight = FontWeight.Bold,
+                    Text("Estimated total (4 hrs)", Modifier.weight(1f), color = TextSecondary)
+                    Text("\$${hourlyRate * 4}", color = TextPrimary, fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium)
                 }
             }
@@ -223,17 +221,17 @@ private fun StepSuccess(onDone: () -> Unit) {
             Modifier
                 .size(120.dp)
                 .clip(CircleShape)
-                .background(PastelMint),
+                .background(TealLight),
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Filled.CheckCircle, null, tint = Color.White, modifier = Modifier.size(72.dp))
         }
         Spacer(Modifier.height(24.dp))
         Text("Booking confirmed!", style = MaterialTheme.typography.headlineLarge,
-            color = InkPrimary, fontWeight = FontWeight.Bold)
+            color = TextPrimary, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Text("We've notified your caregiver. You can track everything from the Pulse Dashboard.",
-            style = MaterialTheme.typography.bodyLarge, color = InkSecondary,
+            style = MaterialTheme.typography.bodyLarge, color = TextSecondary,
             modifier = Modifier.padding(horizontal = 24.dp))
         Spacer(Modifier.height(36.dp))
         PrimaryButton(text = "Back to home", onClick = onDone)
