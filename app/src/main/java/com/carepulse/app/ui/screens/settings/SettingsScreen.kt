@@ -53,10 +53,10 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelCard
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMintDeep
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -76,12 +76,12 @@ fun SettingsScreen(vm: CarePulseViewModel, onSignOut: () -> Unit) {
             TopAppBar(
                 title = {
                     Text("Settings", style = MaterialTheme.typography.headlineMedium,
-                        color = InkPrimary, fontWeight = FontWeight.Bold)
+                        color = TextPrimary, fontWeight = FontWeight.Bold)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier
@@ -103,11 +103,11 @@ fun SettingsScreen(vm: CarePulseViewModel, onSignOut: () -> Unit) {
                     Spacer(Modifier.size(14.dp))
                     Column {
                         Text(name, style = MaterialTheme.typography.titleLarge,
-                            color = InkPrimary, fontWeight = FontWeight.Bold)
-                        Text(email, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                            color = TextPrimary, fontWeight = FontWeight.Bold)
+                        Text(email, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                         if (roleLabel.isNotEmpty()) {
                             Text(roleLabel, style = MaterialTheme.typography.labelLarge,
-                                color = PastelMintDeep, fontWeight = FontWeight.SemiBold)
+                                color = TealAccent, fontWeight = FontWeight.SemiBold)
                         }
                     }
                 }
@@ -136,14 +136,14 @@ fun SettingsScreen(vm: CarePulseViewModel, onSignOut: () -> Unit) {
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 shape = RoundedCornerShape(26.dp)
             ) {
-                Icon(Icons.AutoMirrored.Filled.Logout, null, tint = InkPrimary,
+                Icon(Icons.AutoMirrored.Filled.Logout, null, tint = TextPrimary,
                     modifier = Modifier.size(18.dp))
                 Spacer(Modifier.size(8.dp))
-                Text("Sign out", color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                Text("Sign out", color = TextPrimary, fontWeight = FontWeight.SemiBold)
             }
 
             Text("CarePulse v1.0.0", style = MaterialTheme.typography.bodySmall,
-                color = InkSecondary, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp))
+                color = TextSecondary, modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp))
         }
     }
 }
@@ -161,9 +161,9 @@ private fun RoleSwitchCard(
     PastelCard {
         Column {
             Text("Switch mode", style = MaterialTheme.typography.titleMedium,
-                color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                color = TextPrimary, fontWeight = FontWeight.SemiBold)
             Text("Use this account as family, caregiver, or agency.",
-                style = MaterialTheme.typography.bodySmall, color = InkSecondary)
+                style = MaterialTheme.typography.bodySmall, color = TextSecondary)
             Spacer(Modifier.height(12.dp))
 
             RoleOption(Icons.Filled.Favorite, "Family",
@@ -191,7 +191,7 @@ private fun RoleSwitchCard(
             text = {
                 Column {
                     Text("Enter your company name to start managing caregivers.",
-                        style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                        style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                     Spacer(Modifier.height(12.dp))
                     OutlinedTextField(
                         value = companyName,
@@ -223,7 +223,7 @@ private fun RoleOption(
     onClick: () -> Unit
 ) {
     Surface(
-        color = if (isActive) PastelMintDeep.copy(alpha = 0.15f) else Color.Transparent,
+        color = if (isActive) TealAccent.copy(alpha = 0.15f) else Color.Transparent,
         shape = RoundedCornerShape(14.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -234,21 +234,21 @@ private fun RoleOption(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, null, tint = PastelMintDeep, modifier = Modifier.size(22.dp))
+            Icon(icon, null, tint = TealAccent, modifier = Modifier.size(22.dp))
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.bodyLarge, color = InkPrimary)
+                Text(label, style = MaterialTheme.typography.bodyLarge, color = TextPrimary)
                 Text(
                     when {
                         isActive -> "Current mode"
                         isEnrolled -> "Tap to switch"
                         else -> "Tap to add this role"
                     },
-                    style = MaterialTheme.typography.bodySmall, color = InkSecondary
+                    style = MaterialTheme.typography.bodySmall, color = TextSecondary
                 )
             }
             if (isActive) {
-                Icon(Icons.Filled.CheckCircle, null, tint = PastelMintDeep,
+                Icon(Icons.Filled.CheckCircle, null, tint = TealAccent,
                     modifier = Modifier.size(20.dp))
             }
         }
@@ -264,11 +264,11 @@ private fun SettingRow(icon: ImageVector, label: String, onClick: () -> Unit) {
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, null, tint = PastelMintDeep, modifier = Modifier.size(22.dp))
+        Icon(icon, null, tint = TealAccent, modifier = Modifier.size(22.dp))
         Spacer(Modifier.size(14.dp))
         Text(label, style = MaterialTheme.typography.bodyLarge,
-            color = InkPrimary, modifier = Modifier.weight(1f))
+            color = TextPrimary, modifier = Modifier.weight(1f))
         Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null,
-            tint = InkSecondary, modifier = Modifier.size(20.dp))
+            tint = TextSecondary, modifier = Modifier.size(20.dp))
     }
 }

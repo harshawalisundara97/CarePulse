@@ -52,10 +52,10 @@ import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMintDeep
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 /** Agency admin home: company name + at-a-glance roster/request stats. */
@@ -68,9 +68,9 @@ fun AgencyDashboardScreen(vm: CarePulseViewModel) {
 
     AgencyScaffold("Dashboard") { mod ->
         Column(mod, verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Text("Welcome back", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+            Text("Welcome back", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
             Text(companyName, style = MaterialTheme.typography.headlineMedium,
-                color = InkPrimary, fontWeight = FontWeight.Bold)
+                color = TextPrimary, fontWeight = FontWeight.Bold)
 
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 StatCard(Modifier.weight(1f), Icons.Filled.Groups,
@@ -87,15 +87,15 @@ fun AgencyDashboardScreen(vm: CarePulseViewModel) {
 
             Spacer(Modifier.height(4.dp))
             Text("Quick start", style = MaterialTheme.typography.titleMedium,
-                color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                color = TextPrimary, fontWeight = FontWeight.SemiBold)
             PastelCard {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text("1. Add your caregivers in the Caregivers tab.",
-                        style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                        style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                     Text("2. Families request care and you assign a match.",
-                        style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                        style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                     Text("3. Track bookings and payments in Billing.",
-                        style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                        style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                 }
             }
         }
@@ -113,7 +113,7 @@ fun AgencyCaregiversScreen(vm: CarePulseViewModel) {
             TopAppBar(
                 title = {
                     Text("Caregivers", style = MaterialTheme.typography.headlineMedium,
-                        color = InkPrimary, fontWeight = FontWeight.Bold)
+                        color = TextPrimary, fontWeight = FontWeight.Bold)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
@@ -121,11 +121,11 @@ fun AgencyCaregiversScreen(vm: CarePulseViewModel) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showAdd = true },
-                containerColor = PastelMintDeep,
+                containerColor = TealAccent,
                 contentColor = Color.White
             ) { Icon(Icons.Filled.Add, contentDescription = "Add caregiver") }
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         val mod = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)
         if (caregivers.isEmpty()) {
@@ -146,13 +146,13 @@ fun AgencyCaregiversScreen(vm: CarePulseViewModel) {
                             Spacer(Modifier.size(12.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(cg.name, style = MaterialTheme.typography.titleMedium,
-                                    color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                                    color = TextPrimary, fontWeight = FontWeight.SemiBold)
                                 Text(
                                     listOf(cg.gender.name.lowercase()
                                         .replaceFirstChar { it.uppercase() },
                                         cg.area).filter { it.isNotBlank() }.joinToString(" · "),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = InkSecondary
+                                    color = TextSecondary
                                 )
                             }
                             PastelChip("\$${cg.hourlyRate}/hr")
@@ -192,7 +192,7 @@ private fun AddCaregiverDialog(
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(value = name, onValueChange = { name = it },
                     label = { Text("Full name") }, singleLine = true)
-                Text("Gender", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                Text("Gender", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Gender.values().forEach { g ->
                         PastelChip(
@@ -239,10 +239,10 @@ fun AgencyRequestsScreen(vm: CarePulseViewModel) {
                                 Column(Modifier.weight(1f)) {
                                     Text(req.patientName.ifBlank { "Patient" },
                                         style = MaterialTheme.typography.titleMedium,
-                                        color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
                                     Text("From ${req.familyName}",
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = InkSecondary)
+                                        color = TextSecondary)
                                 }
                                 PastelChip(req.status.name.lowercase()
                                     .replaceFirstChar { it.uppercase() })
@@ -251,11 +251,11 @@ fun AgencyRequestsScreen(vm: CarePulseViewModel) {
                             Text(
                                 "Needs: ${req.preferredGender.name.lowercase()} caregiver · " +
                                     req.careType.name.lowercase(),
-                                style = MaterialTheme.typography.bodyMedium, color = InkSecondary
+                                style = MaterialTheme.typography.bodyMedium, color = TextSecondary
                             )
                             if (req.notes.isNotBlank()) {
                                 Text(req.notes, style = MaterialTheme.typography.bodySmall,
-                                    color = InkSecondary)
+                                    color = TextSecondary)
                             }
                             Spacer(Modifier.height(10.dp))
                             if (req.status == RequestStatus.PENDING) {
@@ -264,7 +264,7 @@ fun AgencyRequestsScreen(vm: CarePulseViewModel) {
                             } else {
                                 Text("Assigned to ${req.assignedCaregiverName ?: "—"}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = PastelMintDeep, fontWeight = FontWeight.SemiBold)
+                                    color = TealAccent, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -298,7 +298,7 @@ private fun AssignDialog(
             if (matches.isEmpty()) {
                 Text("No matching caregivers on your roster. Add a " +
                     "${request.preferredGender.name.lowercase()} caregiver first.",
-                    style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                    style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     matches.forEach { cg ->
@@ -312,9 +312,9 @@ private fun AssignDialog(
                             ) {
                                 Column(Modifier.weight(1f)) {
                                     Text(cg.name, style = MaterialTheme.typography.bodyLarge,
-                                        color = InkPrimary)
+                                        color = TextPrimary)
                                     Text(cg.area, style = MaterialTheme.typography.bodySmall,
-                                        color = InkSecondary)
+                                        color = TextSecondary)
                                 }
                                 PastelChip("\$${cg.hourlyRate}/hr")
                             }
@@ -349,12 +349,12 @@ fun AgencyBillingScreen(vm: CarePulseViewModel) {
                             Text(
                                 "Total earnings",
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = InkSecondary
+                                color = TextSecondary
                             )
                             Text(
                                 "LKR $totalEarnings",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = PastelMintDeep,
+                                color = TealAccent,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -365,7 +365,7 @@ fun AgencyBillingScreen(vm: CarePulseViewModel) {
                         Text(
                             cgKey ?: "Unknown caregiver",
                             style = MaterialTheme.typography.titleSmall,
-                            color = InkSecondary,
+                            color = TextSecondary,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
@@ -379,12 +379,12 @@ fun AgencyBillingScreen(vm: CarePulseViewModel) {
                                     Text(
                                         b.patientName,
                                         style = MaterialTheme.typography.bodyLarge,
-                                        color = InkPrimary
+                                        color = TextPrimary
                                     )
                                     Text(
                                         "${b.dateLabel} · ${b.timeSlot}",
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = InkSecondary
+                                        color = TextSecondary
                                     )
                                 }
                                 PastelChip("LKR ${b.totalCost}")
@@ -406,12 +406,12 @@ private fun AgencyScaffold(title: String, content: @Composable (Modifier) -> Uni
             TopAppBar(
                 title = {
                     Text(title, style = MaterialTheme.typography.headlineMedium,
-                        color = InkPrimary, fontWeight = FontWeight.Bold)
+                        color = TextPrimary, fontWeight = FontWeight.Bold)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         content(
             Modifier
@@ -426,11 +426,11 @@ private fun AgencyScaffold(title: String, content: @Composable (Modifier) -> Uni
 private fun StatCard(modifier: Modifier, icon: ImageVector, value: String, label: String) {
     PastelCard(modifier) {
         Column {
-            Icon(icon, null, tint = PastelMintDeep, modifier = Modifier.size(24.dp))
+            Icon(icon, null, tint = TealAccent, modifier = Modifier.size(24.dp))
             Spacer(Modifier.height(8.dp))
             Text(value, style = MaterialTheme.typography.headlineMedium,
-                color = InkPrimary, fontWeight = FontWeight.Bold)
-            Text(label, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                color = TextPrimary, fontWeight = FontWeight.Bold)
+            Text(label, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         }
     }
 }
@@ -440,13 +440,13 @@ private fun EmptyState(icon: ImageVector, title: String, subtitle: String) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.size(72.dp).clip(CircleShape), contentAlignment = Alignment.Center) {
-                Icon(icon, null, tint = PastelMintDeep, modifier = Modifier.size(40.dp))
+                Icon(icon, null, tint = TealAccent, modifier = Modifier.size(40.dp))
             }
             Spacer(Modifier.height(12.dp))
             Text(title, style = MaterialTheme.typography.titleMedium,
-                color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                color = TextPrimary, fontWeight = FontWeight.SemiBold)
             Text(subtitle, style = MaterialTheme.typography.bodyMedium,
-                color = InkSecondary)
+                color = TextSecondary)
         }
     }
 }

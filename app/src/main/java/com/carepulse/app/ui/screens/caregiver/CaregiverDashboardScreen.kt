@@ -33,19 +33,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.SoftLavender
-import com.carepulse.app.ui.theme.SoftPeach
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.BorderLine
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,23 +69,23 @@ fun CaregiverDashboardScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Good morning,", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                        Text("Good morning,", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                         Text(displayName, style = MaterialTheme.typography.headlineMedium,
-                            color = InkPrimary, fontWeight = FontWeight.Bold)
+                            color = TextPrimary, fontWeight = FontWeight.Bold)
                     }
                 },
                 actions = {
                     IconButton(onClick = onEditProfile) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Edit profile", tint = InkSecondary)
+                        Icon(Icons.Filled.Edit, contentDescription = "Edit profile", tint = TextSecondary)
                     }
                     IconButton(onClick = onSignOut) {
-                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = InkSecondary)
+                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = TextSecondary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier
@@ -100,7 +99,7 @@ fun CaregiverDashboardScreen(
                 Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(22.dp))
-                    .background(Brush.horizontalGradient(listOf(PastelMint, SoftPeach)))
+                    .background(TealLight)
                     .padding(18.dp)
             ) {
                 Column {
@@ -113,38 +112,38 @@ fun CaregiverDashboardScreen(
                         )
                         Spacer(Modifier.width(6.dp))
                         Text("Active shift",
-                            color = InkPrimary, fontWeight = FontWeight.SemiBold,
+                            color = TextPrimary, fontWeight = FontWeight.SemiBold,
                             style = MaterialTheme.typography.labelLarge)
                     }
                     Spacer(Modifier.height(10.dp))
                     Text("Mr. Lee", style = MaterialTheme.typography.headlineMedium,
-                        color = InkPrimary, fontWeight = FontWeight.Bold)
+                        color = TextPrimary, fontWeight = FontWeight.Bold)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.LocationOn, null, tint = InkPrimary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.LocationOn, null, tint = TextPrimary, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
                         Text("Brookside Care · Room 204",
-                            style = MaterialTheme.typography.bodyMedium, color = InkPrimary.copy(alpha = 0.8f))
+                            style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.8f))
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.AccessTime, null, tint = InkPrimary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.AccessTime, null, tint = TextPrimary, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
                         Text("9:00 AM – 1:00 PM",
-                            style = MaterialTheme.typography.bodyMedium, color = InkPrimary.copy(alpha = 0.8f))
+                            style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.8f))
                     }
                 }
             }
 
             // Quick stats
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Stat(Modifier.weight(1f), "Today", "1 shift", SoftLavender)
-                Stat(Modifier.weight(1f), "This week", "12 hrs", PastelMint)
-                Stat(Modifier.weight(1f), "Earnings", "\$340", SoftPeach)
+                Stat(Modifier.weight(1f), "Today", "1 shift", BorderLine)
+                Stat(Modifier.weight(1f), "This week", "12 hrs", TealLight)
+                Stat(Modifier.weight(1f), "Earnings", "\$340", TealAccent)
             }
 
             PastelCard {
                 Column {
                     Text("Upcoming patients", style = MaterialTheme.typography.titleMedium,
-                        color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(10.dp))
                     listOf("Mrs. Adler" to "Tomorrow, 9 AM", "Mr. Patel" to "Thu, 2 PM").forEach { (n, t) ->
                         Row(verticalAlignment = Alignment.CenterVertically,
@@ -153,8 +152,8 @@ fun CaregiverDashboardScreen(
                             Spacer(Modifier.width(12.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(n, style = MaterialTheme.typography.bodyLarge,
-                                    color = InkPrimary, fontWeight = FontWeight.SemiBold)
-                                Text(t, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                                    color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                                Text(t, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                             }
                         }
                     }
@@ -166,7 +165,7 @@ fun CaregiverDashboardScreen(
                 Text(
                     "Upcoming shifts",
                     style = MaterialTheme.typography.titleMedium,
-                    color = InkPrimary,
+                    color = TextPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
                 myShifts.forEach { shift ->
@@ -176,12 +175,12 @@ fun CaregiverDashboardScreen(
                             Text(
                                 shift.patientName,
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = InkPrimary
+                                color = TextPrimary
                             )
                             Text(
                                 "${shift.dateLabel} · ${shift.timeSlot}",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = InkSecondary
+                                color = TextSecondary
                             )
                             if (shift.status == com.carepulse.app.data.model.BookingStatus.CONFIRMED) {
                                 Spacer(Modifier.height(8.dp))
@@ -211,10 +210,10 @@ private fun Stat(modifier: Modifier = Modifier, title: String, value: String, co
             .padding(14.dp)
     ) {
         Column {
-            Text(title, style = MaterialTheme.typography.bodyMedium, color = InkPrimary.copy(alpha = 0.7f))
+            Text(title, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.7f))
             Spacer(Modifier.height(2.dp))
             Text(value, style = MaterialTheme.typography.titleLarge,
-                color = InkPrimary, fontWeight = FontWeight.Bold)
+                color = TextPrimary, fontWeight = FontWeight.Bold)
         }
     }
 }

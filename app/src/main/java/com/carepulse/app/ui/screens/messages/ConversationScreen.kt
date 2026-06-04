@@ -41,10 +41,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.ChatMessage
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMintDeep
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.CardSurface
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -73,11 +74,11 @@ fun ConversationScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(agencyName, color = InkPrimary, fontWeight = FontWeight.Bold)
+                    Text(agencyName, color = TextPrimary, fontWeight = FontWeight.Bold)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
@@ -107,11 +108,11 @@ fun ConversationScreen(
                         draft = ""
                     }
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.Send, null, tint = PastelMintDeep)
+                    Icon(Icons.AutoMirrored.Filled.Send, null, tint = TealAccent)
                 }
             }
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         LazyColumn(
             state = listState,
@@ -132,8 +133,8 @@ fun ConversationScreen(
 
 @Composable
 private fun MessageBubble(msg: ChatMessage, isMine: Boolean) {
-    val bubbleColor = if (isMine) PastelMintDeep else Color.White
-    val textColor = if (isMine) Color.White else InkPrimary
+    val bubbleColor = if (isMine) TealAccent else CardSurface
+    val textColor = if (isMine) Color.White else TextPrimary
     val alignment = if (isMine) Alignment.End else Alignment.Start
 
     Column(
@@ -146,7 +147,7 @@ private fun MessageBubble(msg: ChatMessage, isMine: Boolean) {
             Text(
                 msg.senderName,
                 style = MaterialTheme.typography.labelSmall,
-                color = InkSecondary,
+                color = TextSecondary,
                 modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
             )
         }

@@ -30,8 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -53,17 +53,17 @@ fun EditProfileScreen(vm: CarePulseViewModel, onDone: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Edit Profile", color = InkPrimary, fontWeight = FontWeight.Bold)
+                    Text("Edit Profile", color = TextPrimary, fontWeight = FontWeight.Bold)
                 },
                 navigationIcon = {
                     IconButton(onClick = onDone) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier

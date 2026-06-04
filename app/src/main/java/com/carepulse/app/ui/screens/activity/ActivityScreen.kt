@@ -36,10 +36,10 @@ import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.BookingStatus
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMintDeep
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -63,20 +63,20 @@ fun ActivityScreen(
                     Text(
                         "My Bookings",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = InkPrimary,
+                        color = TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding)) {
             TabRow(
                 selectedTabIndex = selectedTab,
                 containerColor = Color.Transparent,
-                contentColor = PastelMintDeep
+                contentColor = TealAccent
             ) {
                 tabs.forEachIndexed { i, title ->
                     Tab(
@@ -92,7 +92,7 @@ fun ActivityScreen(
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         "No ${tabs[selectedTab].lowercase()} bookings.",
-                        color = InkSecondary,
+                        color = TextSecondary,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -119,9 +119,9 @@ private fun BookingCard(
     onRate: (String, String) -> Unit
 ) {
     val statusColor = when (booking.status) {
-        BookingStatus.CONFIRMED -> InkSecondary
-        BookingStatus.IN_PROGRESS -> PastelMintDeep
-        BookingStatus.COMPLETED -> InkPrimary
+        BookingStatus.CONFIRMED -> TextSecondary
+        BookingStatus.IN_PROGRESS -> TealAccent
+        BookingStatus.COMPLETED -> TextPrimary
     }
     PastelCard {
         Column {
@@ -133,13 +133,13 @@ private fun BookingCard(
                     Text(
                         booking.patientName.ifBlank { "Patient" },
                         style = MaterialTheme.typography.titleMedium,
-                        color = InkPrimary,
+                        color = TextPrimary,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         "${booking.dateLabel} · ${booking.timeSlot}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = InkSecondary
+                        color = TextSecondary
                     )
                 }
                 PastelChip(
