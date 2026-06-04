@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,8 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -39,17 +38,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.PastelMintDeep
-import com.carepulse.app.ui.theme.SoftLavender
-import com.carepulse.app.ui.theme.SoftPeach
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.NavyPrimary
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.CardSurface
+import com.carepulse.app.ui.theme.BorderLine
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.DangerRed
+import com.carepulse.app.ui.theme.SuccessGreen
+import com.carepulse.app.ui.theme.WarningAmber
 
 @Composable
 fun PrimaryButton(
@@ -66,9 +69,9 @@ fun PrimaryButton(
         enabled = enabled,
         shape = RoundedCornerShape(28.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = PastelMintDeep,
+            containerColor = TealAccent,
             contentColor = Color.White,
-            disabledContainerColor = PastelMint.copy(alpha = 0.5f)
+            disabledContainerColor = TealAccent.copy(alpha = 0.4f)
         )
     ) {
         Text(text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -97,10 +100,11 @@ fun CarePulseTextField(
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = PastelMintDeep,
-            unfocusedIndicatorColor = SoftLavender,
-            focusedLabelColor = PastelMintDeep,
-            unfocusedLabelColor = InkSecondary
+            focusedIndicatorColor = TealAccent,
+            unfocusedIndicatorColor = BorderLine,
+            focusedLabelColor = TealAccent,
+            unfocusedLabelColor = TextSecondary,
+            cursorColor = TealAccent
         )
     )
 }
@@ -108,10 +112,10 @@ fun CarePulseTextField(
 @Composable
 fun SectionHeader(title: String, subtitle: String? = null, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Text(title, style = MaterialTheme.typography.headlineMedium, color = InkPrimary)
+        Text(title, style = MaterialTheme.typography.headlineMedium, color = TextPrimary)
         if (subtitle != null) {
             Spacer(Modifier.height(2.dp))
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         }
     }
 }
@@ -119,38 +123,32 @@ fun SectionHeader(title: String, subtitle: String? = null, modifier: Modifier = 
 @Composable
 fun PastelCard(
     modifier: Modifier = Modifier,
-    containerColor: Color = Color.White,
-    content: @Composable () -> Unit
+    onClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Box(Modifier.padding(16.dp)) { content() }
-    }
+    val shape = RoundedCornerShape(12.dp)
+    val cardModifier = modifier
+        .fillMaxWidth()
+        .clip(shape)
+        .border(1.dp, BorderLine, shape)
+        .background(CardSurface)
+        .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
+    Column(modifier = cardModifier, content = content)
 }
 
 @Composable
 fun GeneratedAvatar(seed: Int, initials: String, size: Int = 56, modifier: Modifier = Modifier) {
-    val palette = listOf(
-        PastelMint, SoftLavender, SoftPeach,
-        Color(0xFFB6E2FF), Color(0xFFFFE5A8), Color(0xFFC8F2DA)
-    )
-    val a = palette[Math.floorMod(seed, palette.size)]
-    val b = palette[Math.floorMod(seed + 2, palette.size)]
     Box(
         modifier = modifier
             .size(size.dp)
             .clip(CircleShape)
-            .background(Brush.linearGradient(listOf(a, b)))
+            .background(TealLight)
             .border(2.dp, Color.White, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             initials.take(2).uppercase(),
-            color = InkPrimary,
+            color = TextPrimary,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleMedium
         )
@@ -160,16 +158,16 @@ fun GeneratedAvatar(seed: Int, initials: String, size: Int = 56, modifier: Modif
 @Composable
 fun RatingRow(rating: Float, count: Int, modifier: Modifier = Modifier) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
-        Icon(Icons.Filled.Star, null, tint = Color(0xFFFFB74D), modifier = Modifier.size(16.dp))
+        Icon(Icons.Filled.Star, null, tint = WarningAmber, modifier = Modifier.size(16.dp))
         Spacer(Modifier.width(4.dp))
         Text(
             "%.1f".format(rating),
             style = MaterialTheme.typography.labelLarge,
-            color = InkPrimary,
+            color = TextPrimary,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.width(4.dp))
-        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
     }
 }
 
@@ -178,10 +176,10 @@ fun PastelChip(
     label: String,
     selected: Boolean = false,
     onClick: (() -> Unit)? = null,
-    color: Color = SoftLavender,
+    color: Color = BorderLine,
     leadingIcon: ImageVector? = null
 ) {
-    val bg = if (selected) PastelMint else color
+    val bg = if (selected) TealAccent else color
     val base = Modifier
         .padding(2.dp)
         .clip(RoundedCornerShape(14.dp))
@@ -194,12 +192,12 @@ fun PastelChip(
         ) {
             if (leadingIcon != null) {
                 Icon(leadingIcon, contentDescription = null,
-                    tint = InkPrimary, modifier = Modifier.size(16.dp))
+                    tint = if (selected) Color.White else TextPrimary, modifier = Modifier.size(16.dp))
             }
             Text(
                 label,
                 style = MaterialTheme.typography.labelLarge,
-                color = InkPrimary
+                color = if (selected) Color.White else TextPrimary
             )
         }
     }
@@ -218,7 +216,7 @@ fun ShimmerBox(width: Int, height: Int, modifier: Modifier = Modifier) {
         modifier
             .size(width.dp, height.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(SoftLavender.copy(alpha = alpha))
+            .background(BorderLine.copy(alpha = alpha))
     )
 }
 
@@ -233,4 +231,3 @@ fun LoadingShimmerList() {
         }
     }
 }
-
