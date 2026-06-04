@@ -23,14 +23,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.runtime.Composable
@@ -97,14 +100,14 @@ fun CarePulseTextField(
         singleLine = singleLine,
         keyboardOptions = KeyboardOptions(capitalization = capitalization),
         shape = RoundedCornerShape(18.dp),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = TealAccent,
-            unfocusedIndicatorColor = BorderLine,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = TealAccent,
+            unfocusedBorderColor = BorderLine,
             focusedLabelColor = TealAccent,
             unfocusedLabelColor = TextSecondary,
-            cursorColor = TealAccent
+            cursorColor = TealAccent,
+            focusedContainerColor = CardSurface,
+            unfocusedContainerColor = CardSurface,
         )
     )
 }
@@ -126,14 +129,18 @@ fun PastelCard(
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(12.dp)
-    val cardModifier = modifier
-        .fillMaxWidth()
-        .clip(shape)
-        .border(1.dp, BorderLine, shape)
-        .background(CardSurface)
-        .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
-    Column(modifier = cardModifier, content = content)
+    val shape = RoundedCornerShape(16.dp)
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
+        shape = shape,
+        colors = CardDefaults.cardColors(containerColor = CardSurface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, BorderLine)
+    ) {
+        Column(modifier = Modifier.padding(16.dp), content = content)
+    }
 }
 
 @Composable

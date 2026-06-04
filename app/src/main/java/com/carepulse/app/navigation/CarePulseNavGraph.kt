@@ -324,7 +324,7 @@ private fun BottomBar(
     currentRoute: String?,
     tabs: List<TabItem>
 ) {
-    NavigationBar(containerColor = Color.White) {
+    NavigationBar(containerColor = NavyPrimary) {
         tabs.forEach { tab ->
             NavigationBarItem(
                 selected = currentRoute == tab.route,
