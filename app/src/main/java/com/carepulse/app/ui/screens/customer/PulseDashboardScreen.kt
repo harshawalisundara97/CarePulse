@@ -44,7 +44,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -191,7 +190,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .background(Brush.horizontalGradient(listOf(BorderLine, TealLight)))
+            .background(TealLight)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -281,7 +280,7 @@ private fun HeartRateChart(values: List<Float>) {
         clipRect(right = w * progress) {
             drawPath(
                 path = path,
-                brush = Brush.horizontalGradient(listOf(DangerRed, TealLight)),
+                color = TealAccent,
                 style = Stroke(width = 6f)
             )
         }

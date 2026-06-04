@@ -16,7 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.carepulse.app.navigation.CarePulseNavGraph
 import com.carepulse.app.ui.theme.CarePulseTheme
-import com.carepulse.app.ui.theme.CreamBackground
+import com.carepulse.app.ui.theme.Background
 
 class MainActivity : ComponentActivity() {
 
@@ -38,8 +38,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CarePulseTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize().background(CreamBackground),
-                    color = CreamBackground
+                    modifier = Modifier.fillMaxSize().background(Background),
+                    color = Background
                 ) {
                     CarePulseNavGraph()
                 }

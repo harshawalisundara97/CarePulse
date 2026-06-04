@@ -36,7 +36,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -62,7 +61,7 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(Color(0xFF1F2A44), Color(0xFF3D4E6D))))
+            .background(Color(0xFF1A2B4A))
     ) {
         // "Remote" view
         Column(
@@ -73,7 +72,7 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
                 Modifier
                     .size((220 * pulse).dp)
                     .clip(CircleShape)
-                    .background(Brush.linearGradient(listOf(TealLight, BorderLine))),
+                    .background(TealLight),
                 contentAlignment = Alignment.Center
             ) {
                 GeneratedAvatar(seed = 1, initials = "ML", size = 180)
@@ -93,7 +92,7 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
                 .padding(20.dp)
                 .size(width = 110.dp, height = 150.dp)
                 .clip(RoundedCornerShape(18.dp))
-                .background(Brush.linearGradient(listOf(BorderLine, TealLight))),
+                .background(BorderLine),
             contentAlignment = Alignment.Center
         ) {
             GeneratedAvatar(seed = 99, initials = "AC", size = 56)

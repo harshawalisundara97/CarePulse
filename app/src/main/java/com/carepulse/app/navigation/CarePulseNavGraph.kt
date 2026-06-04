@@ -57,9 +57,10 @@ import com.carepulse.app.ui.screens.messages.ConversationScreen
 import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMintDeep
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.NavyPrimary
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 /** Type-safe route constants for the nav graph. */
@@ -133,7 +134,7 @@ fun CarePulseNavGraph() {
     }
 
     Scaffold(
-        containerColor = CreamBackground,
+        containerColor = Background,
         bottomBar = {
             if (showBottomBar) {
                 BottomBar(
@@ -339,11 +340,11 @@ private fun BottomBar(
                 icon = { Icon(tab.icon, contentDescription = tab.label) },
                 label = { Text(tab.label) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = PastelMintDeep,
-                    selectedTextColor = PastelMintDeep,
-                    unselectedIconColor = InkSecondary,
-                    unselectedTextColor = InkSecondary,
-                    indicatorColor = CreamBackground
+                    selectedIconColor = TealAccent,
+                    selectedTextColor = TealAccent,
+                    unselectedIconColor = TextSecondary,
+                    unselectedTextColor = TextSecondary,
+                    indicatorColor = NavyPrimary
                 )
             )
         }
