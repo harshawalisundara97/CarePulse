@@ -57,6 +57,7 @@ import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
 import com.carepulse.app.ui.theme.DangerRed
+import com.carepulse.app.ui.theme.TealAccent
 import com.carepulse.app.ui.theme.TealLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
