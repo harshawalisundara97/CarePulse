@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMintDeep
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,16 +85,16 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("$title sign-in", color = InkPrimary) },
+                title = { Text("$title sign-in", color = TextPrimary) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = InkPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier
@@ -105,7 +105,7 @@ fun LoginScreen(
         ) {
             Text(
                 if (isSignUp) "Create your account" else "Welcome back",
-                style = MaterialTheme.typography.headlineLarge, color = InkPrimary
+                style = MaterialTheme.typography.headlineLarge, color = TextPrimary
             )
             Text(
                 when {
@@ -113,7 +113,7 @@ fun LoginScreen(
                     isCaregiver -> "Manage your shifts and patients."
                     else -> "Find a caregiver and check in on your loved ones."
                 },
-                style = MaterialTheme.typography.bodyMedium, color = InkSecondary
+                style = MaterialTheme.typography.bodyMedium, color = TextSecondary
             )
             Spacer(Modifier.height(8.dp))
 
@@ -152,7 +152,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodySmall)
             }
             info?.let {
-                Text(it, color = PastelMintDeep,
+                Text(it, color = TealAccent,
                     style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
             }
 
@@ -186,7 +186,7 @@ fun LoginScreen(
                     enabled = !loading,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Continue with Google", color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Continue with Google", color = TextPrimary, fontWeight = FontWeight.SemiBold)
                 }
             }
 
@@ -199,7 +199,7 @@ fun LoginScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     if (isSignUp) "Already have an account?" else "New to CarePulse?",
-                    style = MaterialTheme.typography.bodyMedium, color = InkSecondary
+                    style = MaterialTheme.typography.bodyMedium, color = TextSecondary
                 )
                 TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError(); vm.clearAuthInfo() }) {
                     Text(if (isSignUp) "Sign in" else "Create account")

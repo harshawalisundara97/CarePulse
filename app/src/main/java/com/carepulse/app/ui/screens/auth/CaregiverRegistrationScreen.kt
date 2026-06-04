@@ -33,9 +33,9 @@ import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,11 +57,11 @@ fun CaregiverRegistrationScreen(vm: CarePulseViewModel, onDone: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Caregiver profile", color = InkPrimary) },
+                title = { Text("Caregiver profile", color = TextPrimary) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier
@@ -78,7 +78,7 @@ fun CaregiverRegistrationScreen(vm: CarePulseViewModel, onDone: () -> Unit) {
             Text(
                 "Tap to set a profile photo",
                 style = MaterialTheme.typography.bodyMedium,
-                color = InkSecondary,
+                color = TextSecondary,
                 modifier = Modifier.fillMaxWidth(),
             )
 
@@ -88,14 +88,14 @@ fun CaregiverRegistrationScreen(vm: CarePulseViewModel, onDone: () -> Unit) {
             CarePulseTextField(value = qualifications, onValueChange = { qualifications = it }, label = "Qualifications", placeholder = "Registered Nurse, 5 yrs experience")
             CarePulseTextField(value = hourlyRate, onValueChange = { hourlyRate = it.filter { c -> c.isDigit() } }, label = "Hourly rate (USD)")
 
-            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = InkPrimary)
+            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
             Row(
                 Modifier.fillMaxWidth().padding(top = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {}
             FlowRowChips(specOptions, selectedSpec) { selectedSpec = it }
 
-            Text("Availability", style = MaterialTheme.typography.titleMedium, color = InkPrimary)
+            Text("Availability", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
             FlowRowMulti(availabilityOptions, selectedAvailability.value) { slot ->
                 val s = selectedAvailability.value.toMutableSet()
                 if (s.contains(slot)) s.remove(slot) else s.add(slot)
