@@ -2,15 +2,20 @@ package com.carepulse.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// CarePulse Pastel Palette
-val PastelMint = Color(0xFFA8E6CF)        // Primary
-val PastelMintDeep = Color(0xFF7BC8AA)
-val SoftLavender = Color(0xFFDED2F9)      // Secondary
-val SoftPeach = Color(0xFFFFD3B6)         // Tertiary
-val CreamBackground = Color(0xFFFAFAFA)   // Background
-val CardSurface = Color(0xFFFFFFFF)
-val InkPrimary = Color(0xFF2B3A55)
-val InkSecondary = Color(0xFF6B7A99)
-val DangerCoral = Color(0xFFFF8A8A)
-val PulseRed = Color(0xFFE57373)
-val SuccessGreen = Color(0xFF81C784)
+// CarePulse Professional Palette — Navy + Teal
+val NavyPrimary     = Color(0xFF1A2B4A)   // TopAppBar, nav bar, primary text
+val NavyDark        = Color(0xFF111E33)   // Pressed / dark surfaces
+val TealAccent      = Color(0xFF0D9488)   // Buttons, active chips, icons
+val TealDark        = Color(0xFF0B7A70)   // Pressed teal
+val TealLight       = Color(0xFFCCFBF1)   // Teal tint backgrounds
+
+val Background      = Color(0xFFF5F7FA)   // Screen background
+val CardSurface     = Color(0xFFFFFFFF)   // Card backgrounds
+val BorderLine      = Color(0xFFE2E8F0)   // Borders, dividers
+
+val TextPrimary     = Color(0xFF1A2B4A)   // Body text, card titles
+val TextSecondary   = Color(0xFF64748B)   // Subtitles, metadata
+
+val DangerRed       = Color(0xFFEF4444)   // Error, destructive
+val WarningAmber    = Color(0xFFF59E0B)   // Pending, in-progress
+val SuccessGreen    = Color(0xFF10B981)   // Completed, success
