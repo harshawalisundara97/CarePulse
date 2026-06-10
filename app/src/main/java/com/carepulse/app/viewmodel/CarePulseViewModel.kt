@@ -71,6 +71,9 @@ class CarePulseViewModel(
     val displayName: StateFlow<String> =
         _profile.map { it?.displayName ?: "" }.stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
+    private val _profilePhotoPath = MutableStateFlow<String?>(null)
+    val profilePhotoPath: StateFlow<String?> = _profilePhotoPath.asStateFlow()
+
     init {
         viewModelScope.launch {
             auth.authState.collect { state ->
@@ -502,6 +505,16 @@ class CarePulseViewModel(
             val agencyId = profile?.agencyId ?: return@combine emptyList()
             all.filter { it.agencyId == agencyId }
         }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun loadProfilePhoto(context: android.content.Context) {
+        _profilePhotoPath.value =
+            com.carepulse.app.data.photo.ProfilePhotoManager.getSavedPhotoPath(context)
+    }
+
+    fun saveProfilePhoto(context: android.content.Context, uri: android.net.Uri) {
+        val path = com.carepulse.app.data.photo.ProfilePhotoManager.savePhoto(context, uri)
+        _profilePhotoPath.value = path
+    }
 
     companion object {
         val Factory = viewModelFactory {
