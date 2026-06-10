@@ -195,6 +195,10 @@ class FirestoreCarePulseRepository(
         }
     }
 
+    override suspend fun logVitals(vitals: VitalsLog) {
+        runCatching { vitalsCol.add(vitals.toMap()).await() }
+    }
+
     /** Writes the default caregiver roster if the collection is empty. */
     suspend fun seedCaregiversIfEmpty() {
         val snap = caregiversCol.limit(1).get().await()

@@ -51,6 +51,10 @@ object MockCarePulseRepository {
         _vitals.value = listOf(report.vitals) + _vitals.value
     }
 
+    suspend fun logVitals(vitals: VitalsLog) {
+        // No-op for mock — real vitals go through FirestoreCarePulseRepository
+    }
+
     // ---- Seed data ---------------------------------------------------------
 
     /** Public so the Firestore repository can seed an empty database. */

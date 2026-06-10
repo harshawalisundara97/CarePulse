@@ -53,4 +53,7 @@ interface CarePulseRepository {
 
     // --- Booking status --------------------------------------------------------
     suspend fun updateBookingStatus(bookingId: String, status: BookingStatus)
+
+    /** Write a standalone vitals snapshot (not tied to a shift report). */
+    suspend fun logVitals(vitals: VitalsLog)
 }

@@ -402,6 +402,31 @@ class CarePulseViewModel(
         }
     }
 
+    fun logVitals(
+        heartRate: Int,
+        systolic: Int,
+        diastolic: Int,
+        mood: Mood,
+        mealsEaten: Int,
+        notes: String
+    ) {
+        viewModelScope.launch {
+            val today = java.time.LocalDate.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("EEE, MMM d"))
+            repo.logVitals(
+                VitalsLog(
+                    dateLabel = today,
+                    heartRate = heartRate,
+                    bloodPressureSystolic = systolic,
+                    bloodPressureDiastolic = diastolic,
+                    mood = mood,
+                    mealsEaten = mealsEaten,
+                    notes = notes
+                )
+            )
+        }
+    }
+
     // --- Chat -------------------------------------------------------------------
 
     fun messagesIn(chatId: String): kotlinx.coroutines.flow.StateFlow<List<com.carepulse.app.data.model.ChatMessage>> =
