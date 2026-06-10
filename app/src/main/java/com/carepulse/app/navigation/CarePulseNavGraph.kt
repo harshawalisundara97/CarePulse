@@ -47,6 +47,7 @@ import com.carepulse.app.ui.screens.auth.CaregiverRegistrationScreen
 import com.carepulse.app.ui.screens.auth.LoginScreen
 import com.carepulse.app.ui.screens.caregiver.CaregiverDashboardScreen
 import com.carepulse.app.ui.screens.caregiver.ShiftSummaryScreen
+import com.carepulse.app.ui.screens.caregiver.VitalsLogScreen
 import com.carepulse.app.ui.screens.customer.BookingScreen
 import com.carepulse.app.ui.screens.customer.CareRequestScreen
 import com.carepulse.app.ui.screens.customer.CaregiverDetailScreen
@@ -90,6 +91,7 @@ object Routes {
     const val Conversation = "conversation/{chatId}"
     fun conversation(chatId: String) = "conversation/$chatId"
     const val EditProfile = "edit-profile"
+    const val VitalsLog = "vitals-log"
 }
 
 /** One bottom-navigation tab. */
@@ -205,7 +207,8 @@ fun CarePulseNavGraph() {
                         vm = vm,
                         onClockOut = { navController.navigate(Routes.ShiftSummary) },
                         onSignOut = signOut,
-                        onEditProfile = { navController.navigate(Routes.EditProfile) }
+                        onEditProfile = { navController.navigate(Routes.EditProfile) },
+                        onLogVitals = { navController.navigate(Routes.VitalsLog) }
                     )
                     else -> CustomerDashboardScreen(
                         vm = vm,
@@ -311,6 +314,13 @@ fun CarePulseNavGraph() {
                 ShiftSummaryScreen(
                     vm = vm,
                     onSubmit = { navController.popBackStack(Routes.Home, inclusive = false) },
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Routes.VitalsLog) {
+                VitalsLogScreen(
+                    vm = vm,
                     onBack = { navController.popBackStack() }
                 )
             }

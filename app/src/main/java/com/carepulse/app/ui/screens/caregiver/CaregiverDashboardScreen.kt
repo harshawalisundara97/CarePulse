@@ -19,7 +19,9 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +55,8 @@ fun CaregiverDashboardScreen(
     vm: CarePulseViewModel,
     onClockOut: () -> Unit,
     onSignOut: () -> Unit = {},
-    onEditProfile: () -> Unit = {}
+    onEditProfile: () -> Unit = {},
+    onLogVitals: () -> Unit = {}
 ) {
     val displayName by vm.displayName.collectAsState()
     val allBookings by vm.bookings.collectAsState()
@@ -83,6 +86,15 @@ fun CaregiverDashboardScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onLogVitals,
+                icon = { Icon(Icons.Filled.MonitorHeart, contentDescription = null) },
+                text = { Text("Log Vitals") },
+                containerColor = TealAccent,
+                contentColor = Color.White
             )
         },
         containerColor = Background
