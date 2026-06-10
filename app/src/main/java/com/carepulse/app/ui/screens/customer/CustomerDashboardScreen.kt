@@ -20,8 +20,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -177,8 +179,19 @@ fun CustomerDashboardScreen(
                     exit = fadeOut()
                 ) {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        items(filtered, key = { it.id }) { c ->
-                            CaregiverCard(c) { onOpenCaregiver(c.id) }
+                        itemsIndexed(filtered, key = { _, c -> c.id }) { index, c ->
+                            var visible by remember(c.id) { mutableStateOf(false) }
+                            LaunchedEffect(c.id) {
+                                delay(index * 60L)
+                                visible = true
+                            }
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { it / 3 }, animationSpec = tween(350)) +
+                                        fadeIn(animationSpec = tween(350))
+                            ) {
+                                CaregiverCard(c) { onOpenCaregiver(c.id) }
+                            }
                         }
                     }
                 }

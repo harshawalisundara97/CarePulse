@@ -29,9 +29,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -180,26 +189,39 @@ fun CaregiverDashboardScreen(
                     color = TextPrimary,
                     fontWeight = FontWeight.SemiBold
                 )
-                myShifts.forEach { shift ->
-                    Spacer(Modifier.height(8.dp))
-                    com.carepulse.app.ui.components.PastelCard {
+                myShifts.forEachIndexed { index, shift ->
+                    var visible by remember(shift.id) { mutableStateOf(false) }
+                    LaunchedEffect(shift.id) {
+                        delay(index * 80L)
+                        visible = true
+                    }
+                    AnimatedVisibility(
+                        visible = visible,
+                        enter = slideInVertically(initialOffsetY = { it / 3 }, animationSpec = tween(350)) +
+                                fadeIn(animationSpec = tween(350))
+                    ) {
                         Column {
-                            Text(
-                                shift.patientName,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = TextPrimary
-                            )
-                            Text(
-                                "${shift.dateLabel} · ${shift.timeSlot}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = TextSecondary
-                            )
-                            if (shift.status == com.carepulse.app.data.model.BookingStatus.CONFIRMED) {
-                                Spacer(Modifier.height(8.dp))
-                                com.carepulse.app.ui.components.PrimaryButton(
-                                    text = "Clock in",
-                                    onClick = { vm.clockIn(shift.id) }
-                                )
+                            Spacer(Modifier.height(8.dp))
+                            com.carepulse.app.ui.components.PastelCard {
+                                Column {
+                                    Text(
+                                        shift.patientName,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = TextPrimary
+                                    )
+                                    Text(
+                                        "${shift.dateLabel} · ${shift.timeSlot}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = TextSecondary
+                                    )
+                                    if (shift.status == com.carepulse.app.data.model.BookingStatus.CONFIRMED) {
+                                        Spacer(Modifier.height(8.dp))
+                                        com.carepulse.app.ui.components.PrimaryButton(
+                                            text = "Clock in",
+                                            onClick = { vm.clockIn(shift.id) }
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

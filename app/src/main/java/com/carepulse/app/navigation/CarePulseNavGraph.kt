@@ -31,6 +31,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -150,7 +155,21 @@ fun CarePulseNavGraph() {
         NavHost(
             navController = navController,
             startDestination = Routes.Splash,
-            modifier = Modifier.padding(scaffoldPadding)
+            modifier = Modifier.padding(scaffoldPadding),
+            enterTransition = {
+                slideInHorizontally(initialOffsetX = { it / 4 }, animationSpec = tween(300)) +
+                fadeIn(animationSpec = tween(300))
+            },
+            exitTransition = {
+                fadeOut(animationSpec = tween(200))
+            },
+            popEnterTransition = {
+                fadeIn(animationSpec = tween(300))
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it / 4 }, animationSpec = tween(300)) +
+                fadeOut(animationSpec = tween(200))
+            }
         ) {
 
             // --- Session gate -------------------------------------------------
