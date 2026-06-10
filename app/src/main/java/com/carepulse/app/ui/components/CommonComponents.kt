@@ -36,6 +36,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import android.net.Uri
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
+import java.io.File
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -159,6 +165,47 @@ fun GeneratedAvatar(seed: Int, initials: String, size: Int = 56, modifier: Modif
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleMedium
         )
+    }
+}
+
+/**
+ * Shows a real photo if [photoPath] points to an existing file,
+ * otherwise falls back to [GeneratedAvatar] with initials.
+ */
+@Composable
+fun ProfileAvatar(
+    photoPath: String?,
+    initials: String,
+    seed: Int,
+    size: Int = 56,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val file = photoPath?.let { File(it) }
+    val hasPhoto = file?.exists() == true
+
+    Box(
+        modifier = modifier
+            .size(size.dp)
+            .clip(CircleShape)
+            .border(2.dp, TealAccent, CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        if (hasPhoto && file != null) {
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(file)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Profile photo",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            GeneratedAvatar(seed = seed, initials = initials, size = size)
+        }
     }
 }
 
