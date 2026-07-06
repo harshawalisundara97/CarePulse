@@ -20,17 +20,23 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
@@ -47,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -57,12 +62,12 @@ import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.LoadingShimmerList
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.RatingRow
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.SoftLavender
-import com.carepulse.app.ui.theme.SoftPeach
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.BorderLine
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.delay
 
@@ -71,7 +76,9 @@ import kotlinx.coroutines.delay
 fun CustomerDashboardScreen(
     vm: CarePulseViewModel,
     onOpenCaregiver: (String) -> Unit,
-    onOpenPulse: () -> Unit
+    onOpenPulse: () -> Unit,
+    onRequestCare: () -> Unit = {},
+    onSignOut: () -> Unit = {}
 ) {
     val caregivers by vm.caregivers.collectAsState()
     val displayName by vm.displayName.collectAsState()
@@ -98,16 +105,30 @@ fun CustomerDashboardScreen(
                 title = {
                     Column {
                         Text("Hello, ${displayName.split(" ").first()}",
-                            style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                            style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                         Text("Find care today",
                             style = MaterialTheme.typography.headlineMedium,
-                            color = InkPrimary, fontWeight = FontWeight.Bold)
+                            color = TextPrimary, fontWeight = FontWeight.Bold)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onSignOut) {
+                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = TextSecondary)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = CreamBackground
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onRequestCare,
+                containerColor = TealAccent,
+                contentColor = Color.White,
+                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                text = { Text("Request care") }
+            )
+        },
+        containerColor = Background
     ) { padding ->
         Column(
             Modifier
@@ -126,7 +147,7 @@ fun CustomerDashboardScreen(
             )
 
             Spacer(Modifier.height(10.dp))
-            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = InkPrimary)
+            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
             FlowRow(
                 Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -141,7 +162,7 @@ fun CustomerDashboardScreen(
 
             Spacer(Modifier.height(8.dp))
             Text("Minimum rating: ${"%.1f".format(minRating)}",
-                style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
             Slider(
                 value = minRating,
                 onValueChange = vm::setMinRating,
@@ -158,8 +179,19 @@ fun CustomerDashboardScreen(
                     exit = fadeOut()
                 ) {
                     LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        items(filtered, key = { it.id }) { c ->
-                            CaregiverCard(c) { onOpenCaregiver(c.id) }
+                        itemsIndexed(filtered, key = { _, c -> c.id }) { index, c ->
+                            var visible by remember(c.id) { mutableStateOf(false) }
+                            LaunchedEffect(c.id) {
+                                delay(index * 60L)
+                                visible = true
+                            }
+                            AnimatedVisibility(
+                                visible = visible,
+                                enter = slideInVertically(initialOffsetY = { it / 3 }, animationSpec = tween(350)) +
+                                        fadeIn(animationSpec = tween(350))
+                            ) {
+                                CaregiverCard(c) { onOpenCaregiver(c.id) }
+                            }
                         }
                     }
                 }
@@ -175,7 +207,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             .fillMaxWidth()
             .height(96.dp)
             .clip(RoundedCornerShape(22.dp))
-            .background(Brush.horizontalGradient(listOf(PastelMint, SoftLavender)))
+            .background(TealLight)
             .clickable { onClick() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -187,16 +219,16 @@ private fun PulseBanner(onClick: () -> Unit) {
                 .background(Color.White.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.Favorite, null, tint = InkPrimary)
+            Icon(Icons.Filled.Favorite, null, tint = TextPrimary)
         }
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text("The Pulse Dashboard",
                 style = MaterialTheme.typography.titleLarge,
-                color = InkPrimary, fontWeight = FontWeight.Bold)
+                color = TextPrimary, fontWeight = FontWeight.Bold)
             Text("Check today's vitals & video call",
                 style = MaterialTheme.typography.bodyMedium,
-                color = InkPrimary.copy(alpha = 0.75f))
+                color = TextPrimary.copy(alpha = 0.75f))
         }
     }
 }
@@ -223,23 +255,23 @@ private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(c.name, style = MaterialTheme.typography.titleMedium,
-                    color = InkPrimary, fontWeight = FontWeight.SemiBold)
+                    color = TextPrimary, fontWeight = FontWeight.SemiBold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.LocationOn, null, tint = InkSecondary,
+                    Icon(Icons.Filled.LocationOn, null, tint = TextSecondary,
                         modifier = Modifier.size(14.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RatingRow(c.rating, c.ratingCount)
                     Spacer(Modifier.width(8.dp))
                     Text("· \$${c.hourlyRate}/hr",
-                        style = MaterialTheme.typography.labelLarge, color = InkPrimary)
+                        style = MaterialTheme.typography.labelLarge, color = TextPrimary)
                 }
                 Spacer(Modifier.height(6.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    c.specializations.forEach { PastelChip(it, color = SoftPeach) }
+                    c.specializations.forEach { PastelChip(it, color = BorderLine) }
                 }
             }
         }

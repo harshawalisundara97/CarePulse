@@ -1,15 +1,20 @@
 package com.carepulse.app.ui.components
 
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +27,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -29,24 +35,39 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import android.net.Uri
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
+import java.io.File
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.PastelMintDeep
-import com.carepulse.app.ui.theme.SoftLavender
-import com.carepulse.app.ui.theme.SoftPeach
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.NavyPrimary
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.CardSurface
+import com.carepulse.app.ui.theme.BorderLine
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.DangerRed
+import com.carepulse.app.ui.theme.SuccessGreen
+import com.carepulse.app.ui.theme.WarningAmber
 
 @Composable
 fun PrimaryButton(
@@ -55,17 +76,26 @@ fun PrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.96f else 1f,
+        animationSpec = spring(dampingRatio = 0.5f),
+        label = "buttonScale"
+    )
     Button(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(56.dp),
+            .height(56.dp)
+            .graphicsLayer(scaleX = scale, scaleY = scale),
         enabled = enabled,
         shape = RoundedCornerShape(28.dp),
+        interactionSource = interactionSource,
         colors = ButtonDefaults.buttonColors(
-            containerColor = PastelMintDeep,
+            containerColor = TealAccent,
             contentColor = Color.White,
-            disabledContainerColor = PastelMint.copy(alpha = 0.5f)
+            disabledContainerColor = TealAccent.copy(alpha = 0.4f)
         )
     ) {
         Text(text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -78,7 +108,9 @@ fun CarePulseTextField(
     onValueChange: (String) -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    placeholder: String = ""
+    placeholder: String = "",
+    capitalization: KeyboardCapitalization = KeyboardCapitalization.None,
+    singleLine: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -86,14 +118,17 @@ fun CarePulseTextField(
         label = { Text(label) },
         placeholder = { Text(placeholder) },
         modifier = modifier.fillMaxWidth(),
+        singleLine = singleLine,
+        keyboardOptions = KeyboardOptions(capitalization = capitalization),
         shape = RoundedCornerShape(18.dp),
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White,
-            focusedIndicatorColor = PastelMintDeep,
-            unfocusedIndicatorColor = SoftLavender,
-            focusedLabelColor = PastelMintDeep,
-            unfocusedLabelColor = InkSecondary
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = TealAccent,
+            unfocusedBorderColor = BorderLine,
+            focusedLabelColor = TealAccent,
+            unfocusedLabelColor = TextSecondary,
+            cursorColor = TealAccent,
+            focusedContainerColor = CardSurface,
+            unfocusedContainerColor = CardSurface,
         )
     )
 }
@@ -101,10 +136,10 @@ fun CarePulseTextField(
 @Composable
 fun SectionHeader(title: String, subtitle: String? = null, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Text(title, style = MaterialTheme.typography.headlineMedium, color = InkPrimary)
+        Text(title, style = MaterialTheme.typography.headlineMedium, color = TextPrimary)
         if (subtitle != null) {
             Spacer(Modifier.height(2.dp))
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
         }
     }
 }
@@ -112,57 +147,96 @@ fun SectionHeader(title: String, subtitle: String? = null, modifier: Modifier = 
 @Composable
 fun PastelCard(
     modifier: Modifier = Modifier,
-    containerColor: Color = Color.White,
-    content: @Composable () -> Unit
+    onClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
 ) {
+    val shape = RoundedCornerShape(16.dp)
     Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = containerColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
+        shape = shape,
+        colors = CardDefaults.cardColors(containerColor = CardSurface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, BorderLine)
     ) {
-        Box(Modifier.padding(16.dp)) { content() }
+        Column(modifier = Modifier.padding(16.dp), content = content)
     }
 }
 
 @Composable
 fun GeneratedAvatar(seed: Int, initials: String, size: Int = 56, modifier: Modifier = Modifier) {
-    val palette = listOf(
-        PastelMint, SoftLavender, SoftPeach,
-        Color(0xFFB6E2FF), Color(0xFFFFE5A8), Color(0xFFC8F2DA)
-    )
-    val a = palette[Math.floorMod(seed, palette.size)]
-    val b = palette[Math.floorMod(seed + 2, palette.size)]
     Box(
         modifier = modifier
             .size(size.dp)
             .clip(CircleShape)
-            .background(Brush.linearGradient(listOf(a, b)))
+            .background(TealLight)
             .border(2.dp, Color.White, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             initials.take(2).uppercase(),
-            color = InkPrimary,
+            color = TextPrimary,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleMedium
         )
     }
 }
 
+/**
+ * Shows a real photo if [photoPath] points to an existing file,
+ * otherwise falls back to [GeneratedAvatar] with initials.
+ */
+@Composable
+fun ProfileAvatar(
+    photoPath: String?,
+    initials: String,
+    seed: Int,
+    size: Int = 56,
+    modifier: Modifier = Modifier
+) {
+    val context = LocalContext.current
+    val file = photoPath?.let { File(it) }
+    val hasPhoto = file?.exists() == true
+
+    Box(
+        modifier = modifier
+            .size(size.dp)
+            .clip(CircleShape)
+            .border(2.dp, TealAccent, CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        if (hasPhoto && file != null) {
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(file)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = "Profile photo",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            GeneratedAvatar(seed = seed, initials = initials, size = size)
+        }
+    }
+}
+
 @Composable
 fun RatingRow(rating: Float, count: Int, modifier: Modifier = Modifier) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
-        Icon(Icons.Filled.Star, null, tint = Color(0xFFFFB74D), modifier = Modifier.size(16.dp))
+        Icon(Icons.Filled.Star, null, tint = WarningAmber, modifier = Modifier.size(16.dp))
         Spacer(Modifier.width(4.dp))
         Text(
             "%.1f".format(rating),
             style = MaterialTheme.typography.labelLarge,
-            color = InkPrimary,
+            color = TextPrimary,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.width(4.dp))
-        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = InkSecondary)
+        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
     }
 }
 
@@ -171,20 +245,30 @@ fun PastelChip(
     label: String,
     selected: Boolean = false,
     onClick: (() -> Unit)? = null,
-    color: Color = SoftLavender
+    color: Color = BorderLine,
+    leadingIcon: ImageVector? = null
 ) {
-    val bg = if (selected) PastelMint else color
+    val bg = if (selected) TealAccent else color
     val base = Modifier
         .padding(2.dp)
         .clip(RoundedCornerShape(14.dp))
     val tappable = if (onClick != null) base.clickable { onClick() } else base
     Surface(shape = RoundedCornerShape(14.dp), color = bg, modifier = tappable) {
-        Text(
-            label,
+        Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-            style = MaterialTheme.typography.labelLarge,
-            color = InkPrimary
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            if (leadingIcon != null) {
+                Icon(leadingIcon, contentDescription = null,
+                    tint = if (selected) Color.White else TextPrimary, modifier = Modifier.size(16.dp))
+            }
+            Text(
+                label,
+                style = MaterialTheme.typography.labelLarge,
+                color = if (selected) Color.White else TextPrimary
+            )
+        }
     }
 }
 
@@ -201,7 +285,7 @@ fun ShimmerBox(width: Int, height: Int, modifier: Modifier = Modifier) {
         modifier
             .size(width.dp, height.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(SoftLavender.copy(alpha = alpha))
+            .background(BorderLine.copy(alpha = alpha))
     )
 }
 
@@ -216,4 +300,3 @@ fun LoadingShimmerList() {
         }
     }
 }
-

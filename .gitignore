@@ -14,3 +14,10 @@ local.properties
 **/.gradle/
 **/.kotlin/
 .kotlin/
+
+# Firebase config (contains project keys — keep out of VCS)
+app/google-services.json
+
+# Brainstorm artifacts + node deps
+.superpowers/
+functions/node_modules/

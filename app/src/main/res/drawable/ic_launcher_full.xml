@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Legacy (pre-API-26) launcher icon: rounded mint tile + heart + ECG line. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Rounded mint tile -->
+    <path android:pathData="M22,4 L86,4 A18,18 0 0 1 104,22 L104,86 A18,18 0 0 1 86,104 L22,104 A18,18 0 0 1 4,86 L4,22 A18,18 0 0 1 22,4 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="0" android:startY="0"
+                android:endX="108" android:endY="108">
+                <item android:offset="0.0" android:color="#FFB8ECD8" />
+                <item android:offset="1.0" android:color="#FF7BC8AA" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- Heart -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,76
+            C54,76 29,59 29,44.5
+            C29,36.5 34.6,31.5 41.5,31.5
+            C47.1,31.5 51.6,35 54,39.7
+            C56.4,35 60.9,31.5 66.5,31.5
+            C73.4,31.5 79,36.5 79,44.5
+            C79,59 54,76 54,76 Z" />
+
+    <!-- ECG / heartbeat line -->
+    <path
+        android:strokeColor="#7BC8AA"
+        android:strokeWidth="3.6"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M34,51 L45,51 L49.5,41.5 L55,61 L60,47.5 L63.5,51 L74,51" />
+</vector>

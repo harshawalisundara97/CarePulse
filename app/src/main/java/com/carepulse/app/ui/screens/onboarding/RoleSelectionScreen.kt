@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MedicalServices
@@ -36,19 +37,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
-import com.carepulse.app.ui.theme.CreamBackground
-import com.carepulse.app.ui.theme.InkPrimary
-import com.carepulse.app.ui.theme.InkSecondary
-import com.carepulse.app.ui.theme.PastelMint
-import com.carepulse.app.ui.theme.SoftLavender
-import com.carepulse.app.ui.theme.SoftPeach
+import com.carepulse.app.ui.theme.Background
+import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.TextSecondary
 
 @Composable
 fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
@@ -58,9 +57,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(listOf(CreamBackground, PastelMint.copy(alpha = 0.25f)))
-            )
+            .background(Background)
             .padding(24.dp)
     ) {
         Column(
@@ -73,7 +70,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                 Modifier
                     .size(96.dp)
                     .clip(CircleShape)
-                    .background(Brush.linearGradient(listOf(PastelMint, SoftLavender))),
+                    .background(TealAccent),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -87,14 +84,14 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
             Text(
                 "CarePulse",
                 style = MaterialTheme.typography.displaySmall,
-                color = InkPrimary,
+                color = TextPrimary,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 "Care, connected.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = InkSecondary,
+                color = TextSecondary,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(48.dp))
@@ -105,15 +102,22 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                         icon = Icons.Filled.Favorite,
                         title = "I'm Family",
                         subtitle = "Find caregivers and stay connected with your loved ones.",
-                        gradient = listOf(PastelMint, Color(0xFFC8F2DA)),
+                        cardColor = TealLight,
                         onClick = { onRoleSelected(UserRole.CUSTOMER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.MedicalServices,
                         title = "I'm a Caregiver",
                         subtitle = "Offer your care services and grow your practice.",
-                        gradient = listOf(SoftLavender, SoftPeach),
+                        cardColor = TealLight,
                         onClick = { onRoleSelected(UserRole.CAREGIVER) }
+                    )
+                    RoleCard(
+                        icon = Icons.Filled.Business,
+                        title = "We're an Agency",
+                        subtitle = "Manage your caregivers, requests and bookings.",
+                        cardColor = TealLight,
+                        onClick = { onRoleSelected(UserRole.AGENCY) }
                     )
                 }
             }
@@ -126,7 +130,7 @@ private fun RoleCard(
     icon: ImageVector,
     title: String,
     subtitle: String,
-    gradient: List<Color>,
+    cardColor: Color,
     onClick: () -> Unit
 ) {
     Surface(
@@ -139,7 +143,7 @@ private fun RoleCard(
     ) {
         Box(
             Modifier
-                .background(Brush.horizontalGradient(gradient))
+                .background(cardColor)
                 .padding(20.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -150,15 +154,15 @@ private fun RoleCard(
                         .background(Color.White.copy(alpha = 0.6f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, null, tint = InkPrimary, modifier = Modifier.size(28.dp))
+                    Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(28.dp))
                 }
                 Spacer(Modifier.width(16.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(title, style = MaterialTheme.typography.titleLarge, color = InkPrimary, fontWeight = FontWeight.Bold)
+                    Text(title, style = MaterialTheme.typography.titleLarge, color = TextPrimary, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(2.dp))
-                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = InkPrimary.copy(alpha = 0.75f))
+                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.75f))
                 }
-                Icon(Icons.Filled.ChevronRight, null, tint = InkPrimary)
+                Icon(Icons.Filled.ChevronRight, null, tint = TextPrimary)
             }
         }
     }
