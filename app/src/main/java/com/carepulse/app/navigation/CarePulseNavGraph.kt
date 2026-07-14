@@ -97,6 +97,8 @@ object Routes {
     fun conversation(chatId: String) = "conversation/$chatId"
     const val EditProfile = "edit-profile"
     const val VitalsLog = "vitals-log"
+    const val Reminders = "reminders"
+    const val LanguagePicker = "language-picker"
 }
 
 /** One bottom-navigation tab. */
@@ -267,7 +269,9 @@ fun CarePulseNavGraph() {
             composable(Routes.Settings) {
                 SettingsScreen(
                     vm = vm,
-                    onSignOut = { vm.signOut(); clearTo(Routes.RoleSelection) }
+                    onSignOut = { vm.signOut(); clearTo(Routes.RoleSelection) },
+                    onOpenReminders = { navController.navigate(Routes.Reminders) },
+                    onOpenLanguage = { navController.navigate(Routes.LanguagePicker) }
                 )
             }
 
@@ -340,6 +344,18 @@ fun CarePulseNavGraph() {
             composable(Routes.VitalsLog) {
                 VitalsLogScreen(
                     vm = vm,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Routes.Reminders) {
+                com.carepulse.app.ui.screens.reminders.RemindersScreen(
+                    onBack = { navController.popBackStack() }
+                )
+            }
+
+            composable(Routes.LanguagePicker) {
+                com.carepulse.app.ui.screens.settings.LanguagePickerScreen(
                     onBack = { navController.popBackStack() }
                 )
             }
