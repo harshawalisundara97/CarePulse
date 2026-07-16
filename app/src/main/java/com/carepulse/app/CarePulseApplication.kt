@@ -24,7 +24,7 @@ class CarePulseApplication : Application() {
     val authRepository: AuthRepository by lazy { AuthRepository() }
 
     val repository: FirestoreCarePulseRepository by lazy {
-        FirestoreCarePulseRepository(applicationScope)
+        FirestoreCarePulseRepository(applicationScope, appContext = this)
     }
 
     val chatRepository: FirestoreChatRepository by lazy {

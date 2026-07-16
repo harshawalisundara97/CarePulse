@@ -69,6 +69,22 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.7.0")
 
+    // DataStore for user preferences (theme mode, etc.)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    // AppCompat for per-app language switching
+    implementation("androidx.appcompat:appcompat:1.7.0")
+
+    // Lottie for empty-state / success animations
+    implementation("com.airbnb.android:lottie-compose:6.4.0")
+
+    // Home-screen widget via Glance
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.glance:glance-material3:1.1.0")
+
+    // Material3 pull-to-refresh + swipe-to-dismiss
+    implementation("androidx.compose.material3:material3:1.3.0")
+
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

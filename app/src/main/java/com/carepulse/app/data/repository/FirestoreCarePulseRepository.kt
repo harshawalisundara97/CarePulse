@@ -39,7 +39,8 @@ import kotlinx.coroutines.tasks.await
  */
 class FirestoreCarePulseRepository(
     private val scope: CoroutineScope,
-    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val appContext: android.content.Context? = null
 ) : CarePulseRepository {
 
     private val caregiversCol = db.collection("caregivers")
@@ -197,6 +198,16 @@ class FirestoreCarePulseRepository(
 
     override suspend fun logVitals(vitals: VitalsLog) {
         runCatching { vitalsCol.add(vitals.toMap()).await() }
+            .onSuccess {
+                appContext?.let { ctx ->
+                    com.carepulse.app.widget.VitalsWidgetUpdater.update(
+                        context = ctx,
+                        hr = vitals.heartRate.toString(),
+                        bp = "${vitals.bloodPressureSystolic}/${vitals.bloodPressureDiastolic}",
+                        mood = vitals.mood.name
+                    )
+                }
+            }
     }
 
     /** Writes the default caregiver roster if the collection is empty. */

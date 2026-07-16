@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CarePulse</string>
+
+    <!-- Common -->
+    <string name="common_save">සුරකින්න</string>
+    <string name="common_cancel">අවලංගු කරන්න</string>
+    <string name="common_delete">මකන්න</string>
+    <string name="common_edit">සංස්කරණය</string>
+    <string name="common_done">නිමයි</string>
+    <string name="common_add">එකතු කරන්න</string>
+    <string name="common_back">ආපසු</string>
+    <string name="common_loading">පූරණය වෙමින්…</string>
+    <string name="common_retry">නැවත උත්සාහ කරන්න</string>
+
+    <!-- Auth / onboarding -->
+    <string name="auth_sign_in">පිවිසෙන්න</string>
+    <string name="auth_sign_up">ලියාපදිංචි වන්න</string>
+    <string name="auth_sign_out">ඉවත් වන්න</string>
+    <string name="auth_email">විද්‍යුත් තැපෑල</string>
+    <string name="auth_password">මුරපදය</string>
+    <string name="auth_continue_with_google">Google සමඟ ඉදිරියට</string>
+    <string name="role_customer">මට රැකවරණය අවශ්‍යයි</string>
+    <string name="role_caregiver">මම රැකවරණය සපයමි</string>
+    <string name="role_agency">ආයතනය</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_home">මුල් පිටුව</string>
+    <string name="nav_activity">ක්‍රියාකාරකම්</string>
+    <string name="nav_messages">පණිවුඩ</string>
+    <string name="nav_pulse">නාඩිය</string>
+    <string name="nav_settings">සැකසුම්</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">නැවත සාදරයෙන් පිළිගනිමු</string>
+    <string name="dashboard_upcoming_shift">ඉදිරි වැඩ මුරය</string>
+    <string name="dashboard_log_vitals">වැදගත් දත්ත ඇතුළත් කරන්න</string>
+    <string name="dashboard_recent_messages">මෑත පණිවුඩ</string>
+
+    <!-- Vitals -->
+    <string name="vitals_title">වැදගත් දත්ත ඇතුළත් කරන්න</string>
+    <string name="vitals_heart_rate">හෘද ස්පන්දනය (bpm)</string>
+    <string name="vitals_blood_pressure">රුධිර පීඩනය</string>
+    <string name="vitals_mood">මනෝභාවය</string>
+    <string name="vitals_saved">දත්ත සුරකින ලදී</string>
+
+    <!-- Reminders -->
+    <string name="reminders_title">ඖෂධ මතක් කිරීම්</string>
+    <string name="reminders_add">මතක් කිරීමක් එක් කරන්න</string>
+    <string name="reminders_med_name">ඖෂධයේ නම</string>
+    <string name="reminders_dosage">මාත්‍රාව</string>
+    <string name="reminders_time">වේලාව</string>
+    <string name="reminders_empty">මතක් කිරීම් නැත. එකක් එක් කර කාලසටහනට අනුව සිටින්න.</string>
+    <string name="reminders_notification_title">%1$s ගැනීමට වේලාවයි</string>
+    <string name="reminders_notification_body_with_dose">මාත්‍රාව: %1$s</string>
+    <string name="reminders_notification_body_generic">ගැනීම සලකුණු කිරීමට තට්ටු කරන්න</string>
+    <string name="reminders_permission_rationale">නියමිත වේලාවට මතක් කර දීමට දැනුම්දීම් අවශ්‍ය වේ.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">සැකසුම්</string>
+    <string name="settings_appearance">දෘශ්‍ය පෙනුම</string>
+    <string name="settings_theme_system">පද්ධති පෙරනිමිය</string>
+    <string name="settings_theme_light">ආලෝකය</string>
+    <string name="settings_theme_dark">අඳුරු</string>
+    <string name="settings_language">භාෂාව</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_sinhala">සිංහල</string>
+    <string name="settings_language_tamil">தமிழ்</string>
+    <string name="settings_reminders">ඖෂධ මතක් කිරීම්</string>
+    <string name="settings_about">පිළිබඳව</string>
+
+    <!-- Empty states -->
+    <string name="empty_no_messages">පණිවුඩ නැත</string>
+    <string name="empty_no_bookings">වෙන්කිරීම් නැත</string>
+    <string name="empty_no_vitals">වැදගත් දත්ත ඇතුළත් කර නැත</string>
+
+    <!-- Widget -->
+    <string name="widget_title">වැදගත් දත්ත</string>
+    <string name="widget_hr">HR: %1$s bpm</string>
+    <string name="widget_bp">BP: %1$s</string>
+    <string name="widget_mood">මනෝභාවය: %1$s</string>
+    <string name="widget_no_data">—</string>
+    <string name="vitals_widget_description">CarePulse වැදගත් දත්ත එක් බැල්මකින්</string>
+</resources>
