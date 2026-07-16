@@ -1,4 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CarePulse</string>
+
+    <!-- Common -->
+    <string name="common_save">Save</string>
+    <string name="common_cancel">Cancel</string>
+    <string name="common_delete">Delete</string>
+    <string name="common_edit">Edit</string>
+    <string name="common_done">Done</string>
+    <string name="common_add">Add</string>
+    <string name="common_back">Back</string>
+    <string name="common_loading">Loading…</string>
+    <string name="common_retry">Retry</string>
+
+    <!-- Auth / onboarding -->
+    <string name="auth_sign_in">Sign in</string>
+    <string name="auth_sign_up">Sign up</string>
+    <string name="auth_sign_out">Sign out</string>
+    <string name="auth_email">Email</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_continue_with_google">Continue with Google</string>
+    <string name="role_customer">I need care</string>
+    <string name="role_caregiver">I provide care</string>
+    <string name="role_agency">Agency</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_home">Home</string>
+    <string name="nav_activity">Activity</string>
+    <string name="nav_messages">Messages</string>
+    <string name="nav_pulse">Pulse</string>
+    <string name="nav_settings">Settings</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">Welcome back</string>
+    <string name="dashboard_upcoming_shift">Upcoming shift</string>
+    <string name="dashboard_log_vitals">Log vitals</string>
+    <string name="dashboard_recent_messages">Recent messages</string>
+
+    <!-- Vitals -->
+    <string name="vitals_title">Log vitals</string>
+    <string name="vitals_heart_rate">Heart rate (bpm)</string>
+    <string name="vitals_blood_pressure">Blood pressure</string>
+    <string name="vitals_mood">Mood</string>
+    <string name="vitals_saved">Vitals saved</string>
+
+    <!-- Reminders -->
+    <string name="reminders_title">Medication reminders</string>
+    <string name="reminders_add">Add reminder</string>
+    <string name="reminders_med_name">Medication name</string>
+    <string name="reminders_dosage">Dosage</string>
+    <string name="reminders_time">Time</string>
+    <string name="reminders_empty">No reminders yet. Add one to stay on schedule.</string>
+    <string name="reminders_notification_title">Time for %1$s</string>
+    <string name="reminders_notification_body_with_dose">Dose: %1$s</string>
+    <string name="reminders_notification_body_generic">Tap to mark as taken</string>
+    <string name="reminders_permission_rationale">Notifications are needed so we can remind you at the scheduled time.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="settings_theme_system">System default</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_sinhala">සිංහල</string>
+    <string name="settings_language_tamil">தமிழ்</string>
+    <string name="settings_reminders">Medication reminders</string>
+    <string name="settings_about">About</string>
+
+    <!-- Empty states -->
+    <string name="empty_no_messages">No messages yet</string>
+    <string name="empty_no_bookings">No bookings yet</string>
+    <string name="empty_no_vitals">No vitals logged yet</string>
+
+    <!-- Widget -->
+    <string name="widget_title">Vitals</string>
+    <string name="widget_hr">HR: %1$s bpm</string>
+    <string name="widget_bp">BP: %1$s</string>
+    <string name="widget_mood">Mood: %1$s</string>
+    <string name="widget_no_data">—</string>
+    <string name="vitals_widget_description">CarePulse vitals at a glance</string>
 </resources>

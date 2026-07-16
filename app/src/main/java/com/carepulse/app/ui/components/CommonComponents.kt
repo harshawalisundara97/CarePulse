@@ -53,10 +53,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.TextButton
 import com.carepulse.app.ui.theme.TealAccent
 import com.carepulse.app.ui.theme.TealLight
 import com.carepulse.app.ui.theme.NavyPrimary
@@ -78,27 +84,130 @@ fun PrimaryButton(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val haptic = LocalHapticFeedback.current
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.96f else 1f,
         animationSpec = spring(dampingRatio = 0.5f),
         label = "buttonScale"
     )
-    Button(
-        onClick = onClick,
+    val cs = MaterialTheme.colorScheme
+    val gradient = Brush.horizontalGradient(listOf(cs.primary, cs.tertiary))
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .graphicsLayer(scaleX = scale, scaleY = scale),
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+            .clip(RoundedCornerShape(28.dp))
+            .background(if (enabled) gradient else Brush.horizontalGradient(listOf(cs.primary.copy(alpha = 0.4f), cs.tertiary.copy(alpha = 0.4f))))
+            .clickable(
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = cs.onPrimary
+        )
+    }
+}
+
+@Composable
+fun SecondaryButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val haptic = LocalHapticFeedback.current
+    FilledTonalButton(
+        onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
+        modifier = modifier.fillMaxWidth().height(52.dp),
         enabled = enabled,
-        shape = RoundedCornerShape(28.dp),
-        interactionSource = interactionSource,
+        shape = RoundedCornerShape(26.dp)
+    ) {
+        Text(text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+fun GhostButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val haptic = LocalHapticFeedback.current
+    OutlinedButton(
+        onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
+        modifier = modifier.fillMaxWidth().height(52.dp),
+        enabled = enabled,
+        shape = RoundedCornerShape(26.dp),
+        border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline)
+    ) {
+        Text(text, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+    }
+}
+
+@Composable
+fun DestructiveButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
+) {
+    val haptic = LocalHapticFeedback.current
+    Button(
+        onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
+        modifier = modifier.fillMaxWidth().height(52.dp),
+        enabled = enabled,
+        shape = RoundedCornerShape(26.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = TealAccent,
-            contentColor = Color.White,
-            disabledContainerColor = TealAccent.copy(alpha = 0.4f)
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            contentColor = MaterialTheme.colorScheme.onErrorContainer
         )
     ) {
         Text(text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+@Composable
+fun GradientHeader(
+    title: String,
+    subtitle: String? = null,
+    modifier: Modifier = Modifier,
+    trailing: @Composable (() -> Unit)? = null
+) {
+    val cs = MaterialTheme.colorScheme
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
+            .background(Brush.linearGradient(listOf(cs.primary, cs.tertiary)))
+            .padding(horizontal = 20.dp, vertical = 24.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text(title, style = MaterialTheme.typography.headlineMedium,
+                    color = cs.onPrimary, fontWeight = FontWeight.Bold)
+                if (subtitle != null) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(subtitle, style = MaterialTheme.typography.bodyMedium,
+                        color = cs.onPrimary.copy(alpha = 0.85f))
+                }
+            }
+            if (trailing != null) trailing()
+        }
     }
 }
 
@@ -150,15 +259,15 @@ fun PastelCard(
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(20.dp)
     Card(
         modifier = modifier
             .fillMaxWidth()
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier),
         shape = shape,
-        colors = CardDefaults.cardColors(containerColor = CardSurface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = BorderStroke(1.dp, BorderLine)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
     ) {
         Column(modifier = Modifier.padding(16.dp), content = content)
     }

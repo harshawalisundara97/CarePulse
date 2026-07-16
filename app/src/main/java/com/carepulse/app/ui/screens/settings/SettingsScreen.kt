@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PersonOutline
@@ -65,9 +66,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.carepulse.app.R
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.data.photo.ProfilePhotoManager
 import com.carepulse.app.ui.components.PastelCard
@@ -81,7 +84,12 @@ import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun SettingsScreen(vm: CarePulseViewModel, onSignOut: () -> Unit) {
+fun SettingsScreen(
+    vm: CarePulseViewModel,
+    onSignOut: () -> Unit,
+    onOpenReminders: () -> Unit = {},
+    onOpenLanguage: () -> Unit = {}
+) {
     val profile by vm.profile.collectAsState()
     val photoPath by vm.profilePhotoPath.collectAsState()
     val context = LocalContext.current
@@ -206,7 +214,8 @@ fun SettingsScreen(vm: CarePulseViewModel, onSignOut: () -> Unit) {
             PastelCard {
                 Column {
                     SettingRow(Icons.Filled.PersonOutline, "Account") {}
-                    SettingRow(Icons.Filled.Notifications, "Notifications") {}
+                    SettingRow(Icons.Filled.Notifications, stringResource(R.string.settings_reminders), onClick = onOpenReminders)
+                    SettingRow(Icons.Filled.Language, stringResource(R.string.settings_language), onClick = onOpenLanguage)
                     SettingRow(Icons.Filled.Shield, "Privacy & security") {}
                     SettingRow(Icons.AutoMirrored.Filled.HelpOutline, "Help & support") {}
                     SettingRow(Icons.Filled.Info, "About CarePulse") {}

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CarePulse</string>
+
+    <!-- Common -->
+    <string name="common_save">சேமிக்க</string>
+    <string name="common_cancel">ரத்து</string>
+    <string name="common_delete">நீக்கு</string>
+    <string name="common_edit">திருத்து</string>
+    <string name="common_done">முடிந்தது</string>
+    <string name="common_add">சேர்</string>
+    <string name="common_back">பின்</string>
+    <string name="common_loading">ஏற்றுகிறது…</string>
+    <string name="common_retry">மீண்டும் முயற்சிக்க</string>
+
+    <!-- Auth / onboarding -->
+    <string name="auth_sign_in">உள்நுழை</string>
+    <string name="auth_sign_up">பதிவு செய்</string>
+    <string name="auth_sign_out">வெளியேறு</string>
+    <string name="auth_email">மின்னஞ்சல்</string>
+    <string name="auth_password">கடவுச்சொல்</string>
+    <string name="auth_continue_with_google">Google உடன் தொடர</string>
+    <string name="role_customer">எனக்கு பராமரிப்பு தேவை</string>
+    <string name="role_caregiver">நான் பராமரிப்பு வழங்குகிறேன்</string>
+    <string name="role_agency">நிறுவனம்</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_home">முகப்பு</string>
+    <string name="nav_activity">செயல்பாடு</string>
+    <string name="nav_messages">செய்திகள்</string>
+    <string name="nav_pulse">துடிப்பு</string>
+    <string name="nav_settings">அமைப்புகள்</string>
+
+    <!-- Dashboard -->
+    <string name="dashboard_welcome">மீண்டும் வரவேற்கிறோம்</string>
+    <string name="dashboard_upcoming_shift">வரவிருக்கும் பணி</string>
+    <string name="dashboard_log_vitals">உயிர் அளவீடுகளை பதிவு செய்</string>
+    <string name="dashboard_recent_messages">சமீபத்திய செய்திகள்</string>
+
+    <!-- Vitals -->
+    <string name="vitals_title">உயிர் அளவீடுகளை பதிவு செய்</string>
+    <string name="vitals_heart_rate">இதயத் துடிப்பு (bpm)</string>
+    <string name="vitals_blood_pressure">இரத்த அழுத்தம்</string>
+    <string name="vitals_mood">மனநிலை</string>
+    <string name="vitals_saved">அளவீடுகள் சேமிக்கப்பட்டன</string>
+
+    <!-- Reminders -->
+    <string name="reminders_title">மருந்து நினைவூட்டல்கள்</string>
+    <string name="reminders_add">நினைவூட்டல் சேர்</string>
+    <string name="reminders_med_name">மருந்தின் பெயர்</string>
+    <string name="reminders_dosage">அளவு</string>
+    <string name="reminders_time">நேரம்</string>
+    <string name="reminders_empty">நினைவூட்டல்கள் இல்லை. நேரத்தில் இருக்க ஒன்றைச் சேர்க்கவும்.</string>
+    <string name="reminders_notification_title">%1$s எடுக்கும் நேரம்</string>
+    <string name="reminders_notification_body_with_dose">அளவு: %1$s</string>
+    <string name="reminders_notification_body_generic">எடுத்ததாகக் குறிக்க தட்டவும்</string>
+    <string name="reminders_permission_rationale">திட்டமிட்ட நேரத்தில் நினைவூட்ட அறிவிப்புகள் தேவை.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">அமைப்புகள்</string>
+    <string name="settings_appearance">தோற்றம்</string>
+    <string name="settings_theme_system">கணினி இயல்பு</string>
+    <string name="settings_theme_light">வெளிர்</string>
+    <string name="settings_theme_dark">இருள்</string>
+    <string name="settings_language">மொழி</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_sinhala">සිංහල</string>
+    <string name="settings_language_tamil">தமிழ்</string>
+    <string name="settings_reminders">மருந்து நினைவூட்டல்கள்</string>
+    <string name="settings_about">பற்றி</string>
+
+    <!-- Empty states -->
+    <string name="empty_no_messages">செய்திகள் இல்லை</string>
+    <string name="empty_no_bookings">முன்பதிவுகள் இல்லை</string>
+    <string name="empty_no_vitals">உயிர் அளவீடுகள் பதிவு செய்யப்படவில்லை</string>
+
+    <!-- Widget -->
+    <string name="widget_title">உயிர் அளவீடுகள்</string>
+    <string name="widget_hr">HR: %1$s bpm</string>
+    <string name="widget_bp">BP: %1$s</string>
+    <string name="widget_mood">மனநிலை: %1$s</string>
+    <string name="widget_no_data">—</string>
+</resources>
