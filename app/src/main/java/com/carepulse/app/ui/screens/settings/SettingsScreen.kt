@@ -80,6 +80,7 @@ import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.DarkSurface
 import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.launch
 
@@ -153,9 +154,9 @@ fun SettingsScreen(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = Spacing.ScreenPadding)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(Spacing.SectionSpacing)
         ) {
             // Profile header with tappable avatar
             PastelCard {
