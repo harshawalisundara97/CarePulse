@@ -20,7 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MedicationLiquid
+import androidx.compose.material.icons.filled.Medication
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -93,7 +93,7 @@ fun RemindersScreen(onBack: () -> Unit) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        Icons.Filled.MedicationLiquid, contentDescription = null,
+                        Icons.Filled.Medication, contentDescription = null,
                         modifier = Modifier.height(48.dp), tint = MaterialTheme.colorScheme.outline
                     )
                     Spacer(Modifier.height(12.dp))
