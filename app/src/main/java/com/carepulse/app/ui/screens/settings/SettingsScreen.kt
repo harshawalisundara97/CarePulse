@@ -78,7 +78,7 @@ import com.carepulse.app.ui.components.ProfileAvatar
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.DarkSurface
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.launch
@@ -255,7 +255,7 @@ fun SettingsScreen(
         ModalBottomSheet(
             onDismissRequest = { showPhotoPicker = false },
             sheetState = sheetState,
-            containerColor = TextPrimary
+            containerColor = DarkSurface
         ) {
             Column(
                 Modifier
