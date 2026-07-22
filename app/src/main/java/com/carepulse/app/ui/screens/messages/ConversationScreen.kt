@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.ChatMessage
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.CardSurface
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -108,7 +108,7 @@ fun ConversationScreen(
                         draft = ""
                     }
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.Send, null, tint = TealAccent)
+                    Icon(Icons.AutoMirrored.Filled.Send, null, tint = AccentPrimary)
                 }
             }
         },
@@ -133,7 +133,7 @@ fun ConversationScreen(
 
 @Composable
 private fun MessageBubble(msg: ChatMessage, isMine: Boolean) {
-    val bubbleColor = if (isMine) TealAccent else CardSurface
+    val bubbleColor = if (isMine) AccentPrimary else CardSurface
     val textColor = if (isMine) Color.White else TextPrimary
     val alignment = if (isMine) Alignment.End else Alignment.Start
 

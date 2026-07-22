@@ -64,8 +64,8 @@ import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.RatingRow
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.TealAccent
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -122,7 +122,7 @@ fun CustomerDashboardScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onRequestCare,
-                containerColor = TealAccent,
+                containerColor = AccentPrimary,
                 contentColor = Color.White,
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text("Request care") }
@@ -207,7 +207,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             .fillMaxWidth()
             .height(96.dp)
             .clip(RoundedCornerShape(22.dp))
-            .background(TealLight)
+            .background(AccentContainerLight)
             .clickable { onClick() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically

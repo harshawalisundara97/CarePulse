@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -88,7 +88,7 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                             Icon(
                                 Icons.Filled.ChatBubbleOutline,
                                 contentDescription = null,
-                                tint = TealAccent,
+                                tint = AccentPrimary,
                                 modifier = Modifier.size(32.dp)
                             )
                             Spacer(Modifier.width(12.dp))

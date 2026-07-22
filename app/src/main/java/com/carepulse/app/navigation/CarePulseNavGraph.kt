@@ -64,8 +64,8 @@ import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.NavyPrimary
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
@@ -369,7 +369,7 @@ private fun BottomBar(
     currentRoute: String?,
     tabs: List<TabItem>
 ) {
-    NavigationBar(containerColor = NavyPrimary) {
+    NavigationBar(containerColor = TextPrimary) {
         tabs.forEach { tab ->
             NavigationBarItem(
                 selected = currentRoute == tab.route,
@@ -385,11 +385,11 @@ private fun BottomBar(
                 icon = { Icon(tab.icon, contentDescription = tab.label) },
                 label = { Text(tab.label) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = TealAccent,
-                    selectedTextColor = TealAccent,
+                    selectedIconColor = AccentPrimary,
+                    selectedTextColor = AccentPrimary,
                     unselectedIconColor = TextSecondary,
                     unselectedTextColor = TextSecondary,
-                    indicatorColor = NavyPrimary
+                    indicatorColor = TextPrimary
                 )
             )
         }

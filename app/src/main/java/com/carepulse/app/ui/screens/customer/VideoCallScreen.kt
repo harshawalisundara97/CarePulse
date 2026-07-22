@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentContainerLight
 import kotlinx.coroutines.delay
 
 @Composable
@@ -72,7 +72,7 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
                 Modifier
                     .size((220 * pulse).dp)
                     .clip(CircleShape)
-                    .background(TealLight),
+                    .background(AccentContainerLight),
                 contentAlignment = Alignment.Center
             ) {
                 GeneratedAvatar(seed = 1, initials = "ML", size = 180)

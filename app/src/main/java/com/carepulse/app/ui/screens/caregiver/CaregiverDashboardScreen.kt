@@ -52,8 +52,8 @@ import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.TealAccent
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -102,7 +102,7 @@ fun CaregiverDashboardScreen(
                 onClick = onLogVitals,
                 icon = { Icon(Icons.Filled.MonitorHeart, contentDescription = null) },
                 text = { Text("Log Vitals") },
-                containerColor = TealAccent,
+                containerColor = AccentPrimary,
                 contentColor = Color.White
             )
         },
@@ -120,7 +120,7 @@ fun CaregiverDashboardScreen(
                 Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(22.dp))
-                    .background(TealLight)
+                    .background(AccentContainerLight)
                     .padding(18.dp)
             ) {
                 Column {
@@ -157,8 +157,8 @@ fun CaregiverDashboardScreen(
             // Quick stats
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Stat(Modifier.weight(1f), "Today", "1 shift", BorderLine)
-                Stat(Modifier.weight(1f), "This week", "12 hrs", TealLight)
-                Stat(Modifier.weight(1f), "Earnings", "\$340", TealAccent)
+                Stat(Modifier.weight(1f), "This week", "12 hrs", AccentContainerLight)
+                Stat(Modifier.weight(1f), "Earnings", "\$340", AccentPrimary)
             }
 
             PastelCard {

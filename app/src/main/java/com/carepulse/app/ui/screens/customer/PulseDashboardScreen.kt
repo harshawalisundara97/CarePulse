@@ -59,8 +59,8 @@ import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
 import com.carepulse.app.ui.theme.DangerRed
-import com.carepulse.app.ui.theme.TealAccent
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -121,7 +121,7 @@ fun PulseDashboardScreen(
                         title = "Blood pressure",
                         targetValue = today.bloodPressureSystolic,
                         unit = "/${today.bloodPressureDiastolic} mmHg",
-                        accent = TealAccent
+                        accent = AccentPrimary
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -200,8 +200,8 @@ fun PulseDashboardScreen(
                             )
                             Spacer(Modifier.height(4.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                ChartLegendDot(TealAccent, "Systolic")
-                                ChartLegendDot(TealAccent.copy(alpha = 0.4f), "Diastolic")
+                                ChartLegendDot(AccentPrimary, "Systolic")
+                                ChartLegendDot(AccentPrimary.copy(alpha = 0.4f), "Diastolic")
                             }
                             Spacer(Modifier.height(8.dp))
                             BpChart(
@@ -254,7 +254,7 @@ fun PulseDashboardScreen(
                                     Modifier
                                         .size(10.dp)
                                         .clip(RoundedCornerShape(5.dp))
-                                        .background(if (m.administered) TealLight else BorderLine)
+                                        .background(if (m.administered) AccentContainerLight else BorderLine)
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
@@ -288,7 +288,7 @@ private fun WeeklyStatsStrip(vitals: List<VitalsLog>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         StatChip(Modifier.weight(1f), "Avg HR", "$avgHr bpm", DangerRed)
-        StatChip(Modifier.weight(1f), "Avg BP", "$avgSys/$avgDia", TealAccent)
+        StatChip(Modifier.weight(1f), "Avg BP", "$avgSys/$avgDia", AccentPrimary)
         if (topMood != null) {
             StatChip(Modifier.weight(1f), "Top mood", topMood.label, topMood.color)
         }
@@ -425,7 +425,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .background(TealLight)
+            .background(AccentContainerLight)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -492,8 +492,8 @@ private fun BpChart(systolic: List<Float>, diastolic: List<Float>) {
         }
 
         clipRect(right = w * progress) {
-            drawPath(buildPath(systolic), color = TealAccent, style = Stroke(width = 5f))
-            drawPath(buildPath(diastolic), color = TealAccent.copy(alpha = 0.4f), style = Stroke(width = 3f))
+            drawPath(buildPath(systolic), color = AccentPrimary, style = Stroke(width = 5f))
+            drawPath(buildPath(diastolic), color = AccentPrimary.copy(alpha = 0.4f), style = Stroke(width = 3f))
         }
     }
 }
@@ -528,7 +528,7 @@ private fun HeartRateChart(values: List<Float>) {
             if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
         }
         clipRect(right = w * progress) {
-            drawPath(path = path, color = TealAccent, style = Stroke(width = 6f))
+            drawPath(path = path, color = AccentPrimary, style = Stroke(width = 6f))
         }
         values.forEachIndexed { i, v ->
             val x = padding + stepX * i

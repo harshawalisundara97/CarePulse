@@ -53,7 +53,7 @@ import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -221,7 +221,7 @@ private fun StepSuccess(onDone: () -> Unit) {
             Modifier
                 .size(120.dp)
                 .clip(CircleShape)
-                .background(TealLight),
+                .background(AccentContainerLight),
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Filled.CheckCircle, null, tint = Color.White, modifier = Modifier.size(72.dp))

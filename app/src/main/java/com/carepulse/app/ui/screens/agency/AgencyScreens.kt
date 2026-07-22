@@ -53,7 +53,7 @@ import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -121,7 +121,7 @@ fun AgencyCaregiversScreen(vm: CarePulseViewModel) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showAdd = true },
-                containerColor = TealAccent,
+                containerColor = AccentPrimary,
                 contentColor = Color.White
             ) { Icon(Icons.Filled.Add, contentDescription = "Add caregiver") }
         },
@@ -264,7 +264,7 @@ fun AgencyRequestsScreen(vm: CarePulseViewModel) {
                             } else {
                                 Text("Assigned to ${req.assignedCaregiverName ?: "—"}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = TealAccent, fontWeight = FontWeight.SemiBold)
+                                    color = AccentPrimary, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -354,7 +354,7 @@ fun AgencyBillingScreen(vm: CarePulseViewModel) {
                             Text(
                                 "LKR $totalEarnings",
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = TealAccent,
+                                color = AccentPrimary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -426,7 +426,7 @@ private fun AgencyScaffold(title: String, content: @Composable (Modifier) -> Uni
 private fun StatCard(modifier: Modifier, icon: ImageVector, value: String, label: String) {
     PastelCard(modifier) {
         Column {
-            Icon(icon, null, tint = TealAccent, modifier = Modifier.size(24.dp))
+            Icon(icon, null, tint = AccentPrimary, modifier = Modifier.size(24.dp))
             Spacer(Modifier.height(8.dp))
             Text(value, style = MaterialTheme.typography.headlineMedium,
                 color = TextPrimary, fontWeight = FontWeight.Bold)
@@ -440,7 +440,7 @@ private fun EmptyState(icon: ImageVector, title: String, subtitle: String) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.size(72.dp).clip(CircleShape), contentAlignment = Alignment.Center) {
-                Icon(icon, null, tint = TealAccent, modifier = Modifier.size(40.dp))
+                Icon(icon, null, tint = AccentPrimary, modifier = Modifier.size(40.dp))
             }
             Spacer(Modifier.height(12.dp))
             Text(title, style = MaterialTheme.typography.titleMedium,

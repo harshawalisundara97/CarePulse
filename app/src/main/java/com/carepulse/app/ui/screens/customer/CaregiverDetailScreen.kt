@@ -51,7 +51,7 @@ import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.components.RatingRow
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -104,7 +104,7 @@ fun CaregiverDetailScreen(
                     .fillMaxWidth()
                     .height(180.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(TealLight),
+                    .background(AccentContainerLight),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -124,7 +124,7 @@ fun CaregiverDetailScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 StatTile(Modifier.weight(1f), title = "Rate", value = "\$${c.hourlyRate}/hr", color = BorderLine)
                 StatTile(Modifier.weight(1f), title = "Reviews", value = "${c.ratingCount}", color = BorderLine)
-                StatTile(Modifier.weight(1f), title = "Rating", value = "%.1f".format(c.rating), color = TealLight)
+                StatTile(Modifier.weight(1f), title = "Rating", value = "%.1f".format(c.rating), color = AccentContainerLight)
             }
 
             PastelCard {
@@ -141,7 +141,7 @@ fun CaregiverDetailScreen(
                     Spacer(Modifier.height(6.dp))
                     c.qualifications.forEach { q ->
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
-                            Icon(Icons.Filled.CheckCircle, null, tint = TealLight, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.CheckCircle, null, tint = AccentContainerLight, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(6.dp))
                             Text(q, style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
                         }
@@ -242,7 +242,7 @@ private fun AvailabilityCalendar(availability: List<String>) {
                             .padding(2.dp)
                             .height(28.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(if (available) TealLight else BorderLine.copy(alpha = 0.35f))
+                            .background(if (available) AccentContainerLight else BorderLine.copy(alpha = 0.35f))
                     )
                 }
             }

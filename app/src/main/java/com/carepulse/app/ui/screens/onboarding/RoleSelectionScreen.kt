@@ -44,8 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealAccent
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 
@@ -70,7 +70,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                 Modifier
                     .size(96.dp)
                     .clip(CircleShape)
-                    .background(TealAccent),
+                    .background(AccentPrimary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -102,21 +102,21 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                         icon = Icons.Filled.Favorite,
                         title = "I'm Family",
                         subtitle = "Find caregivers and stay connected with your loved ones.",
-                        cardColor = TealLight,
+                        cardColor = AccentContainerLight,
                         onClick = { onRoleSelected(UserRole.CUSTOMER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.MedicalServices,
                         title = "I'm a Caregiver",
                         subtitle = "Offer your care services and grow your practice.",
-                        cardColor = TealLight,
+                        cardColor = AccentContainerLight,
                         onClick = { onRoleSelected(UserRole.CAREGIVER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.Business,
                         title = "We're an Agency",
                         subtitle = "Manage your caregivers, requests and bookings.",
-                        cardColor = TealLight,
+                        cardColor = AccentContainerLight,
                         onClick = { onRoleSelected(UserRole.AGENCY) }
                     )
                 }

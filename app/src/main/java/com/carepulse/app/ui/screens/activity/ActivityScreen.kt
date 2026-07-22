@@ -37,7 +37,7 @@ import com.carepulse.app.data.model.BookingStatus
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -76,7 +76,7 @@ fun ActivityScreen(
             TabRow(
                 selectedTabIndex = selectedTab,
                 containerColor = Color.Transparent,
-                contentColor = TealAccent
+                contentColor = AccentPrimary
             ) {
                 tabs.forEachIndexed { i, title ->
                     Tab(
@@ -120,7 +120,7 @@ private fun BookingCard(
 ) {
     val statusColor = when (booking.status) {
         BookingStatus.CONFIRMED -> TextSecondary
-        BookingStatus.IN_PROGRESS -> TealAccent
+        BookingStatus.IN_PROGRESS -> AccentPrimary
         BookingStatus.COMPLETED -> TextPrimary
     }
     PastelCard {

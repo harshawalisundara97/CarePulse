@@ -63,9 +63,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.TextButton
-import com.carepulse.app.ui.theme.TealAccent
-import com.carepulse.app.ui.theme.TealLight
-import com.carepulse.app.ui.theme.NavyPrimary
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.CardSurface
 import com.carepulse.app.ui.theme.BorderLine
@@ -74,6 +73,8 @@ import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.ui.theme.DangerRed
 import com.carepulse.app.ui.theme.SuccessGreen
 import com.carepulse.app.ui.theme.WarningAmber
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
 
 @Composable
 fun PrimaryButton(
@@ -91,14 +92,16 @@ fun PrimaryButton(
         label = "buttonScale"
     )
     val cs = MaterialTheme.colorScheme
-    val gradient = Brush.horizontalGradient(listOf(cs.primary, cs.tertiary))
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .graphicsLayer(scaleX = scale, scaleY = scale)
-            .clip(RoundedCornerShape(28.dp))
-            .background(if (enabled) gradient else Brush.horizontalGradient(listOf(cs.primary.copy(alpha = 0.4f), cs.tertiary.copy(alpha = 0.4f))))
+            .clip(RoundedCornerShape(Radii.Button))
+            .background(
+                color = if (enabled) AccentPrimary else AccentPrimary.copy(alpha = 0.4f),
+                shape = RoundedCornerShape(Radii.Button)
+            )
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -130,7 +133,7 @@ fun SecondaryButton(
         onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
         modifier = modifier.fillMaxWidth().height(52.dp),
         enabled = enabled,
-        shape = RoundedCornerShape(26.dp)
+        shape = RoundedCornerShape(Radii.Button)
     ) {
         Text(text, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
     }
@@ -148,7 +151,7 @@ fun GhostButton(
         onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
         modifier = modifier.fillMaxWidth().height(52.dp),
         enabled = enabled,
-        shape = RoundedCornerShape(26.dp),
+        shape = RoundedCornerShape(Radii.Button),
         border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline)
     ) {
         Text(text, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
@@ -167,7 +170,7 @@ fun DestructiveButton(
         onClick = { haptic.performHapticFeedback(HapticFeedbackType.LongPress); onClick() },
         modifier = modifier.fillMaxWidth().height(52.dp),
         enabled = enabled,
-        shape = RoundedCornerShape(26.dp),
+        shape = RoundedCornerShape(Radii.Button),
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.errorContainer,
             contentColor = MaterialTheme.colorScheme.onErrorContainer
@@ -188,9 +191,9 @@ fun GradientHeader(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
-            .background(Brush.linearGradient(listOf(cs.primary, cs.tertiary)))
-            .padding(horizontal = 20.dp, vertical = 24.dp)
+            .clip(RoundedCornerShape(bottomStart = Radii.Card, bottomEnd = Radii.Card))
+            .background(cs.primary)
+            .padding(horizontal = Spacing.ScreenPadding, vertical = 24.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -229,13 +232,13 @@ fun CarePulseTextField(
         modifier = modifier.fillMaxWidth(),
         singleLine = singleLine,
         keyboardOptions = KeyboardOptions(capitalization = capitalization),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(Radii.Input),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = TealAccent,
+            focusedBorderColor = AccentPrimary,
             unfocusedBorderColor = BorderLine,
-            focusedLabelColor = TealAccent,
+            focusedLabelColor = AccentPrimary,
             unfocusedLabelColor = TextSecondary,
-            cursorColor = TealAccent,
+            cursorColor = AccentPrimary,
             focusedContainerColor = CardSurface,
             unfocusedContainerColor = CardSurface,
         )
@@ -259,7 +262,7 @@ fun PastelCard(
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    val shape = RoundedCornerShape(20.dp)
+    val shape = RoundedCornerShape(Radii.Card)
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -269,7 +272,7 @@ fun PastelCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
     ) {
-        Column(modifier = Modifier.padding(16.dp), content = content)
+        Column(modifier = Modifier.padding(Spacing.CardPadding), content = content)
     }
 }
 
@@ -279,7 +282,7 @@ fun GeneratedAvatar(seed: Int, initials: String, size: Int = 56, modifier: Modif
         modifier = modifier
             .size(size.dp)
             .clip(CircleShape)
-            .background(TealLight)
+            .background(AccentContainerLight)
             .border(2.dp, Color.White, CircleShape),
         contentAlignment = Alignment.Center
     ) {
@@ -312,7 +315,7 @@ fun ProfileAvatar(
         modifier = modifier
             .size(size.dp)
             .clip(CircleShape)
-            .border(2.dp, TealAccent, CircleShape),
+            .border(2.dp, AccentPrimary, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         if (hasPhoto && file != null) {
@@ -357,7 +360,7 @@ fun PastelChip(
     color: Color = BorderLine,
     leadingIcon: ImageVector? = null
 ) {
-    val bg = if (selected) TealAccent else color
+    val bg = if (selected) AccentPrimary else color
     val base = Modifier
         .padding(2.dp)
         .clip(RoundedCornerShape(14.dp))
