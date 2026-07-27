@@ -217,7 +217,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)),
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Filled.Favorite, null, tint = TextPrimary)
