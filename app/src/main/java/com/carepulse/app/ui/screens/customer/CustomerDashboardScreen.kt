@@ -124,7 +124,7 @@ fun CustomerDashboardScreen(
             ExtendedFloatingActionButton(
                 onClick = onRequestCare,
                 containerColor = AccentPrimary,
-                contentColor = Color.White,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text("Request care") }
             )
@@ -139,7 +139,7 @@ fun CustomerDashboardScreen(
         ) {
             PulseBanner(onClick = onOpenPulse)
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             CarePulseTextField(
                 value = area,
                 onValueChange = vm::setAreaFilter,
@@ -147,7 +147,7 @@ fun CustomerDashboardScreen(
                 placeholder = "e.g. 90210"
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             Text("Specialization", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
             FlowRow(
                 Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -161,7 +161,7 @@ fun CustomerDashboardScreen(
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             Text("Minimum rating: ${"%.1f".format(minRating)}",
                 style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
             Slider(
@@ -217,7 +217,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.7f)),
+                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Filled.Favorite, null, tint = TextPrimary)
@@ -241,7 +241,7 @@ private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
