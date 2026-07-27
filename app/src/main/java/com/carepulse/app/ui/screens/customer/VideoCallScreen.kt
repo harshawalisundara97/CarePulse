@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.theme.BorderLine
 import com.carepulse.app.ui.theme.AccentContainerLight
+import com.carepulse.app.ui.theme.DangerRed
 import kotlinx.coroutines.delay
 
 @Composable
@@ -61,7 +62,7 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Color(0xFF1A2B4A))
+            .background(Color(0xFF121212))
     ) {
         // "Remote" view
         Column(
@@ -109,7 +110,7 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
             CallControl(icon = Icons.Filled.Mic, bg = Color.White.copy(alpha = 0.18f), onClick = {})
             CallControl(icon = Icons.Filled.Videocam, bg = Color.White.copy(alpha = 0.18f), onClick = {})
             CallControl(icon = Icons.Filled.Cameraswitch, bg = Color.White.copy(alpha = 0.18f), onClick = {})
-            CallControl(icon = Icons.Filled.CallEnd, bg = Color(0xFFE57373), tint = Color.White, size = 72, onClick = onEndCall)
+            CallControl(icon = Icons.Filled.CallEnd, bg = DangerRed, tint = Color.White, size = 72, onClick = onEndCall)
         }
     }
 }
