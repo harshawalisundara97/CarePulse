@@ -65,7 +65,6 @@ import com.carepulse.app.ui.components.RatingRow
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
 import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.ui.theme.Spacing
@@ -208,7 +207,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             .fillMaxWidth()
             .height(96.dp)
             .clip(RoundedCornerShape(22.dp))
-            .background(AccentContainerLight)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .clickable { onClick() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
