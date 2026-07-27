@@ -68,6 +68,7 @@ import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.AccentContainerLight
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.delay
 
@@ -134,7 +135,7 @@ fun CustomerDashboardScreen(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = Spacing.ScreenPaddingCompact)
         ) {
             PulseBanner(onClick = onOpenPulse)
 
@@ -244,7 +245,7 @@ private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(14.dp),
+            Modifier.fillMaxWidth().padding(Spacing.CardPaddingCompact),
             verticalAlignment = Alignment.CenterVertically
         ) {
             GeneratedAvatar(
