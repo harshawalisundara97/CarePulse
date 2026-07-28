@@ -75,7 +75,7 @@ private val CarePulseShapes = Shapes(
 
 @Composable
 fun CarePulseTheme(
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current

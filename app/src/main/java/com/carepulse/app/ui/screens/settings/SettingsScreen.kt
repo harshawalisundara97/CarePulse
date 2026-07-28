@@ -78,8 +78,8 @@ import com.carepulse.app.ui.components.ProfileAvatar
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.DarkSurface
 import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.launch
@@ -256,7 +256,8 @@ fun SettingsScreen(
         ModalBottomSheet(
             onDismissRequest = { showPhotoPicker = false },
             sheetState = sheetState,
-            containerColor = DarkSurface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = RoundedCornerShape(Radii.Dialog)
         ) {
             Column(
                 Modifier
@@ -266,7 +267,7 @@ fun SettingsScreen(
                 Text(
                     "Profile photo",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -310,7 +311,7 @@ private fun PhotoSheetOption(icon: ImageVector, label: String, onClick: () -> Un
         Text(
             label,
             style = MaterialTheme.typography.bodyLarge,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Medium
         )
     }

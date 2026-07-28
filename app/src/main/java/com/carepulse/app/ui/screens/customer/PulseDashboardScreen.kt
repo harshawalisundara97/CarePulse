@@ -130,7 +130,7 @@ fun PulseDashboardScreen(
                         Modifier
                             .weight(1f)
                             .clip(RoundedCornerShape(20.dp))
-                            .background(Color.White)
+                            .background(MaterialTheme.colorScheme.surface)
                             .padding(14.dp)
                     ) {
                         Column {
@@ -300,7 +300,7 @@ private fun StatChip(modifier: Modifier, label: String, value: String, accent: C
     Box(
         modifier
             .clip(RoundedCornerShape(14.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(10.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -390,7 +390,7 @@ private fun AnimatedVitalCard(
     Box(
         modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(14.dp)
     ) {
         Column {
@@ -449,7 +449,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             Icon(Icons.Filled.VideoCall, null, tint = TextPrimary)
         }
