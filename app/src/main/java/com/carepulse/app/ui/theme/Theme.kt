@@ -16,14 +16,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 private val LightBrandScheme = lightColorScheme(
-    primary = TealAccent,
+    primary = AccentPrimary,
     onPrimary = CardSurface,
-    primaryContainer = TealLight,
-    onPrimaryContainer = NavyPrimary,
-    secondary = NavyPrimary,
+    primaryContainer = AccentContainerLight,
+    onPrimaryContainer = TextPrimary,
+    secondary = TextPrimary,
     onSecondary = CardSurface,
-    secondaryContainer = TealLight,
-    onSecondaryContainer = NavyPrimary,
+    secondaryContainer = SurfaceLow,
+    onSecondaryContainer = TextPrimary,
     tertiary = WarningAmber,
     onTertiary = CardSurface,
     background = Background,
@@ -41,16 +41,16 @@ private val LightBrandScheme = lightColorScheme(
 )
 
 private val DarkBrandScheme = darkColorScheme(
-    primary = TealAccentDark,
-    onPrimary = NavyDark,
-    primaryContainer = TealContainerDk,
-    onPrimaryContainer = TealLight,
-    secondary = TealAccentDark,
-    onSecondary = NavyDark,
-    secondaryContainer = NavyContainerDk,
+    primary = AccentPrimaryDark,
+    onPrimary = DarkBackground,
+    primaryContainer = AccentContainerDark,
+    onPrimaryContainer = DarkOnSurface,
+    secondary = DarkOnSurface,
+    onSecondary = DarkBackground,
+    secondaryContainer = DarkSurfaceLow,
     onSecondaryContainer = DarkOnSurface,
     tertiary = WarningAmber,
-    onTertiary = NavyDark,
+    onTertiary = DarkBackground,
     background = DarkBackground,
     onBackground = DarkOnSurface,
     surface = DarkSurface,
@@ -68,14 +68,14 @@ private val DarkBrandScheme = darkColorScheme(
 private val CarePulseShapes = Shapes(
     extraSmall = RoundedCornerShape(8.dp),
     small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(18.dp),
-    large = RoundedCornerShape(24.dp),
-    extraLarge = RoundedCornerShape(28.dp)
+    medium = RoundedCornerShape(Radii.Input),
+    large = RoundedCornerShape(Radii.Button),
+    extraLarge = RoundedCornerShape(Radii.Card)
 )
 
 @Composable
 fun CarePulseTheme(
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current

@@ -3,8 +3,10 @@ package com.carepulse.app.navigation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.EventNote
+import androidx.compose.material.icons.automirrored.outlined.EventNote
 import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
@@ -12,8 +14,16 @@ import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Inbox
+import androidx.compose.material.icons.outlined.MonitorHeart
+import androidx.compose.material.icons.outlined.Payments
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -25,7 +35,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -64,9 +76,11 @@ import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.NavyPrimary
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 /** Type-safe route constants for the nav graph. */
@@ -101,24 +115,29 @@ object Routes {
     const val LanguagePicker = "language-picker"
 }
 
-/** One bottom-navigation tab. */
-private data class TabItem(val route: String, val label: String, val icon: ImageVector)
+/** One bottom-navigation tab. Filled icon shown when selected, outlined when not. */
+private data class TabItem(
+    val route: String,
+    val label: String,
+    val icon: ImageVector,
+    val outlinedIcon: ImageVector
+)
 
 /** Tab labels/icons differ by role; the underlying routes stay the same. */
 private fun tabsFor(role: UserRole?): List<TabItem> = when (role) {
     UserRole.AGENCY -> listOf(
-        TabItem(Routes.Home, "Dashboard", Icons.Filled.Home),
-        TabItem(Routes.Pulse, "Caregivers", Icons.Filled.Groups),
-        TabItem(Routes.Messages, "Requests", Icons.Filled.Inbox),
-        TabItem(Routes.Activity, "Billing", Icons.Filled.Payments),
-        TabItem(Routes.Settings, "Settings", Icons.Filled.Settings)
+        TabItem(Routes.Home, "Dashboard", Icons.Filled.Home, Icons.Outlined.Home),
+        TabItem(Routes.Pulse, "Caregivers", Icons.Filled.Groups, Icons.Outlined.Groups),
+        TabItem(Routes.Messages, "Requests", Icons.Filled.Inbox, Icons.Outlined.Inbox),
+        TabItem(Routes.Activity, "Billing", Icons.Filled.Payments, Icons.Outlined.Payments),
+        TabItem(Routes.Settings, "Settings", Icons.Filled.Settings, Icons.Outlined.Settings)
     )
     else -> listOf(
-        TabItem(Routes.Home, "Home", Icons.Filled.Home),
-        TabItem(Routes.Pulse, "Pulse", Icons.Filled.MonitorHeart),
-        TabItem(Routes.Messages, "Messages", Icons.Filled.ChatBubbleOutline),
-        TabItem(Routes.Activity, "Activity", Icons.AutoMirrored.Filled.EventNote),
-        TabItem(Routes.Settings, "Settings", Icons.Filled.Settings)
+        TabItem(Routes.Home, "Home", Icons.Filled.Home, Icons.Outlined.Home),
+        TabItem(Routes.Pulse, "Pulse", Icons.Filled.MonitorHeart, Icons.Outlined.MonitorHeart),
+        TabItem(Routes.Messages, "Messages", Icons.Filled.ChatBubbleOutline, Icons.Outlined.ChatBubbleOutline),
+        TabItem(Routes.Activity, "Activity", Icons.AutoMirrored.Filled.EventNote, Icons.AutoMirrored.Outlined.EventNote),
+        TabItem(Routes.Settings, "Settings", Icons.Filled.Settings, Icons.Outlined.Settings)
     )
 }
 
@@ -369,10 +388,17 @@ private fun BottomBar(
     currentRoute: String?,
     tabs: List<TabItem>
 ) {
-    NavigationBar(containerColor = NavyPrimary) {
+    NavigationBar(
+        modifier = Modifier
+            .padding(horizontal = Spacing.ScreenPaddingCompact, vertical = 12.dp)
+            .clip(RoundedCornerShape(Radii.BottomNav)),
+        containerColor = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp
+    ) {
         tabs.forEach { tab ->
+            val selected = currentRoute == tab.route
             NavigationBarItem(
-                selected = currentRoute == tab.route,
+                selected = selected,
                 onClick = {
                     if (currentRoute != tab.route) {
                         navController.navigate(tab.route) {
@@ -382,14 +408,19 @@ private fun BottomBar(
                         }
                     }
                 },
-                icon = { Icon(tab.icon, contentDescription = tab.label) },
+                icon = {
+                    Icon(
+                        if (selected) tab.icon else tab.outlinedIcon,
+                        contentDescription = tab.label
+                    )
+                },
                 label = { Text(tab.label) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = TealAccent,
-                    selectedTextColor = TealAccent,
+                    selectedIconColor = AccentPrimary,
+                    selectedTextColor = AccentPrimary,
                     unselectedIconColor = TextSecondary,
                     unselectedTextColor = TextSecondary,
-                    indicatorColor = NavyPrimary
+                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }

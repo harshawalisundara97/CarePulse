@@ -38,7 +38,7 @@ import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -152,7 +152,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodySmall)
             }
             info?.let {
-                Text(it, color = TealAccent,
+                Text(it, color = AccentPrimary,
                     style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
             }
 

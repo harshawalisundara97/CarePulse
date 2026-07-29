@@ -64,10 +64,10 @@ import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.RatingRow
 import com.carepulse.app.ui.theme.Background
 import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.TealAccent
-import com.carepulse.app.ui.theme.TealLight
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.delay
 
@@ -122,8 +122,8 @@ fun CustomerDashboardScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onRequestCare,
-                containerColor = TealAccent,
-                contentColor = Color.White,
+                containerColor = AccentPrimary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text("Request care") }
             )
@@ -134,11 +134,11 @@ fun CustomerDashboardScreen(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = Spacing.ScreenPaddingCompact)
         ) {
             PulseBanner(onClick = onOpenPulse)
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             CarePulseTextField(
                 value = area,
                 onValueChange = vm::setAreaFilter,
@@ -146,7 +146,7 @@ fun CustomerDashboardScreen(
                 placeholder = "e.g. 90210"
             )
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             Text("Specialization", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
             FlowRow(
                 Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -160,7 +160,7 @@ fun CustomerDashboardScreen(
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             Text("Minimum rating: ${"%.1f".format(minRating)}",
                 style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
             Slider(
@@ -207,7 +207,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             .fillMaxWidth()
             .height(96.dp)
             .clip(RoundedCornerShape(22.dp))
-            .background(TealLight)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .clickable { onClick() }
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -216,7 +216,7 @@ private fun PulseBanner(onClick: () -> Unit) {
             Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.7f)),
+                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(Icons.Filled.Favorite, null, tint = TextPrimary)
@@ -240,11 +240,11 @@ private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(14.dp),
+            Modifier.fillMaxWidth().padding(Spacing.CardPaddingCompact),
             verticalAlignment = Alignment.CenterVertically
         ) {
             GeneratedAvatar(

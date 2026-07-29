@@ -76,10 +76,11 @@ import com.carepulse.app.data.photo.ProfilePhotoManager
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.ProfileAvatar
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.NavyPrimary
-import com.carepulse.app.ui.theme.TealAccent
 import com.carepulse.app.ui.theme.TextPrimary
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextSecondary
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.launch
 
@@ -153,9 +154,9 @@ fun SettingsScreen(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = Spacing.ScreenPadding)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(Spacing.SectionSpacing)
         ) {
             // Profile header with tappable avatar
             PastelCard {
@@ -172,7 +173,7 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .size(20.dp)
-                                .background(TealAccent, CircleShape),
+                                .background(AccentPrimary, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -196,7 +197,7 @@ fun SettingsScreen(
                             Text(
                                 roleLabel,
                                 style = MaterialTheme.typography.labelLarge,
-                                color = TealAccent,
+                                color = AccentPrimary,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -255,7 +256,8 @@ fun SettingsScreen(
         ModalBottomSheet(
             onDismissRequest = { showPhotoPicker = false },
             sheetState = sheetState,
-            containerColor = NavyPrimary
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = RoundedCornerShape(Radii.Dialog)
         ) {
             Column(
                 Modifier
@@ -265,7 +267,7 @@ fun SettingsScreen(
                 Text(
                     "Profile photo",
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -305,11 +307,11 @@ private fun PhotoSheetOption(icon: ImageVector, label: String, onClick: () -> Un
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Icon(icon, contentDescription = null, tint = TealAccent, modifier = Modifier.size(24.dp))
+        Icon(icon, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(24.dp))
         Text(
             label,
             style = MaterialTheme.typography.bodyLarge,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Medium
         )
     }
@@ -405,7 +407,7 @@ private fun RoleOption(
     onClick: () -> Unit
 ) {
     Surface(
-        color = if (isActive) TealAccent.copy(alpha = 0.15f) else Color.Transparent,
+        color = if (isActive) AccentPrimary.copy(alpha = 0.15f) else Color.Transparent,
         shape = RoundedCornerShape(14.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -416,7 +418,7 @@ private fun RoleOption(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, tint = TealAccent, modifier = Modifier.size(22.dp))
+            Icon(icon, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(22.dp))
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(label, style = MaterialTheme.typography.bodyLarge, color = TextPrimary)
@@ -434,7 +436,7 @@ private fun RoleOption(
                 Icon(
                     Icons.Filled.CheckCircle,
                     contentDescription = null,
-                    tint = TealAccent,
+                    tint = AccentPrimary,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -451,7 +453,7 @@ private fun SettingRow(icon: ImageVector, label: String, onClick: () -> Unit) {
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, contentDescription = null, tint = TealAccent, modifier = Modifier.size(22.dp))
+        Icon(icon, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(22.dp))
         Spacer(Modifier.size(14.dp))
         Text(
             label,

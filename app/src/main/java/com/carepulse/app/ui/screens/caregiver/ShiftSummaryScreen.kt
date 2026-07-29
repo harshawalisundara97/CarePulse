@@ -49,7 +49,7 @@ import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TealAccent
+import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -119,7 +119,7 @@ fun ShiftSummaryScreen(
                             Icon(
                                 if (m.administered) Icons.Filled.CheckBox else Icons.Filled.CheckBoxOutlineBlank,
                                 null,
-                                tint = if (m.administered) TealAccent else TextSecondary
+                                tint = if (m.administered) AccentPrimary else TextSecondary
                             )
                             Spacer(Modifier.width(10.dp))
                             Column(Modifier.weight(1f)) {
