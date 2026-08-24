@@ -1,8 +1,9 @@
 package com.carepulse.app.data.auth
 
+import android.app.Activity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -65,10 +66,30 @@ class AuthRepository(
             result.user ?: error("Sign-in returned no user")
         }
 
-    suspend fun signInWithGoogleIdToken(idToken: String): Result<FirebaseUser> =
+    /**
+     * Browser-based Google sign-in: opens the system's default browser (Chrome
+     * Custom Tab) to Google's account chooser, then returns control to the app
+     * once the user picks an account and grants access. Uses Firebase's generic
+     * OAuth provider flow instead of the Credential Manager / One Tap picker,
+     * since it only requires "Google" to be enabled as a sign-in provider in the
+     * Firebase console (no separate Google Cloud OAuth consent screen setup).
+     *
+     * If the activity was recreated mid-flow (e.g. rotation) the pending result
+     * is picked up from [FirebaseAuth.getPendingAuthResult] instead of
+     * relaunching the browser.
+     */
+    suspend fun signInWithGoogleBrowser(activity: Activity): Result<FirebaseUser> =
         runCatching {
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
-            val result = auth.signInWithCredential(credential).await()
+            val provider = OAuthProvider.newBuilder("google.com").apply {
+                addCustomParameter("prompt", "select_account")
+            }.build()
+
+            val pending = auth.pendingAuthResult
+            val result = if (pending != null) {
+                pending.await()
+            } else {
+                auth.startActivityForSignInWithProvider(activity, provider).await()
+            }
             result.user ?: error("Google sign-in returned no user")
         }
 

@@ -75,10 +75,6 @@ import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.data.photo.ProfilePhotoManager
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.ProfileAvatar
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -141,14 +137,14 @@ fun SettingsScreen(
                     Text(
                         "Settings",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -173,13 +169,13 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
                                 .size(20.dp)
-                                .background(AccentPrimary, CircleShape),
+                                .background(MaterialTheme.colorScheme.primary, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 Icons.Filled.AddAPhoto,
                                 contentDescription = null,
-                                tint = Color.White,
+                                tint = MaterialTheme.colorScheme.onPrimary,
                                 modifier = Modifier.size(12.dp)
                             )
                         }
@@ -189,15 +185,15 @@ fun SettingsScreen(
                         Text(
                             name,
                             style = MaterialTheme.typography.titleLarge,
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Bold
                         )
-                        Text(email, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                        Text(email, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         if (roleLabel.isNotEmpty()) {
                             Text(
                                 roleLabel,
                                 style = MaterialTheme.typography.labelLarge,
-                                color = AccentPrimary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -233,17 +229,17 @@ fun SettingsScreen(
                 Icon(
                     Icons.AutoMirrored.Filled.Logout,
                     contentDescription = null,
-                    tint = TextPrimary,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(18.dp)
                 )
                 Spacer(Modifier.size(8.dp))
-                Text("Sign out", color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                Text("Sign out", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
             }
 
             Text(
                 "CarePulse v1.0.0",
                 style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
@@ -307,7 +303,7 @@ private fun PhotoSheetOption(icon: ImageVector, label: String, onClick: () -> Un
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        Icon(icon, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(24.dp))
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
         Text(
             label,
             style = MaterialTheme.typography.bodyLarge,
@@ -332,13 +328,13 @@ private fun RoleSwitchCard(
             Text(
                 "Switch mode",
                 style = MaterialTheme.typography.titleMedium,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.SemiBold
             )
             Text(
                 "Use this account as family, caregiver, or agency.",
                 style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(12.dp))
             RoleOption(
@@ -374,7 +370,7 @@ private fun RoleSwitchCard(
                     Text(
                         "Enter your company name to start managing caregivers.",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(12.dp))
                     OutlinedTextField(
@@ -407,7 +403,7 @@ private fun RoleOption(
     onClick: () -> Unit
 ) {
     Surface(
-        color = if (isActive) AccentPrimary.copy(alpha = 0.15f) else Color.Transparent,
+        color = if (isActive) MaterialTheme.colorScheme.primary.copy(alpha = 0.15f) else Color.Transparent,
         shape = RoundedCornerShape(14.dp),
         modifier = Modifier
             .fillMaxWidth()
@@ -418,10 +414,10 @@ private fun RoleOption(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(22.dp))
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
             Spacer(Modifier.size(14.dp))
             Column(Modifier.weight(1f)) {
-                Text(label, style = MaterialTheme.typography.bodyLarge, color = TextPrimary)
+                Text(label, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
                 Text(
                     when {
                         isActive   -> "Current mode"
@@ -429,14 +425,14 @@ private fun RoleOption(
                         else       -> "Tap to add this role"
                     },
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondary
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             if (isActive) {
                 Icon(
                     Icons.Filled.CheckCircle,
                     contentDescription = null,
-                    tint = AccentPrimary,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -453,18 +449,18 @@ private fun SettingRow(icon: ImageVector, label: String, onClick: () -> Unit) {
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icon, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(22.dp))
+        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
         Spacer(Modifier.size(14.dp))
         Text(
             label,
             style = MaterialTheme.typography.bodyLarge,
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
         Icon(
             Icons.AutoMirrored.Filled.KeyboardArrowRight,
             contentDescription = null,
-            tint = TextSecondary,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(20.dp)
         )
     }

@@ -43,11 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.AccentContainerLight
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 
 @Composable
 fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
@@ -57,7 +52,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
     Box(
         Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
     ) {
         Column(
@@ -70,13 +65,13 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                 Modifier
                     .size(96.dp)
                     .clip(CircleShape)
-                    .background(AccentPrimary),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Filled.Favorite,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(48.dp)
                 )
             }
@@ -84,14 +79,14 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
             Text(
                 "CarePulse",
                 style = MaterialTheme.typography.displaySmall,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 "Care, connected.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = TextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(48.dp))
@@ -102,21 +97,21 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                         icon = Icons.Filled.Favorite,
                         title = "I'm Family",
                         subtitle = "Find caregivers and stay connected with your loved ones.",
-                        cardColor = AccentContainerLight,
+                        cardColor = MaterialTheme.colorScheme.primaryContainer,
                         onClick = { onRoleSelected(UserRole.CUSTOMER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.MedicalServices,
                         title = "I'm a Caregiver",
                         subtitle = "Offer your care services and grow your practice.",
-                        cardColor = AccentContainerLight,
+                        cardColor = MaterialTheme.colorScheme.primaryContainer,
                         onClick = { onRoleSelected(UserRole.CAREGIVER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.Business,
                         title = "We're an Agency",
                         subtitle = "Manage your caregivers, requests and bookings.",
-                        cardColor = AccentContainerLight,
+                        cardColor = MaterialTheme.colorScheme.primaryContainer,
                         onClick = { onRoleSelected(UserRole.AGENCY) }
                     )
                 }
@@ -151,18 +146,18 @@ private fun RoleCard(
                     Modifier
                         .size(56.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.6f)),
+                        .background(MaterialTheme.colorScheme.surface),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(28.dp))
+                    Icon(icon, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(28.dp))
                 }
                 Spacer(Modifier.width(16.dp))
                 Column(Modifier.weight(1f)) {
-                    Text(title, style = MaterialTheme.typography.titleLarge, color = TextPrimary, fontWeight = FontWeight.Bold)
+                    Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(2.dp))
-                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.75f))
+                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f))
                 }
-                Icon(Icons.Filled.ChevronRight, null, tint = TextPrimary)
+                Icon(Icons.Filled.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurface)
             }
         }
     }

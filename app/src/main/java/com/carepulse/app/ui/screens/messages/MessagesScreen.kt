@@ -33,10 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.PastelCard
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -52,14 +48,14 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                     Text(
                         "Messages",
                         style = MaterialTheme.typography.headlineMedium,
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.Bold
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         if (agencies.isEmpty()) {
             Box(
@@ -68,7 +64,7 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
             ) {
                 Text(
                     "No agencies available to chat with.",
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
@@ -88,7 +84,7 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                             Icon(
                                 Icons.Filled.ChatBubbleOutline,
                                 contentDescription = null,
-                                tint = AccentPrimary,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(32.dp)
                             )
                             Spacer(Modifier.width(12.dp))
@@ -96,14 +92,14 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                                 Text(
                                     agency.name,
                                     style = MaterialTheme.typography.titleMedium,
-                                    color = TextPrimary,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 if (agency.nearHospital.isNotBlank()) {
                                     Text(
                                         agency.nearHospital,
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = TextSecondary
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }

@@ -62,11 +62,6 @@ import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.LoadingShimmerList
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.RatingRow
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.delay
@@ -105,15 +100,15 @@ fun CustomerDashboardScreen(
                 title = {
                     Column {
                         Text("Hello, ${displayName.split(" ").first()}",
-                            style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("Find care today",
                             style = MaterialTheme.typography.headlineMedium,
-                            color = TextPrimary, fontWeight = FontWeight.Bold)
+                            color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                     }
                 },
                 actions = {
                     IconButton(onClick = onSignOut) {
-                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = TextSecondary)
+                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -122,13 +117,13 @@ fun CustomerDashboardScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = onRequestCare,
-                containerColor = AccentPrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
                 text = { Text("Request care") }
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -147,7 +142,7 @@ fun CustomerDashboardScreen(
             )
 
             Spacer(Modifier.height(Spacing.SectionSpacingCompact))
-            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = TextPrimary)
+            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
             FlowRow(
                 Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -162,7 +157,7 @@ fun CustomerDashboardScreen(
 
             Spacer(Modifier.height(Spacing.SectionSpacingCompact))
             Text("Minimum rating: ${"%.1f".format(minRating)}",
-                style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Slider(
                 value = minRating,
                 onValueChange = vm::setMinRating,
@@ -219,16 +214,16 @@ private fun PulseBanner(onClick: () -> Unit) {
                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.Favorite, null, tint = TextPrimary)
+            Icon(Icons.Filled.Favorite, null, tint = MaterialTheme.colorScheme.onSurface)
         }
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text("The Pulse Dashboard",
                 style = MaterialTheme.typography.titleLarge,
-                color = TextPrimary, fontWeight = FontWeight.Bold)
+                color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
             Text("Check today's vitals & video call",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextPrimary.copy(alpha = 0.75f))
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f))
         }
     }
 }
@@ -255,23 +250,23 @@ private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(c.name, style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                    color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.LocationOn, null, tint = TextSecondary,
+                    Icon(Icons.Filled.LocationOn, null, tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(14.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RatingRow(c.rating, c.ratingCount)
                     Spacer(Modifier.width(8.dp))
                     Text("· \$${c.hourlyRate}/hr",
-                        style = MaterialTheme.typography.labelLarge, color = TextPrimary)
+                        style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
                 }
                 Spacer(Modifier.height(6.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    c.specializations.forEach { PastelChip(it, color = BorderLine) }
+                    c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.outline) }
                 }
             }
         }

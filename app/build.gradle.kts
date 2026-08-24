@@ -62,11 +62,6 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 
-    // Google Sign-In via Credential Manager
-    implementation("androidx.credentials:credentials:1.3.0")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
-    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     // DataStore for user preferences (theme mode, etc.)

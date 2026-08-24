@@ -49,11 +49,6 @@ import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.components.RatingRow
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.AccentContainerLight
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,13 +72,13 @@ fun CaregiverDetailScreen(
                 title = { },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             Box(Modifier.padding(20.dp)) {
                 PrimaryButton(text = "Book ${c.name.split(" ").first()}", onClick = onBook)
@@ -104,7 +99,7 @@ fun CaregiverDetailScreen(
                     .fillMaxWidth()
                     .height(180.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(AccentContainerLight),
+                    .background(MaterialTheme.colorScheme.primaryContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -115,47 +110,47 @@ fun CaregiverDetailScreen(
                     )
                     Spacer(Modifier.height(8.dp))
                     Text(c.name, style = MaterialTheme.typography.titleLarge,
-                        color = TextPrimary, fontWeight = FontWeight.Bold)
-                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.75f))
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
+                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f))
                 }
             }
 
             // Stats row
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                StatTile(Modifier.weight(1f), title = "Rate", value = "\$${c.hourlyRate}/hr", color = BorderLine)
-                StatTile(Modifier.weight(1f), title = "Reviews", value = "${c.ratingCount}", color = BorderLine)
-                StatTile(Modifier.weight(1f), title = "Rating", value = "%.1f".format(c.rating), color = AccentContainerLight)
+                StatTile(Modifier.weight(1f), title = "Rate", value = "\$${c.hourlyRate}/hr", color = MaterialTheme.colorScheme.outline)
+                StatTile(Modifier.weight(1f), title = "Reviews", value = "${c.ratingCount}", color = MaterialTheme.colorScheme.outline)
+                StatTile(Modifier.weight(1f), title = "Rating", value = "%.1f".format(c.rating), color = MaterialTheme.colorScheme.primaryContainer)
             }
 
             PastelCard {
                 Column {
-                    Text("About", style = MaterialTheme.typography.titleMedium, color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("About", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(6.dp))
-                    Text(c.bio, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                    Text(c.bio, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
 
             PastelCard {
                 Column {
-                    Text("Qualifications", style = MaterialTheme.typography.titleMedium, color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Qualifications", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(6.dp))
                     c.qualifications.forEach { q ->
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
-                            Icon(Icons.Filled.CheckCircle, null, tint = AccentContainerLight, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.CheckCircle, null, tint = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(6.dp))
-                            Text(q, style = MaterialTheme.typography.bodyMedium, color = TextPrimary)
+                            Text(q, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                     Spacer(Modifier.height(8.dp))
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        c.specializations.forEach { PastelChip(it, color = BorderLine) }
+                        c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.outline) }
                     }
                 }
             }
 
             PastelCard {
                 Column {
-                    Text("Availability", style = MaterialTheme.typography.titleMedium, color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Availability", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(8.dp))
                     // Mini calendar layout: 7 columns for next week, rows for AM / PM
                     AvailabilityCalendar(c.availability)
@@ -167,7 +162,7 @@ fun CaregiverDetailScreen(
                 Text(
                     "Reviews",
                     style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(Modifier.height(8.dp))
@@ -180,13 +175,13 @@ fun CaregiverDetailScreen(
                                 Text(
                                     review.text,
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = TextPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             Text(
                                 "— ${review.reviewerName}",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = TextSecondary
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
@@ -208,8 +203,8 @@ private fun StatTile(modifier: Modifier = Modifier, title: String, value: String
             .padding(12.dp)
     ) {
         Column {
-            Text(title, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.7f))
-            Text(value, style = MaterialTheme.typography.titleLarge, color = TextPrimary, fontWeight = FontWeight.Bold)
+            Text(title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
+            Text(value, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -223,14 +218,14 @@ private fun AvailabilityCalendar(availability: List<String>) {
             Spacer(Modifier.width(36.dp))
             days.forEach { d ->
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text(d, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                    Text(d, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
         slots.forEach { slot ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.width(36.dp)) {
-                    Text(slot, style = MaterialTheme.typography.labelLarge, color = TextSecondary)
+                    Text(slot, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 days.forEach { d ->
                     val key = "$d $slot"
@@ -242,7 +237,7 @@ private fun AvailabilityCalendar(availability: List<String>) {
                             .padding(2.dp)
                             .height(28.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(if (available) AccentContainerLight else BorderLine.copy(alpha = 0.35f))
+                            .background(if (available) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                     )
                 }
             }
