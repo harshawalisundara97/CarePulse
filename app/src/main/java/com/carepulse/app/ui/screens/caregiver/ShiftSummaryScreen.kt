@@ -48,10 +48,6 @@ import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,16 +75,16 @@ fun ShiftSummaryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Shift Summary Report", color = TextPrimary, fontWeight = FontWeight.SemiBold) },
+                title = { Text("Shift Summary Report", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -101,7 +97,7 @@ fun ShiftSummaryScreen(
             PastelCard {
                 Column {
                     Text("Medications given", style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(8.dp))
                     medsState.value.forEachIndexed { i, m ->
                         Row(
@@ -119,12 +115,12 @@ fun ShiftSummaryScreen(
                             Icon(
                                 if (m.administered) Icons.Filled.CheckBox else Icons.Filled.CheckBoxOutlineBlank,
                                 null,
-                                tint = if (m.administered) AccentPrimary else TextSecondary
+                                tint = if (m.administered) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                             Spacer(Modifier.width(10.dp))
                             Column(Modifier.weight(1f)) {
-                                Text(m.name, color = TextPrimary, fontWeight = FontWeight.SemiBold)
-                                Text(m.dose, color = TextSecondary,
+                                Text(m.name, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+                                Text(m.dose, color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     style = MaterialTheme.typography.bodyMedium)
                             }
                         }
@@ -135,7 +131,7 @@ fun ShiftSummaryScreen(
             PastelCard {
                 Column {
                     Text("Vitals", style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(8.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         CarePulseTextField(
@@ -158,7 +154,7 @@ fun ShiftSummaryScreen(
                         )
                     }
                     Spacer(Modifier.height(10.dp))
-                    Text("Mood", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                    Text("Mood", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Mood.values().forEach { m ->
                             PastelChip(
@@ -171,7 +167,7 @@ fun ShiftSummaryScreen(
                     }
                     Spacer(Modifier.height(10.dp))
                     Text("Meals eaten: $meals / 3",
-                        style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                        style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         listOf(0, 1, 2, 3).forEach { v ->
                             PastelChip("$v", selected = v == meals, onClick = { meals = v })
@@ -183,7 +179,7 @@ fun ShiftSummaryScreen(
             PastelCard {
                 Column {
                     Text("Behavior notes", style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(8.dp))
                     CarePulseTextField(value = behavior, onValueChange = { behavior = it },
                         label = "Mood swings, agitation, etc.")
@@ -193,7 +189,7 @@ fun ShiftSummaryScreen(
             PastelCard {
                 Column {
                     Text("Day summary", style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(8.dp))
                     CarePulseTextField(value = summary, onValueChange = { summary = it },
                         label = "How was the day?")

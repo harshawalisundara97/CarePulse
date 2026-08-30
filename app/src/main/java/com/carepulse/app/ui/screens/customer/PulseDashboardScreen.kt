@@ -56,13 +56,7 @@ import com.carepulse.app.data.model.Mood
 import com.carepulse.app.data.model.VitalsLog
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.GeneratedAvatar
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.BorderLine
 import com.carepulse.app.ui.theme.DangerRed
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.AccentContainerLight
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlin.math.roundToInt
 
@@ -81,18 +75,18 @@ fun PulseDashboardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Pulse Dashboard", color = TextPrimary, fontWeight = FontWeight.Bold) },
+                title = { Text("Pulse Dashboard", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     if (onBack != null) {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -121,7 +115,7 @@ fun PulseDashboardScreen(
                         title = "Blood pressure",
                         targetValue = today.bloodPressureSystolic,
                         unit = "/${today.bloodPressureDiastolic} mmHg",
-                        accent = AccentPrimary
+                        accent = MaterialTheme.colorScheme.primary
                     )
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -144,21 +138,21 @@ fun PulseDashboardScreen(
                                 ) {
                                     Icon(
                                         today.mood.icon, null,
-                                        tint = TextPrimary,
+                                        tint = MaterialTheme.colorScheme.onSurface,
                                         modifier = Modifier.size(16.dp)
                                     )
                                 }
                                 Spacer(Modifier.width(8.dp))
-                                Text("Mood", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                                Text("Mood", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             Spacer(Modifier.height(8.dp))
                             Text(
                                 today.mood.label,
                                 style = MaterialTheme.typography.headlineMedium,
-                                color = TextPrimary,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.Bold
                             )
-                            Text("today", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                            Text("today", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     AnimatedVitalCard(
@@ -167,7 +161,7 @@ fun PulseDashboardScreen(
                         title = "Meals",
                         targetValue = today.mealsEaten,
                         unit = "/ 3 today",
-                        accent = BorderLine
+                        accent = MaterialTheme.colorScheme.outline
                     )
                 }
 
@@ -180,7 +174,7 @@ fun PulseDashboardScreen(
                         Text(
                             "Heart rate — 7 days",
                             style = MaterialTheme.typography.titleMedium,
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(Modifier.height(8.dp))
@@ -195,13 +189,13 @@ fun PulseDashboardScreen(
                             Text(
                                 "Blood pressure — 7 days",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = TextPrimary,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Spacer(Modifier.height(4.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                ChartLegendDot(AccentPrimary, "Systolic")
-                                ChartLegendDot(AccentPrimary.copy(alpha = 0.4f), "Diastolic")
+                                ChartLegendDot(MaterialTheme.colorScheme.primary, "Systolic")
+                                ChartLegendDot(MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), "Diastolic")
                             }
                             Spacer(Modifier.height(8.dp))
                             BpChart(
@@ -219,7 +213,7 @@ fun PulseDashboardScreen(
                             Text(
                                 "Mood — last 7 entries",
                                 style = MaterialTheme.typography.titleMedium,
-                                color = TextPrimary,
+                                color = MaterialTheme.colorScheme.onSurface,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Spacer(Modifier.height(10.dp))
@@ -236,17 +230,17 @@ fun PulseDashboardScreen(
                         Text(
                             "Shift Summary · ${report.dateLabel}",
                             style = MaterialTheme.typography.titleMedium,
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.SemiBold
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
                             "By ${report.caregiverName}",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text(report.daySummary, style = MaterialTheme.typography.bodyLarge, color = TextPrimary)
+                        Text(report.daySummary, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
                         Spacer(Modifier.height(10.dp))
                         report.medicationsGiven.forEach { m ->
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -254,13 +248,13 @@ fun PulseDashboardScreen(
                                     Modifier
                                         .size(10.dp)
                                         .clip(RoundedCornerShape(5.dp))
-                                        .background(if (m.administered) AccentContainerLight else BorderLine)
+                                        .background(if (m.administered) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline)
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
                                     "${m.name} · ${m.dose}",
                                     style = MaterialTheme.typography.bodyMedium,
-                                    color = TextPrimary
+                                    color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                         }
@@ -288,7 +282,7 @@ private fun WeeklyStatsStrip(vitals: List<VitalsLog>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         StatChip(Modifier.weight(1f), "Avg HR", "$avgHr bpm", DangerRed)
-        StatChip(Modifier.weight(1f), "Avg BP", "$avgSys/$avgDia", AccentPrimary)
+        StatChip(Modifier.weight(1f), "Avg BP", "$avgSys/$avgDia", MaterialTheme.colorScheme.primary)
         if (topMood != null) {
             StatChip(Modifier.weight(1f), "Top mood", topMood.label, topMood.color)
         }
@@ -305,7 +299,7 @@ private fun StatChip(modifier: Modifier, label: String, value: String, accent: C
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(
                 value,
                 style = MaterialTheme.typography.titleSmall,
@@ -332,11 +326,11 @@ private fun MoodDistributionBar(vitals: List<VitalsLog>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(mood.icon, null, tint = TextSecondary, modifier = Modifier.size(16.dp))
+            Icon(mood.icon, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
             Text(
                 mood.label,
                 style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.width(48.dp)
             )
             Box(
@@ -344,7 +338,7 @@ private fun MoodDistributionBar(vitals: List<VitalsLog>) {
                     .weight(1f)
                     .height(10.dp)
                     .clip(RoundedCornerShape(5.dp))
-                    .background(BorderLine)
+                    .background(MaterialTheme.colorScheme.outline)
             ) {
                 Box(
                     Modifier
@@ -354,7 +348,7 @@ private fun MoodDistributionBar(vitals: List<VitalsLog>) {
                         .background(mood.color)
                 )
             }
-            Text("$count", style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+            Text("$count", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -368,7 +362,7 @@ private fun ChartLegendDot(color: Color, label: String) {
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Box(Modifier.size(8.dp).clip(CircleShape).background(color))
-        Text(label, style = MaterialTheme.typography.bodySmall, color = TextSecondary)
+        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -402,19 +396,19 @@ private fun AnimatedVitalCard(
                         .background(accent.copy(alpha = 0.5f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(icon, null, tint = TextPrimary, modifier = Modifier.size(16.dp))
+                    Icon(icon, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
                 }
                 Spacer(Modifier.width(8.dp))
-                Text(title, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                Text(title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Spacer(Modifier.height(8.dp))
             Text(
                 "$displayValue",
                 style = MaterialTheme.typography.headlineMedium,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
-            Text(unit, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+            Text(unit, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -425,7 +419,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(22.dp))
-            .background(AccentContainerLight)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -435,13 +429,13 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
             Text(
                 name,
                 style = MaterialTheme.typography.titleLarge,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextPrimary.copy(alpha = 0.75f)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
             )
         }
         IconButton(
@@ -451,7 +445,7 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            Icon(Icons.Filled.VideoCall, null, tint = TextPrimary)
+            Icon(Icons.Filled.VideoCall, null, tint = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
@@ -470,6 +464,7 @@ private fun BpChart(systolic: List<Float>, diastolic: List<Float>) {
         label = "bpChart"
     )
     LaunchedEffect(Unit) { animated = 1f }
+    val lineColor = MaterialTheme.colorScheme.primary
 
     Canvas(
         Modifier
@@ -492,8 +487,8 @@ private fun BpChart(systolic: List<Float>, diastolic: List<Float>) {
         }
 
         clipRect(right = w * progress) {
-            drawPath(buildPath(systolic), color = AccentPrimary, style = Stroke(width = 5f))
-            drawPath(buildPath(diastolic), color = AccentPrimary.copy(alpha = 0.4f), style = Stroke(width = 3f))
+            drawPath(buildPath(systolic), color = lineColor, style = Stroke(width = 5f))
+            drawPath(buildPath(diastolic), color = lineColor.copy(alpha = 0.4f), style = Stroke(width = 3f))
         }
     }
 }
@@ -511,6 +506,8 @@ private fun HeartRateChart(values: List<Float>) {
         label = "hrChart"
     )
     LaunchedEffect(Unit) { animated = 1f }
+    val pointColor = MaterialTheme.colorScheme.onSurface
+    val hrLineColor = MaterialTheme.colorScheme.primary
 
     Canvas(
         Modifier
@@ -528,12 +525,12 @@ private fun HeartRateChart(values: List<Float>) {
             if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
         }
         clipRect(right = w * progress) {
-            drawPath(path = path, color = AccentPrimary, style = Stroke(width = 6f))
+            drawPath(path = path, color = hrLineColor, style = Stroke(width = 6f))
         }
         values.forEachIndexed { i, v ->
             val x = padding + stepX * i
             val y = h - padding - ((v - min) / (max - min)) * (h - padding * 2)
-            drawCircle(color = TextPrimary, radius = 4f, center = Offset(x, y))
+            drawCircle(color = pointColor, radius = 4f, center = Offset(x, y))
         }
     }
 }

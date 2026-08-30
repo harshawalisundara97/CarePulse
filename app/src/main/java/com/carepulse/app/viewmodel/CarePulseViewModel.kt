@@ -1,6 +1,5 @@
 package com.carepulse.app.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -9,7 +8,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.carepulse.app.CarePulseApplication
 import com.carepulse.app.data.auth.AuthRepository
 import com.carepulse.app.data.auth.AuthState
-import com.carepulse.app.data.auth.GoogleSignInHelper
 import com.carepulse.app.data.model.Agency
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.CareRequest
@@ -43,7 +41,6 @@ import java.util.UUID
 class CarePulseViewModel(
     private val auth: AuthRepository,
     private val repo: CarePulseRepository,
-    private val googleHelper: GoogleSignInHelper,
     private val chatRepo: com.carepulse.app.data.repository.FirestoreChatRepository
 ) : ViewModel() {
 
@@ -171,9 +168,8 @@ class CarePulseViewModel(
             _profile.value = p
         }
 
-    fun signInWithGoogle(context: Context, role: UserRole) = launchAuth {
-        val token = googleHelper.getGoogleIdToken(context).getOrThrow()
-        val user = auth.signInWithGoogleIdToken(token).getOrThrow()
+    fun signInWithGoogle(activity: android.app.Activity, role: UserRole) = launchAuth {
+        val user = auth.signInWithGoogleBrowser(activity).getOrThrow()
         _profile.value = repo.getUserProfile(user.uid)
             ?: UserProfile(user.uid, user.email, user.displayName.orEmpty(), role)
                 .also { repo.saveUserProfile(it) }
@@ -548,7 +544,6 @@ class CarePulseViewModel(
                 CarePulseViewModel(
                     app.authRepository,
                     app.repository,
-                    app.googleSignInHelper,
                     app.chatRepository
                 )
             }

@@ -62,13 +62,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.TextButton
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.AccentContainerLight
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.CardSurface
-import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.ui.theme.DangerRed
 import com.carepulse.app.ui.theme.SuccessGreen
 import com.carepulse.app.ui.theme.WarningAmber
@@ -98,7 +91,7 @@ fun PrimaryButton(
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .clip(RoundedCornerShape(Radii.Button))
             .background(
-                color = if (enabled) AccentPrimary else AccentPrimary.copy(alpha = 0.4f),
+                color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
                 shape = RoundedCornerShape(Radii.Button)
             )
             .clickable(
@@ -233,13 +226,13 @@ fun CarePulseTextField(
         keyboardOptions = KeyboardOptions(capitalization = capitalization),
         shape = RoundedCornerShape(Radii.Input),
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = AccentPrimary,
-            unfocusedBorderColor = BorderLine,
-            focusedLabelColor = AccentPrimary,
-            unfocusedLabelColor = TextSecondary,
-            cursorColor = AccentPrimary,
-            focusedContainerColor = CardSurface,
-            unfocusedContainerColor = CardSurface,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
         )
     )
 }
@@ -247,10 +240,10 @@ fun CarePulseTextField(
 @Composable
 fun SectionHeader(title: String, subtitle: String? = null, modifier: Modifier = Modifier) {
     Column(modifier = modifier.padding(vertical = 8.dp)) {
-        Text(title, style = MaterialTheme.typography.headlineMedium, color = TextPrimary)
+        Text(title, style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface)
         if (subtitle != null) {
             Spacer(Modifier.height(2.dp))
-            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+            Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -281,13 +274,13 @@ fun GeneratedAvatar(seed: Int, initials: String, size: Int = 56, modifier: Modif
         modifier = modifier
             .size(size.dp)
             .clip(CircleShape)
-            .background(AccentContainerLight)
+            .background(MaterialTheme.colorScheme.primaryContainer)
             .border(2.dp, Color.White, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Text(
             initials.take(2).uppercase(),
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.titleMedium
         )
@@ -314,7 +307,7 @@ fun ProfileAvatar(
         modifier = modifier
             .size(size.dp)
             .clip(CircleShape)
-            .border(2.dp, AccentPrimary, CircleShape),
+            .border(2.dp, MaterialTheme.colorScheme.primary, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         if (hasPhoto && file != null) {
@@ -343,11 +336,11 @@ fun RatingRow(rating: Float, count: Int, modifier: Modifier = Modifier) {
         Text(
             "%.1f".format(rating),
             style = MaterialTheme.typography.labelLarge,
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.width(4.dp))
-        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -356,10 +349,10 @@ fun PastelChip(
     label: String,
     selected: Boolean = false,
     onClick: (() -> Unit)? = null,
-    color: Color = BorderLine,
+    color: Color = MaterialTheme.colorScheme.outline,
     leadingIcon: ImageVector? = null
 ) {
-    val bg = if (selected) AccentPrimary else color
+    val bg = if (selected) MaterialTheme.colorScheme.primary else color
     val base = Modifier
         .padding(2.dp)
         .clip(RoundedCornerShape(14.dp))
@@ -372,12 +365,12 @@ fun PastelChip(
         ) {
             if (leadingIcon != null) {
                 Icon(leadingIcon, contentDescription = null,
-                    tint = if (selected) Color.White else TextPrimary, modifier = Modifier.size(16.dp))
+                    tint = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
             }
             Text(
                 label,
                 style = MaterialTheme.typography.labelLarge,
-                color = if (selected) Color.White else TextPrimary
+                color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -396,7 +389,7 @@ fun ShimmerBox(width: Int, height: Int, modifier: Modifier = Modifier) {
         modifier
             .size(width.dp, height.dp)
             .clip(RoundedCornerShape(12.dp))
-            .background(BorderLine.copy(alpha = alpha))
+            .background(MaterialTheme.colorScheme.outline.copy(alpha = alpha))
     )
 }
 

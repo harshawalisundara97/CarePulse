@@ -50,12 +50,6 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.BorderLine
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.AccentContainerLight
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,17 +75,17 @@ fun CaregiverDashboardScreen(
             TopAppBar(
                 title = {
                     Column {
-                        Text("Good morning,", style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                        Text("Good morning,", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(displayName, style = MaterialTheme.typography.headlineMedium,
-                            color = TextPrimary, fontWeight = FontWeight.Bold)
+                            color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                     }
                 },
                 actions = {
                     IconButton(onClick = onEditProfile) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Edit profile", tint = TextSecondary)
+                        Icon(Icons.Filled.Edit, contentDescription = "Edit profile", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     IconButton(onClick = onSignOut) {
-                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = TextSecondary)
+                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
@@ -102,11 +96,11 @@ fun CaregiverDashboardScreen(
                 onClick = onLogVitals,
                 icon = { Icon(Icons.Filled.MonitorHeart, contentDescription = null) },
                 text = { Text("Log Vitals") },
-                containerColor = AccentPrimary,
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -120,7 +114,7 @@ fun CaregiverDashboardScreen(
                 Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(22.dp))
-                    .background(AccentContainerLight)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(18.dp)
             ) {
                 Column {
@@ -129,42 +123,42 @@ fun CaregiverDashboardScreen(
                             Modifier
                                 .size(10.dp)
                                 .clip(CircleShape)
-                                .background(Color.White)
+                                .background(MaterialTheme.colorScheme.onPrimaryContainer)
                         )
                         Spacer(Modifier.width(6.dp))
                         Text("Active shift",
-                            color = TextPrimary, fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold,
                             style = MaterialTheme.typography.labelLarge)
                     }
                     Spacer(Modifier.height(10.dp))
                     Text("Mr. Lee", style = MaterialTheme.typography.headlineMedium,
-                        color = TextPrimary, fontWeight = FontWeight.Bold)
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.LocationOn, null, tint = TextPrimary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.LocationOn, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
                         Text("Brookside Care · Room 204",
-                            style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.8f))
+                            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.AccessTime, null, tint = TextPrimary, modifier = Modifier.size(16.dp))
+                        Icon(Icons.Filled.AccessTime, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
                         Spacer(Modifier.width(4.dp))
                         Text("9:00 AM – 1:00 PM",
-                            style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.8f))
+                            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
                     }
                 }
             }
 
             // Quick stats
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Stat(Modifier.weight(1f), "Today", "1 shift", BorderLine)
-                Stat(Modifier.weight(1f), "This week", "12 hrs", AccentContainerLight)
-                Stat(Modifier.weight(1f), "Earnings", "\$340", AccentPrimary)
+                Stat(Modifier.weight(1f), "Today", "1 shift", MaterialTheme.colorScheme.outline)
+                Stat(Modifier.weight(1f), "This week", "12 hrs", MaterialTheme.colorScheme.primaryContainer)
+                Stat(Modifier.weight(1f), "Earnings", "\$340", MaterialTheme.colorScheme.primary)
             }
 
             PastelCard {
                 Column {
                     Text("Upcoming patients", style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(10.dp))
                     listOf("Mrs. Adler" to "Tomorrow, 9 AM", "Mr. Patel" to "Thu, 2 PM").forEach { (n, t) ->
                         Row(verticalAlignment = Alignment.CenterVertically,
@@ -173,8 +167,8 @@ fun CaregiverDashboardScreen(
                             Spacer(Modifier.width(12.dp))
                             Column(Modifier.weight(1f)) {
                                 Text(n, style = MaterialTheme.typography.bodyLarge,
-                                    color = TextPrimary, fontWeight = FontWeight.SemiBold)
-                                Text(t, style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                                    color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+                                Text(t, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                     }
@@ -186,7 +180,7 @@ fun CaregiverDashboardScreen(
                 Text(
                     "Upcoming shifts",
                     style = MaterialTheme.typography.titleMedium,
-                    color = TextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
                 myShifts.forEachIndexed { index, shift ->
@@ -207,12 +201,12 @@ fun CaregiverDashboardScreen(
                                     Text(
                                         shift.patientName,
                                         style = MaterialTheme.typography.bodyLarge,
-                                        color = TextPrimary
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
                                         "${shift.dateLabel} · ${shift.timeSlot}",
                                         style = MaterialTheme.typography.bodySmall,
-                                        color = TextSecondary
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     if (shift.status == com.carepulse.app.data.model.BookingStatus.CONFIRMED) {
                                         Spacer(Modifier.height(8.dp))
@@ -244,10 +238,10 @@ private fun Stat(modifier: Modifier = Modifier, title: String, value: String, co
             .padding(14.dp)
     ) {
         Column {
-            Text(title, style = MaterialTheme.typography.bodyMedium, color = TextPrimary.copy(alpha = 0.7f))
+            Text(title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
             Spacer(Modifier.height(2.dp))
             Text(value, style = MaterialTheme.typography.titleLarge,
-                color = TextPrimary, fontWeight = FontWeight.Bold)
+                color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
         }
     }
 }

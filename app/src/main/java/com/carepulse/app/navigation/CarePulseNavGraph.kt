@@ -75,10 +75,6 @@ import com.carepulse.app.ui.screens.messages.ConversationScreen
 import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
 import com.carepulse.app.viewmodel.CarePulseViewModel
@@ -162,7 +158,7 @@ fun CarePulseNavGraph() {
     }
 
     Scaffold(
-        containerColor = Background,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             if (showBottomBar) {
                 BottomBar(
@@ -416,10 +412,10 @@ private fun BottomBar(
                 },
                 label = { Text(tab.label) },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = AccentPrimary,
-                    selectedTextColor = AccentPrimary,
-                    unselectedIconColor = TextSecondary,
-                    unselectedTextColor = TextSecondary,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     indicatorColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )

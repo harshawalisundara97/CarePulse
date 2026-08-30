@@ -41,9 +41,6 @@ import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import kotlinx.coroutines.launch
 
@@ -67,17 +64,17 @@ fun VitalsLogScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Log Vitals", color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Log Vitals", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background,
+        containerColor = MaterialTheme.colorScheme.background,
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(
@@ -91,7 +88,7 @@ fun VitalsLogScreen(
             Text(
                 "Record a quick vitals snapshot — it will appear on the family's Pulse dashboard immediately.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             PastelCard {
@@ -99,7 +96,7 @@ fun VitalsLogScreen(
                     Text(
                         "Vitals",
                         style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(10.dp))
@@ -131,7 +128,7 @@ fun VitalsLogScreen(
                     Text(
                         "Mood",
                         style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(8.dp))
@@ -149,7 +146,7 @@ fun VitalsLogScreen(
                     Text(
                         "Meals eaten: $meals / 3",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         listOf(0, 1, 2, 3).forEach { v ->
@@ -164,7 +161,7 @@ fun VitalsLogScreen(
                     Text(
                         "Notes",
                         style = MaterialTheme.typography.titleMedium,
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontWeight = FontWeight.SemiBold
                     )
                     Spacer(Modifier.height(8.dp))

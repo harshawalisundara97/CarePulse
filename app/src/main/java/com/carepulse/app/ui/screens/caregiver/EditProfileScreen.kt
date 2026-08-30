@@ -2,6 +2,7 @@
 
 package com.carepulse.app.ui.screens.caregiver
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -30,8 +31,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TextPrimary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -53,17 +52,17 @@ fun EditProfileScreen(vm: CarePulseViewModel, onDone: () -> Unit) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Edit Profile", color = TextPrimary, fontWeight = FontWeight.Bold)
+                    Text("Edit Profile", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
                 },
                 navigationIcon = {
                     IconButton(onClick = onDone) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier

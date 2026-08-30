@@ -37,11 +37,10 @@ import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.AccentPrimary
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,6 +66,7 @@ fun LoginScreen(
     val info by vm.authInfo.collectAsState()
     val profile by vm.profile.collectAsState()
     val context = LocalContext.current
+    val activity = remember(context) { context.findActivity() }
 
     // Navigate once authentication has produced a profile.
     LaunchedEffect(profile, loading) {
@@ -85,16 +85,16 @@ fun LoginScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("$title sign-in", color = TextPrimary) },
+                title = { Text("$title sign-in", color = MaterialTheme.colorScheme.onSurface) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -105,7 +105,7 @@ fun LoginScreen(
         ) {
             Text(
                 if (isSignUp) "Create your account" else "Welcome back",
-                style = MaterialTheme.typography.headlineLarge, color = TextPrimary
+                style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 when {
@@ -113,7 +113,7 @@ fun LoginScreen(
                     isCaregiver -> "Manage your shifts and patients."
                     else -> "Find a caregiver and check in on your loved ones."
                 },
-                style = MaterialTheme.typography.bodyMedium, color = TextSecondary
+                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(8.dp))
 
@@ -152,7 +152,7 @@ fun LoginScreen(
                     style = MaterialTheme.typography.bodySmall)
             }
             info?.let {
-                Text(it, color = AccentPrimary,
+                Text(it, color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
             }
 
@@ -181,12 +181,12 @@ fun LoginScreen(
                 OutlinedButton(
                     onClick = {
                         submitted = true
-                        vm.signInWithGoogle(context, userRole)
+                        activity?.let { vm.signInWithGoogle(it, userRole) }
                     },
                     enabled = !loading,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Continue with Google", color = TextPrimary, fontWeight = FontWeight.SemiBold)
+                    Text("Continue with Google", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 }
             }
 
@@ -199,7 +199,7 @@ fun LoginScreen(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     if (isSignUp) "Already have an account?" else "New to CarePulse?",
-                    style = MaterialTheme.typography.bodyMedium, color = TextSecondary
+                    style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError(); vm.clearAuthInfo() }) {
                     Text(if (isSignUp) "Sign in" else "Create account")
@@ -207,4 +207,11 @@ fun LoginScreen(
             }
         }
     }
+}
+
+/** Unwraps [ContextWrapper]s (e.g. Compose's [android.content.ContextThemeWrapper]) to find the hosting Activity. */
+private fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

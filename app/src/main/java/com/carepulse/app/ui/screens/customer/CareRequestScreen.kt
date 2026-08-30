@@ -37,9 +37,6 @@ import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
-import com.carepulse.app.ui.theme.Background
-import com.carepulse.app.ui.theme.TextPrimary
-import com.carepulse.app.ui.theme.TextSecondary
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -61,17 +58,17 @@ fun CareRequestScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Request a caregiver", color = TextPrimary,
+                title = { Text("Request a caregiver", color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = TextPrimary)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
@@ -85,7 +82,7 @@ fun CareRequestScreen(
             Label("Choose a caregiving company")
             if (agencies.isEmpty()) {
                 Text("No companies available yet.",
-                    style = MaterialTheme.typography.bodyMedium, color = TextSecondary)
+                    style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     agencies.forEach { a ->
@@ -143,7 +140,7 @@ fun CareRequestScreen(
 @Composable
 private fun Label(text: String) {
     Text(text, style = MaterialTheme.typography.titleMedium,
-        color = TextPrimary, fontWeight = FontWeight.SemiBold)
+        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
 }
 
 @Composable
