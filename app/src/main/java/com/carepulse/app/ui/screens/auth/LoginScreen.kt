@@ -32,11 +32,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.PrimaryButton
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
 import android.app.Activity
 import android.content.Context
@@ -82,127 +85,137 @@ fun LoginScreen(
         else -> "Family"
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("$title sign-in", color = MaterialTheme.colorScheme.onSurface) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(24.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                if (isSignUp) "Create your account" else "Welcome back",
-                style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                when {
-                    isAgency -> "Manage your caregivers, requests and bookings."
-                    isCaregiver -> "Manage your shifts and patients."
-                    else -> "Find a caregiver and check in on your loved ones."
-                },
-                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(Modifier.height(8.dp))
-
-            if (isSignUp) {
-                if (isAgency) {
-                    CarePulseTextField(
-                        value = agencyName,
-                        onValueChange = { agencyName = it },
-                        label = "Company name",
-                        capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
-                    )
-                }
-                CarePulseTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = if (isAgency) "Your name (admin)" else "Full name",
-                    capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
-                )
-            }
-            CarePulseTextField(value = email, onValueChange = { email = it }, label = "Email")
-            CarePulseTextField(value = password, onValueChange = { password = it }, label = "Password")
-
-            if (!isSignUp) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(
-                        onClick = { vm.clearAuthError(); vm.resetPassword(email) },
-                        enabled = !loading
-                    ) {
-                        Text("Forgot password?")
-                    }
-                }
-            }
-
-            error?.let {
-                Text(it, color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall)
-            }
-            info?.let {
-                Text(it, color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
-            }
-
-            Spacer(Modifier.height(8.dp))
-
-            PrimaryButton(
-                text = when {
-                    loading -> "Please wait…"
-                    isSignUp -> "Create account"
-                    else -> "Sign in"
-                },
-                onClick = {
-                    submitted = true
-                    when {
-                        isSignUp && isAgency -> vm.signUpAgency(email, password, name, agencyName)
-                        isSignUp -> vm.signUp(email, password, name, userRole)
-                        else -> vm.signIn(email, password)
-                    }
-                },
-                enabled = !loading && email.isNotBlank() && password.isNotBlank() &&
-                    (!isSignUp || name.isNotBlank()) &&
-                    (!isSignUp || !isAgency || agencyName.isNotBlank())
-            )
-
-            if (!isAgency) {
-                OutlinedButton(
-                    onClick = {
-                        submitted = true
-                        activity?.let { vm.signInWithGoogle(it, userRole) }
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = { Text("$title sign-in", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface) },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onSurface)
+                        }
                     },
-                    enabled = !loading,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Continue with Google", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
-                }
-            }
-
-            if (loading) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = Spacing.ScreenPaddingCompact)
+                    .padding(bottom = Spacing.ScreenPaddingCompact),
+                verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
+            ) {
                 Text(
-                    if (isSignUp) "Already have an account?" else "New to CarePulse?",
+                    if (isSignUp) "Create your account" else "Welcome back",
+                    style = MaterialTheme.typography.headlineLarge, color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    when {
+                        isAgency -> "Manage your caregivers, requests and bookings."
+                        isCaregiver -> "Manage your shifts and patients."
+                        else -> "Find a caregiver and check in on your loved ones."
+                    },
                     style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError(); vm.clearAuthInfo() }) {
-                    Text(if (isSignUp) "Sign in" else "Create account")
+                Spacer(Modifier.height(8.dp))
+
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
+                        .padding(Spacing.CardPaddingCompact),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
+                ) {
+                    if (isSignUp) {
+                        if (isAgency) {
+                            CarePulseTextField(
+                                value = agencyName,
+                                onValueChange = { agencyName = it },
+                                label = "Company name",
+                                capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
+                            )
+                        }
+                        CarePulseTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            label = if (isAgency) "Your name (admin)" else "Full name",
+                            capitalization = androidx.compose.ui.text.input.KeyboardCapitalization.Words
+                        )
+                    }
+                    CarePulseTextField(value = email, onValueChange = { email = it }, label = "Email")
+                    CarePulseTextField(value = password, onValueChange = { password = it }, label = "Password")
+
+                    if (!isSignUp) {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                            TextButton(
+                                onClick = { vm.clearAuthError(); vm.resetPassword(email) },
+                                enabled = !loading
+                            ) {
+                                Text("Forgot password?")
+                            }
+                        }
+                    }
+
+                    error?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+                    info?.let {
+                        Text(it, color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.bodySmall)
+                    }
+
+                    PrimaryButton(
+                        text = when {
+                            loading -> "Please wait…"
+                            isSignUp -> "Create account"
+                            else -> "Sign in"
+                        },
+                        onClick = {
+                            submitted = true
+                            when {
+                                isSignUp && isAgency -> vm.signUpAgency(email, password, name, agencyName)
+                                isSignUp -> vm.signUp(email, password, name, userRole)
+                                else -> vm.signIn(email, password)
+                            }
+                        },
+                        enabled = !loading && email.isNotBlank() && password.isNotBlank() &&
+                            (!isSignUp || name.isNotBlank()) &&
+                            (!isSignUp || !isAgency || agencyName.isNotBlank())
+                    )
+
+                    if (!isAgency) {
+                        OutlinedButton(
+                            onClick = {
+                                submitted = true
+                                activity?.let { vm.signInWithGoogle(it, userRole) }
+                            },
+                            enabled = !loading,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Continue with Google", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
+                        }
+                    }
+
+                    if (loading) {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        if (isSignUp) "Already have an account?" else "New to CarePulse?",
+                        style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError(); vm.clearAuthInfo() }) {
+                        Text(if (isSignUp) "Sign in" else "Create account")
+                    }
                 }
             }
         }

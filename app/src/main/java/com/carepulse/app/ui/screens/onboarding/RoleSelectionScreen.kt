@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.ChevronRight
@@ -26,37 +25,37 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.glassCard
+import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { visible = true }
 
-    Box(
-        Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-    ) {
+    GlassScreen { hazeState ->
         Column(
-            Modifier.fillMaxSize(),
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = Spacing.ScreenPaddingCompact),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -65,7 +64,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                 Modifier
                     .size(96.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary),
+                    .background(AccentPrimary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -78,9 +77,8 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
             Spacer(Modifier.height(24.dp))
             Text(
                 "CarePulse",
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -92,26 +90,26 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
             Spacer(Modifier.height(48.dp))
 
             AnimatedVisibility(visible, enter = fadeIn() + slideInVertically(), exit = fadeOut()) {
-                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)) {
                     RoleCard(
                         icon = Icons.Filled.Favorite,
                         title = "I'm Family",
                         subtitle = "Find caregivers and stay connected with your loved ones.",
-                        cardColor = MaterialTheme.colorScheme.primaryContainer,
+                        hazeState = hazeState,
                         onClick = { onRoleSelected(UserRole.CUSTOMER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.MedicalServices,
                         title = "I'm a Caregiver",
                         subtitle = "Offer your care services and grow your practice.",
-                        cardColor = MaterialTheme.colorScheme.primaryContainer,
+                        hazeState = hazeState,
                         onClick = { onRoleSelected(UserRole.CAREGIVER) }
                     )
                     RoleCard(
                         icon = Icons.Filled.Business,
                         title = "We're an Agency",
                         subtitle = "Manage your caregivers, requests and bookings.",
-                        cardColor = MaterialTheme.colorScheme.primaryContainer,
+                        hazeState = hazeState,
                         onClick = { onRoleSelected(UserRole.AGENCY) }
                     )
                 }
@@ -125,40 +123,33 @@ private fun RoleCard(
     icon: ImageVector,
     title: String,
     subtitle: String,
-    cardColor: Color,
+    hazeState: HazeState,
     onClick: () -> Unit
 ) {
-    Surface(
-        modifier = Modifier
+    Box(
+        Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .clickable { onClick() },
-        shape = RoundedCornerShape(24.dp),
-        color = Color.Transparent
+            .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
+            .clickable { onClick() }
+            .padding(Spacing.CardPaddingCompact)
     ) {
-        Box(
-            Modifier
-                .background(cardColor)
-                .padding(20.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surface),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(icon, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(28.dp))
-                }
-                Spacer(Modifier.width(16.dp))
-                Column(Modifier.weight(1f)) {
-                    Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(2.dp))
-                    Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f))
-                }
-                Icon(Icons.Filled.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurface)
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                Modifier
+                    .size(56.dp)
+                    .clip(CircleShape)
+                    .background(AccentPrimary.copy(alpha = 0.14f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(icon, null, tint = AccentPrimary, modifier = Modifier.size(28.dp))
             }
+            Spacer(Modifier.width(16.dp))
+            Column(Modifier.weight(1f)) {
+                Text(title, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface)
+                Spacer(Modifier.height(2.dp))
+                Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+            }
+            Icon(Icons.Filled.ChevronRight, null, tint = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
