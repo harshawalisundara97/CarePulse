@@ -4,6 +4,7 @@ package com.carepulse.app.ui.screens.customer
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -24,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
@@ -45,15 +45,27 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.carepulse.app.R
 import com.carepulse.app.ui.components.CarePulseTextField
-import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Motion
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.StatusAvailable
+import com.carepulse.app.ui.theme.TypeNumericM
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.delay
+import java.text.NumberFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,47 +85,61 @@ fun BookingScreen(
     var time by remember { mutableStateOf(times.first()) }
     var patientName by remember { mutableStateOf("") }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Book ${caregiver.name}", color = MaterialTheme.colorScheme.onSurface) },
-                navigationIcon = {
-                    IconButton(onClick = { if (step == 0) onBack() else step-- }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding).padding(20.dp)) {
-            AnimatedContent(
-                targetState = step,
-                transitionSpec = {
-                    (slideInHorizontally { it } + fadeIn()) togetherWith
-                        (slideOutHorizontally { -it } + fadeOut()) using SizeTransform(clip = false)
-                },
-                label = "bookingStep"
-            ) { current ->
-                when (current) {
-                    0 -> StepPick(
-                        dates, times, date, time,
-                        onDate = { date = it }, onTime = { time = it },
-                        onNext = { step = 1 }
-                    )
-                    1 -> StepConfirm(
-                        caregiverName = caregiver.name,
-                        hourlyRate = caregiver.hourlyRate,
-                        date = date, time = time,
-                        patientName = patientName,
-                        onPatientName = { patientName = it },
-                        onConfirm = {
-                            vm.confirmBooking(caregiver, patientName.ifBlank { "My loved one" }, date, time, 4)
-                            step = 2
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = { Text("Book ${caregiver.name}", color = MaterialTheme.colorScheme.onSurface) },
+                    navigationIcon = {
+                        IconButton(onClick = { if (step == 0) onBack() else step-- }) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.common_back),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
-                    )
-                    2 -> StepSuccess(onDone = onComplete)
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(Spacing.ScreenPaddingCompact)
+            ) {
+                AnimatedContent(
+                    targetState = step,
+                    transitionSpec = {
+                        (slideInHorizontally { it } + fadeIn()) togetherWith
+                            (slideOutHorizontally { -it } + fadeOut()) using SizeTransform(clip = false)
+                    },
+                    label = "bookingStep"
+                ) { current ->
+                    when (current) {
+                        0 -> StepPick(
+                            dates, times, date, time,
+                            onDate = { date = it }, onTime = { time = it },
+                            onNext = { step = 1 },
+                            hazeState = hazeState
+                        )
+                        1 -> StepConfirm(
+                            caregiverName = caregiver.name,
+                            hourlyRate = caregiver.hourlyRate,
+                            date = date, time = time,
+                            patientName = patientName,
+                            onPatientName = { patientName = it },
+                            onConfirm = {
+                                vm.confirmBooking(caregiver, patientName.ifBlank { "My loved one" }, date, time, 4)
+                                step = 2
+                            },
+                            hazeState = hazeState
+                        )
+                        2 -> StepSuccess(onDone = onComplete)
+                    }
                 }
             }
         }
@@ -125,7 +151,8 @@ private fun StepPick(
     dates: List<String>, times: List<String>,
     date: String, time: String,
     onDate: (String) -> Unit, onTime: (String) -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    hazeState: HazeState
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("1 of 3 — Select date & time",
@@ -133,7 +160,12 @@ private fun StepPick(
         Text("When do you need care?",
             style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
 
-        PastelCard {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
+                .padding(Spacing.CardPaddingCompact)
+        ) {
             Column {
                 Text("Date", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.height(8.dp))
@@ -144,7 +176,12 @@ private fun StepPick(
                 }
             }
         }
-        PastelCard {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
+                .padding(Spacing.CardPaddingCompact)
+        ) {
             Column {
                 Text("Time slot", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
                 Spacer(Modifier.height(8.dp))
@@ -164,15 +201,31 @@ private fun StepPick(
 private fun StepConfirm(
     caregiverName: String, hourlyRate: Int,
     date: String, time: String, patientName: String,
-    onPatientName: (String) -> Unit, onConfirm: () -> Unit
+    onPatientName: (String) -> Unit, onConfirm: () -> Unit,
+    hazeState: HazeState
 ) {
+    // Booking total: rate x hours, where hours is the fixed 4-hour length of every time slot
+    // offered in `times` above. This mirrors CarePulseViewModel.confirmBooking's own
+    // `caregiver.hourlyRate * hours` computation (hours = 4 there too) -- see task-11-report.md
+    // for the pre-existing "hours" hardcode this screen and the ViewModel share, which is out of
+    // this styling task's scope. Only the display formatting (LKR + thousands separator) below
+    // is new; the multiplication itself is unchanged.
+    val estimatedHours = 4
+    val total = hourlyRate * estimatedHours
+    val formattedTotal = "LKR " + NumberFormat.getNumberInstance(Locale.US).format(total)
+
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("2 of 3 — Confirm details",
             style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text("Almost done", style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
 
-        PastelCard {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
+                .padding(Spacing.CardPaddingCompact)
+        ) {
             Column {
                 Row {
                     Text("Caregiver", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -189,10 +242,9 @@ private fun StepConfirm(
                     Text(time, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 }
                 androidx.compose.material3.HorizontalDivider(Modifier.padding(vertical = 10.dp))
-                Row {
-                    Text("Estimated total (4 hrs)", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Text("\$${hourlyRate * 4}", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Estimated total ($estimatedHours hrs)", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(formattedTotal, color = MaterialTheme.colorScheme.onSurface, style = TypeNumericM)
                 }
             }
         }
@@ -208,6 +260,11 @@ private fun StepConfirm(
 private fun StepSuccess(onDone: () -> Unit) {
     var visible by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { delay(150); visible = true }
+    val tickScale by animateFloatAsState(
+        targetValue = if (visible) 1f else 0f,
+        animationSpec = tween(durationMillis = Motion.BottomSheet, easing = Motion.Emphasized),
+        label = "successTickScale"
+    )
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -216,11 +273,12 @@ private fun StepSuccess(onDone: () -> Unit) {
         Box(
             Modifier
                 .size(120.dp)
+                .scale(tickScale)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(StatusAvailable.copy(alpha = 0.16f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.CheckCircle, null, tint = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.size(72.dp))
+            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = StatusAvailable, modifier = Modifier.size(72.dp))
         }
         Spacer(Modifier.height(24.dp))
         Text("Booking confirmed!", style = MaterialTheme.typography.headlineLarge,
