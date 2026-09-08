@@ -79,6 +79,9 @@ dependencies {
 
     // Material3 pull-to-refresh + swipe-to-dismiss
     implementation("androidx.compose.material3:material3:1.3.0")
+    // Backdrop blur for the glass-on-grid design system
+    implementation("dev.chrisbanes.haze:haze:0.7.3")
+    implementation("dev.chrisbanes.haze:haze-materials:0.7.3")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
