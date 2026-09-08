@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -97,10 +98,19 @@ fun CarePulseTheme(
         else -> LightBrandScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = CarePulseTypography,
-        shapes = CarePulseShapes,
-        content = content
-    )
+    // Glass surfaces (Glass.kt) must key off the app's *resolved* dark/light flag, not the raw
+    // system setting — isSystemInDarkTheme() disagrees with `useDark` whenever the user has
+    // overridden the theme (ThemeMode.LIGHT/DARK) away from ThemeMode.SYSTEM. Exposing it here
+    // keeps every glass consumer in sync with whatever ColorScheme MaterialTheme resolves below.
+    CompositionLocalProvider(
+        LocalIsDarkTheme provides useDark,
+        LocalGlassEnabled provides true,
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = CarePulseTypography,
+            shapes = CarePulseShapes,
+            content = content
+        )
+    }
 }

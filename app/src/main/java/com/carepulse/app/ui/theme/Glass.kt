@@ -3,7 +3,6 @@ package com.carepulse.app.ui.theme
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,15 +20,31 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.haze
 import dev.chrisbanes.haze.hazeChild
 
 /**
  * Gates backdrop blur app-wide. False on devices/preferences where blur should be skipped —
  * every consumer of [glassCard] MUST still render correctly with this false, via the opaque
- * fallback branch.
+ * fallback branch. Provided by [CarePulseTheme].
  */
 val LocalGlassEnabled: ProvidableCompositionLocal<Boolean> = compositionLocalOf { true }
+
+/**
+ * The effective dark/light flag the app is rendering with, resolved by [CarePulseTheme] from the
+ * user's persisted theme preference (`ThemeMode.SYSTEM | LIGHT | DARK`) — NOT from
+ * `isSystemInDarkTheme()`. Glass surfaces must key off this instead of the raw system setting, or
+ * they render the wrong palette whenever the user's in-app choice disagrees with the OS setting
+ * (e.g. app forced to LIGHT while the system is in dark mode).
+ */
+val LocalIsDarkTheme: ProvidableCompositionLocal<Boolean> = compositionLocalOf { false }
+
+/** Standard Haze blur radius per the glass-on-grid spec: 20dp in light, 26dp in dark. */
+private fun standardBlurRadius(dark: Boolean): Dp = if (dark) 26.dp else 20.dp
+
+/** Elevated blur radius for surfaces that sit above cards — the bottom nav bar and sheets. */
+private fun elevatedBlurRadius(dark: Boolean): Dp = if (dark) 30.dp else 26.dp
 
 /**
  * Applies the glass-on-grid card treatment: clip to [radius], blur the content behind this
@@ -38,10 +53,19 @@ val LocalGlassEnabled: ProvidableCompositionLocal<Boolean> = compositionLocalOf 
  * back to an opaque background-tinted fill at the same radius/border so the layout stays legible
  * with zero blur. Always applies the [GlassFill]/[GlassFillDark] background and a 1dp
  * [GlassBorder]/[GlassBorderDark] border on top.
+ *
+ * [blurRadius] defaults to the standard card blur (20dp light / 26dp dark). Nav-bar and sheet
+ * callers — which the spec calls for at a larger 26-30dp radius — should pass
+ * [elevatedGlassBlurRadius] explicitly, e.g. `glassCard(radius = ..., hazeState = ...,
+ * blurRadius = elevatedGlassBlurRadius())`.
  */
 @Composable
-fun Modifier.glassCard(radius: Dp, hazeState: HazeState): Modifier {
-    val dark = isSystemInDarkTheme()
+fun Modifier.glassCard(
+    radius: Dp,
+    hazeState: HazeState,
+    blurRadius: Dp = standardBlurRadius(LocalIsDarkTheme.current),
+): Modifier {
+    val dark = LocalIsDarkTheme.current
     val fill = if (dark) GlassFillDark else GlassFill
     val border = if (dark) GlassBorderDark else GlassBorder
     val glassEnabled = LocalGlassEnabled.current
@@ -50,7 +74,11 @@ fun Modifier.glassCard(radius: Dp, hazeState: HazeState): Modifier {
         .clip(shape)
         .then(
             if (glassEnabled) {
-                Modifier.hazeChild(state = hazeState, shape = shape)
+                Modifier.hazeChild(
+                    state = hazeState,
+                    shape = shape,
+                    style = HazeStyle(blurRadius = blurRadius),
+                )
             } else {
                 Modifier
             }
@@ -58,6 +86,14 @@ fun Modifier.glassCard(radius: Dp, hazeState: HazeState): Modifier {
         .background(if (glassEnabled) fill else (if (dark) BackgroundDark else Background))
         .border(1.dp, border, shape)
 }
+
+/**
+ * The elevated Haze blur radius (26dp light / 30dp dark) required for surfaces that sit above
+ * ordinary cards — the floating bottom nav bar and bottom sheets — for use as
+ * `glassCard`'s `blurRadius` argument.
+ */
+@Composable
+fun elevatedGlassBlurRadius(): Dp = elevatedBlurRadius(LocalIsDarkTheme.current)
 
 /**
  * Renders, behind screen content: the [Background] fill, a 56x56dp ruled grid of 1dp [Rule]
@@ -69,7 +105,7 @@ fun Modifier.glassCard(radius: Dp, hazeState: HazeState): Modifier {
  */
 @Composable
 fun GlassGround(modifier: Modifier = Modifier) {
-    val dark = isSystemInDarkTheme()
+    val dark = LocalIsDarkTheme.current
     val bg = if (dark) BackgroundDark else Background
     val base = if (dark) RuleDark else Rule
     val ruleColor = base.copy(alpha = base.alpha * 0.70f)
@@ -98,7 +134,7 @@ fun GlassGround(modifier: Modifier = Modifier) {
             Modifier
                 .size(230.dp)
                 .align(Alignment.BottomStart)
-                .offset(x = (-70).dp, y = 110.dp)
+                .offset(x = (-70).dp, y = (-110).dp)
                 .background(AccentPrimary.copy(alpha = 0.10f))
         )
     }
@@ -129,7 +165,7 @@ fun rememberHazeState(): HazeState = remember { HazeState() }
  *         Card(
  *             Modifier
  *                 .fillMaxWidth()
- *                 .glassCard(radius = Radii.card, hazeState = hazeState)
+ *                 .glassCard(radius = Radii.Card, hazeState = hazeState)
  *         ) {
  *             // card content
  *         }
@@ -148,7 +184,7 @@ fun GlassScreen(
 ) {
     val hazeState = rememberHazeState()
     Box(modifier.fillMaxSize()) {
-        GlassGround(Modifier.haze(hazeState))
+        GlassGround(Modifier.haze(hazeState, style = HazeStyle(blurRadius = standardBlurRadius(LocalIsDarkTheme.current))))
         content(hazeState)
     }
 }
