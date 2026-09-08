@@ -12,65 +12,66 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 private val LightBrandScheme = lightColorScheme(
     primary = AccentPrimary,
-    onPrimary = CardSurface,
-    primaryContainer = AccentContainerLight,
-    onPrimaryContainer = TextPrimary,
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = AccentPrimary.copy(alpha = 0.14f),
+    onPrimaryContainer = AccentPressed,
     secondary = TextPrimary,
-    onSecondary = CardSurface,
-    secondaryContainer = SurfaceLow,
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = GlassFillSubtle,
     onSecondaryContainer = TextPrimary,
-    tertiary = WarningAmber,
-    onTertiary = CardSurface,
+    tertiary = StatusOnDuty,
+    onTertiary = Color(0xFFFFFFFF),
     background = Background,
     onBackground = TextPrimary,
-    surface = CardSurface,
+    surface = GlassFill,
     onSurface = TextPrimary,
-    surfaceVariant = SurfaceLow,
-    onSurfaceVariant = TextSecondary,
-    surfaceContainerLow = SurfaceLow,
-    surfaceContainerHigh = SurfaceHigh,
-    surfaceContainerHighest = SurfaceHighest,
-    outline = BorderLine,
+    surfaceVariant = GlassFillSubtle,
+    onSurfaceVariant = TextMuted,
+    surfaceContainerLow = GroundDeep,
+    surfaceContainerHigh = GlassFill,
+    surfaceContainerHighest = Color(0xFFFFFFFF),
+    outline = Rule,
     error = DangerRed,
-    onError = CardSurface
+    onError = Color(0xFFFFFFFF)
 )
 
 private val DarkBrandScheme = darkColorScheme(
     primary = AccentPrimaryDark,
-    onPrimary = DarkBackground,
-    primaryContainer = AccentContainerDark,
-    onPrimaryContainer = DarkOnSurface,
-    secondary = DarkOnSurface,
-    onSecondary = DarkBackground,
-    secondaryContainer = DarkSurfaceLow,
-    onSecondaryContainer = DarkOnSurface,
-    tertiary = WarningAmber,
-    onTertiary = DarkBackground,
-    background = DarkBackground,
-    onBackground = DarkOnSurface,
-    surface = DarkSurface,
-    onSurface = DarkOnSurface,
-    surfaceVariant = DarkSurfaceLow,
-    onSurfaceVariant = DarkOnSurfaceVar,
-    surfaceContainerLow = DarkSurfaceLow,
-    surfaceContainerHigh = DarkSurfaceHigh,
-    surfaceContainerHighest = DarkSurfaceHighest,
-    outline = DarkBorder,
+    onPrimary = BackgroundDark,
+    primaryContainer = AccentPrimaryDark.copy(alpha = 0.18f),
+    onPrimaryContainer = AccentPressedDark,
+    secondary = TextPrimaryDark,
+    onSecondary = BackgroundDark,
+    secondaryContainer = GlassFillSubtleDark,
+    onSecondaryContainer = TextPrimaryDark,
+    tertiary = StatusOnDuty,
+    onTertiary = BackgroundDark,
+    background = BackgroundDark,
+    onBackground = TextPrimaryDark,
+    surface = GlassFillDark,
+    onSurface = TextPrimaryDark,
+    surfaceVariant = GlassFillSubtleDark,
+    onSurfaceVariant = TextMutedDark,
+    surfaceContainerLow = GroundDeepDark,
+    surfaceContainerHigh = GlassFillDark,
+    surfaceContainerHighest = Color(0xFF1C1A19),
+    outline = RuleDark,
     error = DangerRed,
-    onError = CardSurface
+    onError = Color(0xFFFFFFFF)
 )
 
 private val CarePulseShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(Radii.Input),
-    large = RoundedCornerShape(Radii.Button),
-    extraLarge = RoundedCornerShape(Radii.Card)
+    extraSmall = RoundedCornerShape(Radii.IconButton),
+    small = RoundedCornerShape(Radii.Input),
+    medium = RoundedCornerShape(Radii.Button),
+    large = RoundedCornerShape(Radii.Card),
+    extraLarge = RoundedCornerShape(Radii.CardLarge)
 )
 
 @Composable
