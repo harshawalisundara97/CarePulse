@@ -30,37 +30,42 @@ Before I say "create a PR" / "let's PR this", you must:
 # Frontend Design Language — Follow for All UI Work
 
 This is the required visual/design system for CarePulse's Android UI. Full spec:
-`docs/superpowers/specs/2026-07-23-fintech-minimal-redesign-design.md`.
+`docs/superpowers/specs/2026-09-07-glass-on-grid-redesign-design.md`.
 
-**Style:** Modern fintech-inspired minimalism — Apple HIG feel + Material 3 spacing. Clean
-card-based layouts, large rounded corners (20–28dp), soft low-elevation shadows, spacious
-layouts, premium/minimal — no glassmorphism, no heavy gradients, no neumorphism.
+**Style:** Glass-on-grid. Translucent blurred surfaces (via Haze, `dev.chrisbanes.haze`) over a
+ruled 56dp grid and off-screen accent blocks, on Modernist typographic bones (Archivo font,
+flush-left uppercase labels, 2px rules, one red accent colour). Glass must always be gated behind
+`LocalGlassEnabled` (`ui/theme/Glass.kt`) with an opaque `Background`-tinted fallback at the same
+radius/border for low-end devices — layouts must stay legible with zero blur.
 
-**Palette:** White background · black/dark-gray primary text · gray secondary text · green
-(success) · orange (warning/progress) · blue (info) · border gray `#F2F2F2`. Full light + dark
-themes required.
+**Palette:** `AccentPrimary` red (`#EC3013` light / `#FF563C` dark) for primary actions, active
+nav, and the accent field block. Near-black/near-white text (`TextPrimary`), 55%-alpha muted text
+(`TextMuted`). `Background` `#F3F2F2` light / `#141312` dark. Full light + dark themes required.
+Status pills use a 16%-alpha fill of their own hue with the full-strength hue as text, and always
+carry a text label — never color-only.
 
-**Spacing (8pt grid):** screen padding 20–24dp · card padding 16–20dp · section spacing
-24–32dp.
+**Spacing:** 4dp base grid. Screen horizontal padding 20dp. Card padding 16dp standard. Vertical
+gap between cards 12dp. Sheet padding 20dp sides / 26dp bottom.
 
-**Radii:** cards 24dp · buttons 18dp · inputs 16dp · bottom nav 26dp · dialogs 28dp.
+**Radii:** `chip=999dp` · `input=16dp` · `button=18dp` · `statTile=20dp` · `card=22dp` ·
+`cardLarge=24dp` · `navBar=26dp` · `sheet=30dp` (top corners only).
 
-**Typography:** Heading 28 Bold · Section Title 20 SemiBold · Body 16 Regular · Caption 13
-Regular · Small Label 12 Medium. Android uses Roboto/Google Sans (this repo has no iOS target).
+**Typography:** Archivo (400/600/700/800) only — do not substitute Roboto or Inter for
+glass-on-grid screens. Scale: Display 46sp/800, H1 31sp/800, H2 27sp/800, H3 23sp/800, H4
+16sp/800, Body 13.5sp, Label 10–11sp/800 UPPERCASE.
 
-**Navigation:** floating rounded bottom nav, outlined icons, keep CarePulse's own tabs (Home,
-Activity, Messages, Pulse, Settings) — do not rename to generic fintech labels.
+**Navigation:** floating glass bottom nav, 66dp tall, radius 26dp, 3dp accent indicator sliding
+along the top edge between 5 equal slots. Keep CarePulse's own tabs per role (Home/Pulse/
+Messages/Activity/Settings for Family & Caregiver; Dashboard/Caregivers/Requests/Billing/Settings
+for Agency) — do not rename routes.
 
-**Components to build/maintain as reusable:** buttons (primary/secondary/outlined/text/icon/FAB),
-cards (base/stat/dashboard/progress), search bar, text fields, dropdown, chips, badges, switch,
-checkbox, radio, tabs, bottom sheet, dialog, snackbar/toast, circular/linear progress, list +
-settings rows, empty/error states, loading skeletons, rounded bar/line charts.
+**Motion:** named durations/easings in `ui/theme/Motion.kt` — screen enter, list stagger, shared-
+element profile hero, bottom-sheet slide-in, pulse rings, tab indicator slide, press feedback,
+pull-to-refresh spin, sparkline draw. Honour reduce-motion: drop infinite pulse/stagger, keep
+fades.
 
-**Motion:** subtle only — fade, scale, slide, card elevation, ripple, FAB expand, progress fill.
-No flashy animations.
+**Accessibility:** minimum touch target 48x48dp, WCAG AA contrast, full-opacity ink on accent/
+glass grounds (never alpha-muted text over blur), every icon button has a `contentDescription`.
 
-**Accessibility:** minimum touch target 48x48dp, WCAG AA contrast, support Dynamic Type/font
-scaling.
-
-**Avoid:** glassmorphism, heavy gradients, excessive shadows, cluttered layouts, tiny buttons,
-complex navigation.
+**Avoid:** hardcoded Roboto/Inter on redesigned screens, color-only status indicators, alpha-
+muted text over blurred surfaces, un-gated blur with no fallback path.
