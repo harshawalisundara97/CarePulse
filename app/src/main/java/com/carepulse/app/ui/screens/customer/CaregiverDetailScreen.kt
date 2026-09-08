@@ -15,9 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -42,14 +39,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.carepulse.app.R
 import com.carepulse.app.ui.components.GeneratedAvatar
-import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.components.RatingRow
+import com.carepulse.app.ui.theme.AccentPrimary
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,147 +69,209 @@ fun CaregiverDetailScreen(
         reviews = vm.reviewsFor(caregiverId)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            Box(Modifier.padding(20.dp)) {
-                PrimaryButton(text = "Book ${c.name.split(" ").first()}", onClick = onBook)
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = { },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.common_back),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            containerColor = Color.Transparent,
+            bottomBar = {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
+                        .padding(Spacing.ScreenPaddingCompact)
+                ) {
+                    PrimaryButton(text = "Book ${c.name.split(" ").first()}", onClick = onBook)
+                }
             }
-        }
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            // Hero
-            Box(
+        ) { padding ->
+            Column(
                 Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = Spacing.ScreenPaddingCompact),
+                verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Accent-red profile header: hero avatar + stats row on a 2dp white-30%-alpha rule.
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
+                        .background(AccentPrimary)
+                        .padding(vertical = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // GeneratedAvatar is a shared component that always clips to a circle;
+                    // Radii.AvatarHero (24dp) has no effect layered on top of that and is
+                    // intentionally not applied here -- see task report.
                     GeneratedAvatar(
                         seed = c.avatarSeed,
                         initials = c.name.split(" ").map { it.first() }.joinToString(""),
                         size = 96
                     )
-                    Spacer(Modifier.height(8.dp))
-                    Text(c.name, style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
-                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f))
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        c.name,
+                        style = MaterialTheme.typography.headlineSmall,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Text(
+                        c.area,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        HeaderStat(title = "Rate", value = "\$${c.hourlyRate}/hr")
+                        HeaderRule()
+                        HeaderStat(title = "Reviews", value = "${c.ratingCount}")
+                        HeaderRule()
+                        HeaderStat(title = "Rating", value = "%.1f".format(c.rating))
+                    }
                 }
-            }
 
-            // Stats row
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                StatTile(Modifier.weight(1f), title = "Rate", value = "\$${c.hourlyRate}/hr", color = MaterialTheme.colorScheme.outline)
-                StatTile(Modifier.weight(1f), title = "Reviews", value = "${c.ratingCount}", color = MaterialTheme.colorScheme.outline)
-                StatTile(Modifier.weight(1f), title = "Rating", value = "%.1f".format(c.rating), color = MaterialTheme.colorScheme.primaryContainer)
-            }
-
-            PastelCard {
-                Column {
-                    Text("About", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(radius = Radii.Card, hazeState = hazeState)
+                        .padding(Spacing.CardPaddingCompact)
+                ) {
+                    Text(
+                        "About",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     Spacer(Modifier.height(6.dp))
-                    Text(c.bio, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        c.bio,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
-            }
 
-            PastelCard {
-                Column {
-                    Text("Qualifications", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(radius = Radii.Card, hazeState = hazeState)
+                        .padding(Spacing.CardPaddingCompact)
+                ) {
+                    Text(
+                        "Qualifications",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     Spacer(Modifier.height(6.dp))
+                    // A single, quiet verification cue per qualification -- no stacked trust badges.
                     c.qualifications.forEach { q ->
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
-                            Icon(Icons.Filled.CheckCircle, null, tint = MaterialTheme.colorScheme.primaryContainer, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(6.dp))
-                            Text(q, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+                            Text(q, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                     Spacer(Modifier.height(8.dp))
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.outline) }
+                        c.specializations.forEach { PastelChip(it, color = AccentPrimary.copy(alpha = 0.14f)) }
                     }
                 }
-            }
 
-            PastelCard {
-                Column {
-                    Text("Availability", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(radius = Radii.Card, hazeState = hazeState)
+                        .padding(Spacing.CardPaddingCompact)
+                ) {
+                    Text(
+                        "Availability",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                     Spacer(Modifier.height(8.dp))
-                    // Mini calendar layout: 7 columns for next week, rows for AM / PM
+                    // 7-day strip: AM/PM cells, each a Radii.Chip-shaped pill filled when available.
                     AvailabilityCalendar(c.availability)
                 }
-            }
 
-            if (reviews.isNotEmpty()) {
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    "Reviews",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(Modifier.height(8.dp))
-                reviews.forEach { review ->
-                    com.carepulse.app.ui.components.PastelCard {
-                        Column {
+                if (reviews.isNotEmpty()) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "Reviews",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    reviews.forEach { review ->
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .glassCard(radius = Radii.Card, hazeState = hazeState)
+                                .padding(Spacing.CardPaddingCompact)
+                        ) {
                             RatingRow(review.rating, 0)
                             if (review.text.isNotBlank()) {
                                 Spacer(Modifier.height(4.dp))
                                 Text(
                                     review.text,
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
                             Text(
                                 "— ${review.reviewerName}",
-                                style = MaterialTheme.typography.labelSmall,
+                                style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     }
-                    Spacer(Modifier.height(6.dp))
                 }
-            }
 
-            Spacer(Modifier.height(60.dp))
+                Spacer(Modifier.height(60.dp))
+            }
         }
     }
 }
 
 @Composable
-private fun StatTile(modifier: Modifier = Modifier, title: String, value: String, color: Color) {
-    Box(
-        modifier
-            .clip(RoundedCornerShape(18.dp))
-            .background(color)
-            .padding(12.dp)
-    ) {
-        Column {
-            Text(title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-            Text(value, style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
-        }
+private fun HeaderStat(title: String, value: String) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            value,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+        Text(
+            title,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onPrimary
+        )
     }
+}
+
+@Composable
+private fun HeaderRule() {
+    Box(
+        Modifier
+            .width(2.dp)
+            .height(28.dp)
+            .background(Color.White.copy(alpha = 0.3f))
+    )
 }
 
 @Composable
@@ -218,17 +283,16 @@ private fun AvailabilityCalendar(availability: List<String>) {
             Spacer(Modifier.width(36.dp))
             days.forEach { d ->
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text(d, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(d, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
         slots.forEach { slot ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.width(36.dp)) {
-                    Text(slot, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(slot, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 days.forEach { d ->
-                    val key = "$d $slot"
                     val available = availability.any { it.startsWith(d) && it.contains(slot) } ||
                         availability.contains(d)
                     Box(
@@ -236,8 +300,8 @@ private fun AvailabilityCalendar(availability: List<String>) {
                             .weight(1f)
                             .padding(2.dp)
                             .height(28.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (available) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                            .clip(RoundedCornerShape(Radii.Chip))
+                            .background(if (available) AccentPrimary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                     )
                 }
             }
