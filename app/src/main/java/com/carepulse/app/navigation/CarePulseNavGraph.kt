@@ -1,9 +1,28 @@
 package com.carepulse.app.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.EventNote
 import androidx.compose.material.icons.automirrored.outlined.EventNote
@@ -24,30 +43,21 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -75,8 +85,13 @@ import com.carepulse.app.ui.screens.messages.ConversationScreen
 import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
+import com.carepulse.app.ui.theme.Motion
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.TypeNav
+import com.carepulse.app.ui.theme.elevatedGlassBlurRadius
+import com.carepulse.app.ui.theme.glassCard
+import com.carepulse.app.ui.theme.rememberHazeState
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 /** Type-safe route constants for the nav graph. */
@@ -384,41 +399,68 @@ private fun BottomBar(
     currentRoute: String?,
     tabs: List<TabItem>
 ) {
-    NavigationBar(
-        modifier = Modifier
-            .padding(horizontal = Spacing.ScreenPaddingCompact, vertical = 12.dp)
-            .clip(RoundedCornerShape(Radii.BottomNav)),
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 1.dp
+    val hazeState = rememberHazeState()
+    val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
+
+    Box(
+        Modifier
+            .padding(horizontal = Spacing.NavBarSides, vertical = Spacing.NavBarBottom)
+            .height(66.dp)
+            .fillMaxWidth()
+            .glassCard(radius = Radii.BottomNav, hazeState = hazeState, blurRadius = elevatedGlassBlurRadius())
     ) {
-        tabs.forEach { tab ->
-            val selected = currentRoute == tab.route
-            NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    if (currentRoute != tab.route) {
-                        navController.navigate(tab.route) {
-                            popUpTo(Routes.Home) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    }
-                },
-                icon = {
-                    Icon(
-                        if (selected) tab.icon else tab.outlinedIcon,
-                        contentDescription = tab.label
-                    )
-                },
-                label = { Text(tab.label) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
-                )
+        val slotFraction = 1f / tabs.size
+        val indicatorOffset by animateFloatAsState(
+            targetValue = selectedIndex * slotFraction,
+            animationSpec = tween(Motion.TabIndicator, easing = Motion.Standard),
+            label = "tabIndicator"
+        )
+
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val indicatorWidth = maxWidth * slotFraction
+            Box(
+                Modifier
+                    .offset(x = maxWidth * indicatorOffset)
+                    .width(indicatorWidth)
+                    .height(3.dp)
+                    .align(Alignment.TopStart)
+                    .background(MaterialTheme.colorScheme.primary)
             )
+
+            Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                tabs.forEach { tab ->
+                    val selected = currentRoute == tab.route
+                    val iconColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                if (currentRoute != tab.route) {
+                                    navController.navigate(tab.route) {
+                                        popUpTo(Routes.Home) { saveState = true }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            if (selected) tab.icon else tab.outlinedIcon,
+                            contentDescription = tab.label,
+                            tint = iconColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(tab.label.uppercase(), style = TypeNav, color = iconColor)
+                    }
+                }
+            }
         }
     }
 }
