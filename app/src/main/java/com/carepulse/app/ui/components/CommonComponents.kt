@@ -340,7 +340,7 @@ fun RatingRow(rating: Float, count: Int, modifier: Modifier = Modifier) {
             fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.width(4.dp))
-        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 

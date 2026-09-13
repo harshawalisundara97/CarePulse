@@ -84,7 +84,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
             Text(
                 "Care, connected.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(48.dp))

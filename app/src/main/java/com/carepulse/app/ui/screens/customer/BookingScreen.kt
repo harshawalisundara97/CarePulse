@@ -156,7 +156,7 @@ private fun StepPick(
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("1 of 3 — Select date & time",
-            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
         Text("When do you need care?",
             style = MaterialTheme.typography.headlineMedium, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
 
@@ -216,7 +216,7 @@ private fun StepConfirm(
 
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("2 of 3 — Confirm details",
-            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
         Text("Almost done", style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
 
@@ -228,22 +228,22 @@ private fun StepConfirm(
         ) {
             Column {
                 Row {
-                    Text("Caregiver", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Caregiver", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
                     Text(caregiverName, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(Modifier.height(6.dp))
                 Row {
-                    Text("Date", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Date", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
                     Text(date, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(Modifier.height(6.dp))
                 Row {
-                    Text("Time", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Time", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
                     Text(time, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
                 }
                 androidx.compose.material3.HorizontalDivider(Modifier.padding(vertical = 10.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Estimated total ($estimatedHours hrs)", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("Estimated total ($estimatedHours hrs)", Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
                     Text(formattedTotal, color = MaterialTheme.colorScheme.onSurface, style = TypeNumericM)
                 }
             }
@@ -285,7 +285,7 @@ private fun StepSuccess(onDone: () -> Unit) {
             color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
         Text("We've notified your caregiver. You can track everything from the Pulse Dashboard.",
-            style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 24.dp))
         Spacer(Modifier.height(36.dp))
         PrimaryButton(text = "Back to home", onClick = onDone)

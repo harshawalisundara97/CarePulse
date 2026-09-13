@@ -98,7 +98,7 @@ fun ActivityScreen(
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Text(
                             "No ${tabs[selectedTab].lowercase()} bookings.",
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurface,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -182,7 +182,7 @@ private fun BookingCard(
                     Text(
                         "${booking.dateLabel} · ${booking.timeSlot}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
                 StatusPill(label = label, fill = fill, textColor = textColor)

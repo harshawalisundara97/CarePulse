@@ -236,7 +236,7 @@ fun CaregiverDetailScreen(
                             Text(
                                 "— ${review.reviewerName}",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -283,14 +283,14 @@ private fun AvailabilityCalendar(availability: List<String>) {
             Spacer(Modifier.width(36.dp))
             days.forEach { d ->
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Text(d, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(d, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
                 }
             }
         }
         slots.forEach { slot ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.width(36.dp)) {
-                    Text(slot, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(slot, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurface)
                 }
                 days.forEach { d ->
                     val available = availability.any { it.startsWith(d) && it.contains(slot) } ||

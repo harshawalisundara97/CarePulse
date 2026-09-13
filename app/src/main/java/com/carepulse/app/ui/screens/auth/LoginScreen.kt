@@ -120,7 +120,7 @@ fun LoginScreen(
                         isCaregiver -> "Manage your shifts and patients."
                         else -> "Find a caregiver and check in on your loved ones."
                     },
-                    style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(8.dp))
 
@@ -212,7 +212,7 @@ fun LoginScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         if (isSignUp) "Already have an account?" else "New to CarePulse?",
-                        style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface
                     )
                     TextButton(onClick = { isSignUp = !isSignUp; vm.clearAuthError(); vm.clearAuthInfo() }) {
                         Text(if (isSignUp) "Sign in" else "Create account")

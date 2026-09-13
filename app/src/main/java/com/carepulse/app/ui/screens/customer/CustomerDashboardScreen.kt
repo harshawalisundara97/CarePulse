@@ -110,7 +110,7 @@ fun CustomerDashboardScreen(
                             Text(
                                 "Hello, ${displayName.split(" ").first()}",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 "Find care today",
@@ -124,7 +124,7 @@ fun CustomerDashboardScreen(
                             Icon(
                                 Icons.Filled.Logout,
                                 contentDescription = stringResource(R.string.auth_sign_out),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     },

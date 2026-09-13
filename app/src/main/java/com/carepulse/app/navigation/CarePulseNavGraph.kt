@@ -438,7 +438,7 @@ private fun BottomBar(
             ) {
                 tabs.forEach { tab ->
                     val selected = currentRoute == tab.route
-                    val iconColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    val iconColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
                     Column(
                         modifier = Modifier
                             .weight(1f)
