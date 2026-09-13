@@ -37,6 +37,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
@@ -134,7 +136,8 @@ private fun RoleCard(
         Modifier
             .fillMaxWidth()
             .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
-            .clickable { onClick() }
+            .semantics(mergeDescendants = true) {}
+            .clickable(role = Role.Button) { onClick() }
             .padding(Spacing.CardPaddingCompact)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
