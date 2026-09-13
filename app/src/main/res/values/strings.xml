@@ -81,4 +81,25 @@
     <string name="widget_mood">Mood: %1$s</string>
     <string name="widget_no_data">—</string>
     <string name="vitals_widget_description">CarePulse vitals at a glance</string>
+
+    <!-- Pulse dashboard -->
+    <string name="pulse_title">Pulse Dashboard</string>
+    <string name="pulse_today">today</string>
+    <string name="pulse_meals">Meals</string>
+    <string name="pulse_meals_unit">/ 3 today</string>
+    <string name="pulse_hr_7_days">Heart rate — 7 days</string>
+    <string name="pulse_bp_7_days">Blood pressure — 7 days</string>
+    <string name="pulse_mood_7_entries">Mood — last 7 entries</string>
+    <string name="pulse_systolic">Systolic</string>
+    <string name="pulse_diastolic">Diastolic</string>
+    <string name="pulse_avg_hr">Avg HR</string>
+    <string name="pulse_avg_bp">Avg BP</string>
+    <string name="pulse_top_mood">Top mood</string>
+    <string name="pulse_shift_summary">Shift Summary</string>
+    <string name="pulse_by">By</string>
+    <string name="pulse_med_given">given</string>
+    <string name="pulse_med_not_given">not given</string>
+    <string name="pulse_video_call">Start video call</string>
+    <string name="pulse_hr_chart_description">Heart rate chart, %1$d readings, ranging %2$d to %3$d bpm</string>
+    <string name="pulse_bp_chart_description">Blood pressure chart, %1$d readings, latest %2$d over %3$d</string>
 </resources>
