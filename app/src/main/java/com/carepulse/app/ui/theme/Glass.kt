@@ -109,6 +109,7 @@ fun GlassGround(modifier: Modifier = Modifier) {
     val bg = if (dark) BackgroundDark else Background
     val base = if (dark) RuleDark else Rule
     val ruleColor = base.copy(alpha = base.alpha * 0.70f)
+    val accent = if (dark) AccentPrimaryDark else AccentPrimary
     Box(modifier.fillMaxSize().background(bg)) {
         Canvas(Modifier.fillMaxSize()) {
             val step = 56.dp.toPx()
@@ -128,14 +129,14 @@ fun GlassGround(modifier: Modifier = Modifier) {
                 .size(280.dp)
                 .align(Alignment.TopEnd)
                 .offset(x = 70.dp, y = (-70).dp)
-                .background(AccentPrimary.copy(alpha = 0.22f))
+                .background(accent.copy(alpha = 0.22f))
         )
         Box(
             Modifier
                 .size(230.dp)
                 .align(Alignment.BottomStart)
                 .offset(x = (-70).dp, y = (-110).dp)
-                .background(AccentPrimary.copy(alpha = 0.10f))
+                .background(accent.copy(alpha = 0.10f))
         )
     }
 }

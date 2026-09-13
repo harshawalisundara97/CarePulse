@@ -46,7 +46,6 @@ import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.PrimaryButton
 import com.carepulse.app.ui.components.RatingRow
-import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.GlassScreen
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
@@ -112,7 +111,7 @@ fun CaregiverDetailScreen(
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp))
-                        .background(AccentPrimary)
+                        .background(MaterialTheme.colorScheme.primary)
                         .padding(vertical = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -183,14 +182,14 @@ fun CaregiverDetailScreen(
                     // A single, quiet verification cue per qualification -- no stacked trust badges.
                     c.qualifications.forEach { q ->
                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 2.dp)) {
-                            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = AccentPrimary, modifier = Modifier.size(16.dp))
+                            Icon(Icons.Filled.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
                             Spacer(Modifier.width(6.dp))
                             Text(q, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
                     Spacer(Modifier.height(8.dp))
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                        c.specializations.forEach { PastelChip(it, color = AccentPrimary.copy(alpha = 0.14f)) }
+                        c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)) }
                     }
                 }
 
@@ -301,7 +300,7 @@ private fun AvailabilityCalendar(availability: List<String>) {
                             .padding(2.dp)
                             .height(28.dp)
                             .clip(RoundedCornerShape(Radii.Chip))
-                            .background(if (available) AccentPrimary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
+                            .background(if (available) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                     )
                 }
             }

@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.UserRole
-import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.GlassScreen
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
@@ -69,7 +68,7 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
                 Modifier
                     .size(96.dp)
                     .clip(CircleShape)
-                    .background(AccentPrimary),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -143,10 +142,10 @@ private fun RoleCard(
                 Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(AccentPrimary.copy(alpha = 0.14f)),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, null, tint = AccentPrimary, modifier = Modifier.size(28.dp))
+                Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
             }
             Spacer(Modifier.width(16.dp))
             Column(Modifier.weight(1f)) {

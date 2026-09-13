@@ -61,7 +61,6 @@ import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.LoadingShimmerList
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.RatingRow
-import com.carepulse.app.ui.theme.AccentPrimary
 import com.carepulse.app.ui.theme.GlassScreen
 import com.carepulse.app.ui.theme.Motion
 import com.carepulse.app.ui.theme.Radii
@@ -198,8 +197,8 @@ fun CustomerDashboardScreen(
                         valueRange = 0f..5f,
                         steps = 9,
                         colors = SliderDefaults.colors(
-                            thumbColor = AccentPrimary,
-                            activeTrackColor = AccentPrimary
+                            thumbColor = MaterialTheme.colorScheme.primary,
+                            activeTrackColor = MaterialTheme.colorScheme.primary
                         )
                     )
                 }
@@ -260,10 +259,10 @@ private fun PulseBanner(hazeState: HazeState, onClick: () -> Unit) {
             Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(AccentPrimary.copy(alpha = 0.14f)),
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.Favorite, contentDescription = null, tint = AccentPrimary)
+            Icon(Icons.Filled.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         }
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
@@ -329,7 +328,7 @@ private fun CaregiverCard(c: Caregiver, hazeState: HazeState, onClick: () -> Uni
                 }
                 Spacer(Modifier.height(6.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    c.specializations.forEach { PastelChip(it, color = AccentPrimary.copy(alpha = 0.14f)) }
+                    c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)) }
                 }
             }
         }
