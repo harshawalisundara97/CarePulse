@@ -121,10 +121,11 @@ fun ActivityScreen(
 }
 
 /** Fill/text colour pair for a [BookingStatus] pill: 16%-alpha fill of the hue, full-strength text. */
+@Composable
 private fun statusPillColors(status: BookingStatus): Pair<Color, Color> = when (status) {
     BookingStatus.CONFIRMED -> StatusAvailable.copy(alpha = 0.16f) to StatusAvailable
     BookingStatus.IN_PROGRESS -> StatusOnDuty.copy(alpha = 0.16f) to StatusOnDutyText
-    BookingStatus.COMPLETED -> Color.Transparent to Color.Transparent // overridden by caller
+    BookingStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.16f) to MaterialTheme.colorScheme.onSurface
 }
 
 @Composable
@@ -152,13 +153,7 @@ private fun BookingCard(
         .replace("_", " ")
         .replaceFirstChar { it.uppercase() }
 
-    val neutralFill = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
-    val neutralText = MaterialTheme.colorScheme.onSurface
-    val (fill, textColor) = if (booking.status == BookingStatus.COMPLETED) {
-        neutralFill to neutralText
-    } else {
-        statusPillColors(booking.status)
-    }
+    val (fill, textColor) = statusPillColors(booking.status)
 
     val formattedTotal = "LKR " + NumberFormat.getNumberInstance(Locale.US).format(booking.totalCost)
 
