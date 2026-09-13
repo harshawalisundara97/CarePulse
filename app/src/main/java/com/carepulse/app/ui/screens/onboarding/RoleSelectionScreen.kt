@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -52,9 +53,13 @@ fun RoleSelectionScreen(onRoleSelected: (UserRole) -> Unit) {
     LaunchedEffect(Unit) { visible = true }
 
     GlassScreen { hazeState ->
+        // This screen has no Scaffold/TopAppBar of its own to own the status-bar inset (unlike
+        // the other redesigned screens), and the outer nav Scaffold no longer contributes one
+        // under edge-to-edge -- see F4 in the final whole-branch review.
         Column(
             Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
                 .padding(horizontal = Spacing.ScreenPaddingCompact),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

@@ -14,15 +14,19 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
@@ -181,9 +185,16 @@ fun CarePulseNavGraph() {
     }
 
     val hazeState = rememberHazeState()
+    // Under edge-to-edge (enableEdgeToEdge() in MainActivity), the outer Scaffold must NOT also
+    // consume the status-bar inset -- every redesigned screen owns its own top inset via its own
+    // Scaffold/TopAppBar (see F4 in the final whole-branch review). The floating bottom nav has
+    // no per-screen owner though, so it reads the navigation-bar inset directly below instead of
+    // relying on this Scaffold's contentPadding.
+    val navBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.background,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { scaffoldPadding ->
         // The bottom nav is rendered as a floating overlay (not the Scaffold bottomBar slot) so
         // it can genuinely blur the NavHost content behind it via a shared HazeState -- see
@@ -198,7 +209,7 @@ fun CarePulseNavGraph() {
                     .haze(hazeState)
                     .then(
                         if (showBottomBar) {
-                            Modifier.padding(bottom = BottomNavHeight + Spacing.NavBarBottom)
+                            Modifier.padding(bottom = BottomNavHeight + Spacing.NavBarBottom + navBarInset)
                         } else {
                             Modifier
                         }
@@ -412,7 +423,9 @@ fun CarePulseNavGraph() {
                     currentRoute = currentRoute,
                     tabs = tabsFor(role),
                     hazeState = hazeState,
-                    modifier = Modifier.align(Alignment.BottomCenter)
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .windowInsetsPadding(WindowInsets.navigationBars)
                 )
             }
         }

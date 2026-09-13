@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -29,7 +30,9 @@ import com.carepulse.app.ui.theme.LanguagePreference
 fun LanguagePickerScreen(onBack: () -> Unit) {
     var selected by remember { mutableStateOf(LanguagePreference.current()) }
 
-    Column(Modifier.fillMaxSize()) {
+    // No Scaffold of its own to own the status-bar inset, and the outer nav Scaffold no
+    // longer contributes one under edge-to-edge -- see F4 in the final whole-branch review.
+    Column(Modifier.fillMaxSize().statusBarsPadding()) {
         GradientHeader(
             title = stringResource(R.string.settings_language),
             subtitle = null
