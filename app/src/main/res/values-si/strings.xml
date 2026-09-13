@@ -102,4 +102,7 @@
     <string name="pulse_video_call">වීඩියෝ ඇමතුම ආරම්භ කරන්න</string>
     <string name="pulse_hr_chart_description">හෘද ස්පන්දන ප්‍රස්තාරය, කියවීම් %1$d, %2$d සිට %3$d bpm දක්වා</string>
     <string name="pulse_bp_chart_description">රුධිර පීඩන ප්‍රස්තාරය, කියවීම් %1$d, නවතම %2$d/%3$d</string>
+
+    <!-- Messages -->
+    <string name="messages_send">පණිවුඩය යවන්න</string>
 </resources>

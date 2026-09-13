@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -38,9 +39,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.carepulse.app.R
 import com.carepulse.app.data.model.ChatMessage
+import com.carepulse.app.ui.theme.GlassFillSubtle
+import com.carepulse.app.ui.theme.GlassFillSubtleDark
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.LocalIsDarkTheme
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
 
 @Composable
@@ -65,62 +75,82 @@ fun ConversationScreen(
         if (messages.isNotEmpty()) listState.animateScrollToItem(messages.size - 1)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(agencyName, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
-            )
-        },
-        bottomBar = {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                OutlinedTextField(
-                    value = draft,
-                    onValueChange = { draft = it },
-                    modifier = Modifier.weight(1f),
-                    placeholder = { Text("Type a message…") },
-                    shape = RoundedCornerShape(24.dp),
-                    singleLine = true
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(agencyName, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onBack) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = stringResource(R.string.common_back),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
                 )
-                Spacer(Modifier.width(8.dp))
-                IconButton(
-                    enabled = draft.isNotBlank(),
-                    onClick = {
-                        vm.sendMessage(agencyId, agencyName, draft)
-                        draft = ""
-                    }
+            },
+            bottomBar = {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(Spacing.CardPaddingCompact),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(Icons.AutoMirrored.Filled.Send, null, tint = MaterialTheme.colorScheme.primary)
+                    OutlinedTextField(
+                        value = draft,
+                        onValueChange = { draft = it },
+                        modifier = Modifier
+                            .weight(1f)
+                            .glassCard(radius = Radii.Input, hazeState = hazeState),
+                        placeholder = { Text("Type a message…") },
+                        shape = RoundedCornerShape(Radii.Input),
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                        )
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    IconButton(
+                        enabled = draft.isNotBlank(),
+                        onClick = {
+                            vm.sendMessage(agencyId, agencyName, draft)
+                            draft = ""
+                        }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.Send,
+                            contentDescription = stringResource(R.string.messages_send),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            item { Spacer(Modifier.padding(top = 4.dp)) }
-            items(messages, key = { it.id }) { msg ->
-                val isMine = msg.senderUid == profile?.uid
-                MessageBubble(msg, isMine)
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = Spacing.ScreenPaddingCompact),
+                verticalArrangement = Arrangement.spacedBy(Spacing.ItemGap)
+            ) {
+                item { Spacer(Modifier.padding(top = 4.dp)) }
+                items(messages, key = { it.id }) { msg ->
+                    val isMine = msg.senderUid == profile?.uid
+                    MessageBubble(msg, isMine)
+                }
             }
         }
     }
@@ -128,7 +158,12 @@ fun ConversationScreen(
 
 @Composable
 private fun MessageBubble(msg: ChatMessage, isMine: Boolean) {
-    val bubbleColor = if (isMine) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val dark = LocalIsDarkTheme.current
+    val bubbleColor = if (isMine) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        if (dark) GlassFillSubtleDark else GlassFillSubtle
+    }
     val textColor = if (isMine) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
     val alignment = if (isMine) Alignment.End else Alignment.Start
 
@@ -142,13 +177,13 @@ private fun MessageBubble(msg: ChatMessage, isMine: Boolean) {
             Text(
                 msg.senderName,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
             )
         }
         Box(
             Modifier
-                .background(bubbleColor, RoundedCornerShape(16.dp))
+                .background(bubbleColor, RoundedCornerShape(Radii.Card))
                 .padding(horizontal = 14.dp, vertical = 10.dp)
                 .widthIn(max = 280.dp)
         ) {

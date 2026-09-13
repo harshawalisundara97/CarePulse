@@ -102,4 +102,7 @@
     <string name="pulse_video_call">Start video call</string>
     <string name="pulse_hr_chart_description">Heart rate chart, %1$d readings, ranging %2$d to %3$d bpm</string>
     <string name="pulse_bp_chart_description">Blood pressure chart, %1$d readings, latest %2$d over %3$d</string>
+
+    <!-- Messages -->
+    <string name="messages_send">Send message</string>
 </resources>
