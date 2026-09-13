@@ -2,6 +2,7 @@
 
 package com.carepulse.app.ui.screens.activity
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -30,13 +32,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.data.model.Booking
 import com.carepulse.app.data.model.BookingStatus
-import com.carepulse.app.ui.components.PastelCard
-import com.carepulse.app.ui.components.PastelChip
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.StatusAvailable
+import com.carepulse.app.ui.theme.StatusOnDuty
+import com.carepulse.app.ui.theme.StatusOnDutyText
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun ActivityScreen(
@@ -52,56 +61,58 @@ fun ActivityScreen(
     }
     val past = bookings.filter { it.status == BookingStatus.COMPLETED }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        "My Bookings",
-                        style = MaterialTheme.typography.headlineMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(Modifier.fillMaxSize().padding(padding)) {
-            TabRow(
-                selectedTabIndex = selectedTab,
-                containerColor = Color.Transparent,
-                contentColor = MaterialTheme.colorScheme.primary
-            ) {
-                tabs.forEachIndexed { i, title ->
-                    Tab(
-                        selected = selectedTab == i,
-                        onClick = { selectedTab = i },
-                        text = { Text(title) }
-                    )
-                }
-            }
-
-            val list = if (selectedTab == 0) upcoming else past
-            if (list.isEmpty()) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        "No ${tabs[selectedTab].lowercase()} bookings.",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            } else {
-                LazyColumn(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "My Bookings",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            containerColor = Color.Transparent
+        ) { padding ->
+            Column(Modifier.fillMaxSize().padding(padding)) {
+                TabRow(
+                    selectedTabIndex = selectedTab,
+                    containerColor = Color.Transparent,
+                    contentColor = MaterialTheme.colorScheme.primary
                 ) {
-                    item { Spacer(Modifier.height(8.dp)) }
-                    items(list) { booking ->
-                        BookingCard(booking, onRateCaregiver)
+                    tabs.forEachIndexed { i, title ->
+                        Tab(
+                            selected = selectedTab == i,
+                            onClick = { selectedTab = i },
+                            text = { Text(title) }
+                        )
+                    }
+                }
+
+                val list = if (selectedTab == 0) upcoming else past
+                if (list.isEmpty()) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            "No ${tabs[selectedTab].lowercase()} bookings.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = Spacing.ScreenPaddingCompact),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
+                    ) {
+                        item { Spacer(Modifier.height(8.dp)) }
+                        items(list) { booking ->
+                            BookingCard(booking, onRateCaregiver, hazeState)
+                        }
                     }
                 }
             }
@@ -109,17 +120,54 @@ fun ActivityScreen(
     }
 }
 
+/** Fill/text colour pair for a [BookingStatus] pill: 16%-alpha fill of the hue, full-strength text. */
+private fun statusPillColors(status: BookingStatus): Pair<Color, Color> = when (status) {
+    BookingStatus.CONFIRMED -> StatusAvailable.copy(alpha = 0.16f) to StatusAvailable
+    BookingStatus.IN_PROGRESS -> StatusOnDuty.copy(alpha = 0.16f) to StatusOnDutyText
+    BookingStatus.COMPLETED -> Color.Transparent to Color.Transparent // overridden by caller
+}
+
+@Composable
+private fun StatusPill(label: String, fill: Color, textColor: Color) {
+    Box(
+        Modifier
+            .background(fill, RoundedCornerShape(Radii.Chip))
+            .padding(horizontal = 12.dp, vertical = 6.dp)
+    ) {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelLarge,
+            color = textColor
+        )
+    }
+}
+
 @Composable
 private fun BookingCard(
     booking: Booking,
-    onRate: (String, String) -> Unit
+    onRate: (String, String) -> Unit,
+    hazeState: HazeState
 ) {
-    val statusColor = when (booking.status) {
-        BookingStatus.CONFIRMED -> MaterialTheme.colorScheme.onSurfaceVariant
-        BookingStatus.IN_PROGRESS -> MaterialTheme.colorScheme.primary
-        BookingStatus.COMPLETED -> MaterialTheme.colorScheme.onSurface
+    val label = booking.status.name.lowercase()
+        .replace("_", " ")
+        .replaceFirstChar { it.uppercase() }
+
+    val neutralFill = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.10f)
+    val neutralText = MaterialTheme.colorScheme.onSurface
+    val (fill, textColor) = if (booking.status == BookingStatus.COMPLETED) {
+        neutralFill to neutralText
+    } else {
+        statusPillColors(booking.status)
     }
-    PastelCard {
+
+    val formattedTotal = "LKR " + NumberFormat.getNumberInstance(Locale.US).format(booking.totalCost)
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .glassCard(radius = Radii.Card, hazeState = hazeState)
+            .padding(Spacing.CardPaddingCompact)
+    ) {
         Column {
             Row(
                 Modifier.fillMaxWidth(),
@@ -129,8 +177,7 @@ private fun BookingCard(
                     Text(
                         booking.patientName.ifBlank { "Patient" },
                         style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontWeight = FontWeight.SemiBold
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         "${booking.dateLabel} · ${booking.timeSlot}",
@@ -138,18 +185,13 @@ private fun BookingCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                PastelChip(
-                    booking.status.name.lowercase()
-                        .replace("_", " ")
-                        .replaceFirstChar { it.uppercase() }
-                )
+                StatusPill(label = label, fill = fill, textColor = textColor)
             }
             Spacer(Modifier.height(6.dp))
             Text(
-                "LKR ${booking.totalCost}",
+                formattedTotal,
                 style = MaterialTheme.typography.bodyMedium,
-                color = statusColor,
-                fontWeight = FontWeight.Medium
+                color = MaterialTheme.colorScheme.onSurface
             )
             if (booking.status == BookingStatus.COMPLETED) {
                 Spacer(Modifier.height(8.dp))
