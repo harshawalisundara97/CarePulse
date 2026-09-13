@@ -96,6 +96,8 @@ import com.carepulse.app.ui.theme.elevatedGlassBlurRadius
 import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.ui.theme.rememberHazeState
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 
 /** Type-safe route constants for the nav graph. */
 object Routes {
@@ -159,6 +161,9 @@ private val tabRoutes = setOf(
     Routes.Home, Routes.Pulse, Routes.Messages, Routes.Activity, Routes.Settings
 )
 
+/** Height of the floating glass bottom nav bar, per the glass-on-grid spec. */
+private val BottomNavHeight = 66.dp
+
 @Composable
 fun CarePulseNavGraph() {
     val navController = rememberNavController()
@@ -175,23 +180,30 @@ fun CarePulseNavGraph() {
         }
     }
 
+    val hazeState = rememberHazeState()
+
     Scaffold(
-        containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            if (showBottomBar) {
-                BottomBar(
-                    navController = navController,
-                    currentRoute = currentRoute,
-                    tabs = tabsFor(role)
-                )
-            }
-        }
+        containerColor = MaterialTheme.colorScheme.background
     ) { scaffoldPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Routes.Splash,
-            modifier = Modifier.padding(scaffoldPadding),
-            enterTransition = {
+        // The bottom nav is rendered as a floating overlay (not the Scaffold bottomBar slot) so
+        // it can genuinely blur the NavHost content behind it via a shared HazeState -- see
+        // Glass.kt's glassCard/haze doc comments. Tab content gets extra bottom padding below so
+        // nothing sits permanently hidden under the overlay.
+        Box(Modifier.fillMaxSize().padding(scaffoldPadding)) {
+            NavHost(
+                navController = navController,
+                startDestination = Routes.Splash,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .haze(hazeState)
+                    .then(
+                        if (showBottomBar) {
+                            Modifier.padding(bottom = BottomNavHeight + Spacing.NavBarBottom)
+                        } else {
+                            Modifier
+                        }
+                    ),
+                enterTransition = {
                 slideInHorizontally(initialOffsetX = { it / 4 }, animationSpec = tween(300)) +
                 fadeIn(animationSpec = tween(300))
             },
@@ -393,6 +405,17 @@ fun CarePulseNavGraph() {
                 )
             }
         }
+
+            if (showBottomBar) {
+                BottomBar(
+                    navController = navController,
+                    currentRoute = currentRoute,
+                    tabs = tabsFor(role),
+                    hazeState = hazeState,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
+        }
     }
 }
 
@@ -400,15 +423,16 @@ fun CarePulseNavGraph() {
 private fun BottomBar(
     navController: NavHostController,
     currentRoute: String?,
-    tabs: List<TabItem>
+    tabs: List<TabItem>,
+    hazeState: HazeState,
+    modifier: Modifier = Modifier
 ) {
-    val hazeState = rememberHazeState()
     val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
 
     Box(
-        Modifier
+        modifier
             .padding(horizontal = Spacing.NavBarSides, vertical = Spacing.NavBarBottom)
-            .height(66.dp)
+            .height(BottomNavHeight)
             .fillMaxWidth()
             .glassCard(radius = Radii.BottomNav, hazeState = hazeState, blurRadius = elevatedGlassBlurRadius())
     ) {
