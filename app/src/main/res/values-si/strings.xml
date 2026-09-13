@@ -106,4 +106,8 @@
 
     <!-- Messages -->
     <string name="messages_send">පණිවුඩය යවන්න</string>
+
+    <!-- Caregiver detail -->
+    <string name="caregiver_detail_availability_cell_available">%1$s %2$s: ලබා ගත හැක</string>
+    <string name="caregiver_detail_availability_cell_unavailable">%1$s %2$s: ලබා ගත නොහැක</string>
 </resources>

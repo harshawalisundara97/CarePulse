@@ -106,4 +106,8 @@
     <!-- Messages -->
     <string name="messages_send">செய்தியை அனுப்பு</string>
     <string name="vitals_widget_description">CarePulse உயிர் அளவீடுகள் ஒரே பார்வையில்</string>
+
+    <!-- Caregiver detail -->
+    <string name="caregiver_detail_availability_cell_available">%1$s %2$s: கிடைக்கிறது</string>
+    <string name="caregiver_detail_availability_cell_unavailable">%1$s %2$s: கிடைக்காது</string>
 </resources>

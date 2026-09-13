@@ -40,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.carepulse.app.R
 import com.carepulse.app.ui.components.GeneratedAvatar
@@ -294,12 +296,22 @@ private fun AvailabilityCalendar(availability: List<String>) {
                 days.forEach { d ->
                     val available = availability.any { it.startsWith(d) && it.contains(slot) } ||
                         availability.contains(d)
+                    val cellDescription = stringResource(
+                        if (available) {
+                            R.string.caregiver_detail_availability_cell_available
+                        } else {
+                            R.string.caregiver_detail_availability_cell_unavailable
+                        },
+                        d,
+                        slot
+                    )
                     Box(
                         Modifier
                             .weight(1f)
                             .padding(2.dp)
                             .height(28.dp)
                             .clip(RoundedCornerShape(Radii.Chip))
+                            .semantics { contentDescription = cellDescription }
                             .background(if (available) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.35f))
                     )
                 }
