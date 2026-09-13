@@ -70,7 +70,7 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        stringResource(R.string.empty_no_messages),
+                        stringResource(R.string.empty_no_agencies_to_chat),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.bodyMedium
                     )

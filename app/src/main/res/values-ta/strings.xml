@@ -73,6 +73,7 @@
     <string name="empty_no_messages">செய்திகள் இல்லை</string>
     <string name="empty_no_bookings">முன்பதிவுகள் இல்லை</string>
     <string name="empty_no_vitals">உயிர் அளவீடுகள் பதிவு செய்யப்படவில்லை</string>
+    <string name="empty_no_agencies_to_chat">உடன் பேச கிடைக்கக்கூடிய ஏஜென்சிகள் இல்லை.</string>
 
     <!-- Widget -->
     <string name="widget_title">உயிர் அளவீடுகள்</string>
