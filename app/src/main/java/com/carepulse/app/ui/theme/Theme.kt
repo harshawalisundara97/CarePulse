@@ -1,5 +1,7 @@
 package com.carepulse.app.ui.theme
 
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -81,6 +83,14 @@ fun CarePulseTheme(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
+    // Haze has no real backdrop blur below API 31, and drawing it on a low-RAM device risks
+    // jank/OOM -- gate the whole glass pipeline off in both cases so those devices render the
+    // opaque glassCard/GlassGround fallback instead (see LocalGlassEnabled's doc in Glass.kt).
+    val glassEnabled = remember {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        val isLowRam = activityManager?.isLowRamDevice == true
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !isLowRam
+    }
     val themePreference = remember { ThemePreference(context) }
     val mode = themePreference.themeMode.collectAsState(initial = ThemeMode.SYSTEM).value
 
@@ -104,7 +114,7 @@ fun CarePulseTheme(
     // keeps every glass consumer in sync with whatever ColorScheme MaterialTheme resolves below.
     CompositionLocalProvider(
         LocalIsDarkTheme provides useDark,
-        LocalGlassEnabled provides true,
+        LocalGlassEnabled provides glassEnabled,
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
