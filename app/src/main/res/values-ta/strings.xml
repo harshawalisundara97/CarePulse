@@ -105,4 +105,5 @@
 
     <!-- Messages -->
     <string name="messages_send">செய்தியை அனுப்பு</string>
+    <string name="vitals_widget_description">CarePulse உயிர் அளவீடுகள் ஒரே பார்வையில்</string>
 </resources>
