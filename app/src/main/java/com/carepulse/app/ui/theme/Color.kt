@@ -3,10 +3,10 @@ package com.carepulse.app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Accent — primary actions, active nav, accent field block, key figures
-val AccentPrimary     = Color(0xFFEC3013)
-val AccentPrimaryDark = Color(0xFFFF563C)
-val AccentPressed     = Color(0xFFAE1800)
-val AccentPressedDark = Color(0xFFFF7A66)
+val AccentPrimary     = Color(0xFF15803D) // green-700: white text 5.0:1
+val AccentPrimaryDark = Color(0xFF4ADE80) // green-400: dark text on it
+val AccentPressed     = Color(0xFF166534)
+val AccentPressedDark = Color(0xFF86EFAC)
 
 // Text
 val TextPrimary     = Color(0xFF201E1D)

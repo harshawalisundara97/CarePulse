@@ -34,11 +34,11 @@ This is the required visual/design system for CarePulse's Android UI. Full spec:
 
 **Style:** Glass-on-grid. Translucent blurred surfaces (via Haze, `dev.chrisbanes.haze`) over a
 ruled 56dp grid and off-screen accent blocks, on Modernist typographic bones (Archivo font,
-flush-left uppercase labels, 2px rules, one red accent colour). Glass must always be gated behind
+flush-left uppercase labels, 2px rules, one green accent colour). Glass must always be gated behind
 `LocalGlassEnabled` (`ui/theme/Glass.kt`) with an opaque `Background`-tinted fallback at the same
 radius/border for low-end devices — layouts must stay legible with zero blur.
 
-**Palette:** `AccentPrimary` red (`#EC3013` light / `#FF563C` dark) for primary actions, active
+**Palette:** `AccentPrimary` green (`#15803D` light / `#4ADE80` dark) for primary actions, active
 nav, and the accent field block. Near-black/near-white text (`TextPrimary`), 55%-alpha muted text
 (`TextMuted`). `Background` `#F3F2F2` light / `#141312` dark. Full light + dark themes required.
 Status pills use a 16%-alpha fill of their own hue with the full-strength hue as text, and always
