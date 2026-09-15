@@ -73,6 +73,7 @@
     <string name="empty_no_messages">செய்திகள் இல்லை</string>
     <string name="empty_no_bookings">முன்பதிவுகள் இல்லை</string>
     <string name="empty_no_vitals">உயிர் அளவீடுகள் பதிவு செய்யப்படவில்லை</string>
+    <string name="empty_no_agencies_to_chat">உடன் பேச கிடைக்கக்கூடிய ஏஜென்சிகள் இல்லை.</string>
 
     <!-- Widget -->
     <string name="widget_title">உயிர் அளவீடுகள்</string>
@@ -80,4 +81,33 @@
     <string name="widget_bp">BP: %1$s</string>
     <string name="widget_mood">மனநிலை: %1$s</string>
     <string name="widget_no_data">—</string>
+
+    <!-- Pulse dashboard -->
+    <string name="pulse_title">துடிப்பு டாஷ்போர்டு</string>
+    <string name="pulse_today">இன்று</string>
+    <string name="pulse_meals">உணவு</string>
+    <string name="pulse_meals_unit">/ 3 இன்று</string>
+    <string name="pulse_hr_7_days">இதயத் துடிப்பு — 7 நாட்கள்</string>
+    <string name="pulse_bp_7_days">இரத்த அழுத்தம் — 7 நாட்கள்</string>
+    <string name="pulse_mood_7_entries">மனநிலை — கடைசி 7 பதிவுகள்</string>
+    <string name="pulse_systolic">சிஸ்டோலிக்</string>
+    <string name="pulse_diastolic">டயஸ்டோலிக்</string>
+    <string name="pulse_avg_hr">சராசரி இ.து.</string>
+    <string name="pulse_avg_bp">சராசரி இ.அ.</string>
+    <string name="pulse_top_mood">முதன்மை மனநிலை</string>
+    <string name="pulse_shift_summary">பணி சுருக்கம்</string>
+    <string name="pulse_by">வழங்கியவர்</string>
+    <string name="pulse_med_given">வழங்கப்பட்டது</string>
+    <string name="pulse_med_not_given">வழங்கப்படவில்லை</string>
+    <string name="pulse_video_call">வீடியோ அழைப்பைத் தொடங்கு</string>
+    <string name="pulse_hr_chart_description">இதயத் துடிப்பு விளக்கப்படம், %1$d அளவீடுகள், %2$d முதல் %3$d bpm வரை</string>
+    <string name="pulse_bp_chart_description">இரத்த அழுத்த விளக்கப்படம், %1$d அளவீடுகள், சமீபத்தியது %2$d/%3$d</string>
+
+    <!-- Messages -->
+    <string name="messages_send">செய்தியை அனுப்பு</string>
+    <string name="vitals_widget_description">CarePulse உயிர் அளவீடுகள் ஒரே பார்வையில்</string>
+
+    <!-- Caregiver detail -->
+    <string name="caregiver_detail_availability_cell_available">%1$s %2$s: கிடைக்கிறது</string>
+    <string name="caregiver_detail_availability_cell_unavailable">%1$s %2$s: கிடைக்காது</string>
 </resources>

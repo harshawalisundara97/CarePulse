@@ -64,7 +64,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.TextButton
 import com.carepulse.app.ui.theme.DangerRed
 import com.carepulse.app.ui.theme.SuccessGreen
-import com.carepulse.app.ui.theme.WarningAmber
+import com.carepulse.app.ui.theme.StatusOnDuty
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
 
@@ -331,7 +331,7 @@ fun ProfileAvatar(
 @Composable
 fun RatingRow(rating: Float, count: Int, modifier: Modifier = Modifier) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
-        Icon(Icons.Filled.Star, null, tint = WarningAmber, modifier = Modifier.size(16.dp))
+        Icon(Icons.Filled.Star, null, tint = StatusOnDuty, modifier = Modifier.size(16.dp))
         Spacer(Modifier.width(4.dp))
         Text(
             "%.1f".format(rating),
@@ -340,7 +340,7 @@ fun RatingRow(rating: Float, count: Int, modifier: Modifier = Modifier) {
             fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.width(4.dp))
-        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("($count)", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 

@@ -2,38 +2,47 @@ package com.carepulse.app.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Accent — used for primary actions, active nav state, selected chips
-val AccentPrimary        = Color(0xFF2563EB) // info blue doubles as the brand accent
-val AccentPrimaryDark    = Color(0xFF60A5FA)
-val AccentContainerLight = Color(0xFFDBEAFE)
-val AccentContainerDark  = Color(0xFF1E3A5F)
+// Accent — primary actions, active nav, accent field block, key figures
+val AccentPrimary     = Color(0xFF15803D) // green-700: white text 5.0:1
+val AccentPrimaryDark = Color(0xFF4ADE80) // green-400: dark text on it
+val AccentPressed     = Color(0xFF166534)
+val AccentPressedDark = Color(0xFF86EFAC)
 
-// Light surfaces
-val Background      = Color(0xFFFFFFFF)
-val CardSurface     = Color(0xFFFFFFFF)
-val BorderLine      = Color(0xFFF2F2F2)
-val SurfaceLow      = Color(0xFFF7F7F8)
-val SurfaceHigh     = Color(0xFFFFFFFF)
-val SurfaceHighest  = Color(0xFFFAFAFA)
+// Text
+val TextPrimary     = Color(0xFF201E1D)
+val TextPrimaryDark = Color(0xFFF4F2F1)
+val TextMuted       = Color(0xFF201E1D).copy(alpha = 0.55f)
+val TextMutedDark   = Color(0xFFF4F2F1).copy(alpha = 0.55f)
 
-// Light text
-val TextPrimary     = Color(0xFF111827)
-val TextSecondary   = Color(0xFF6B7280)
+// Ground
+val Background      = Color(0xFFF3F2F2)
+val BackgroundDark   = Color(0xFF141312)
+val GroundDeep       = Color(0xFFE6E3E1)
+val GroundDeepDark   = Color(0xFF0D0C0C)
 
-// Semantic
-val DangerRed       = Color(0xFFDC2626)
-val WarningAmber    = Color(0xFFF97316)
-val SuccessGreen    = Color(0xFF16A34A)
-val InfoBlue        = Color(0xFF2563EB)
+// Glass surfaces
+val GlassFill        = Color(0xFFFFFFFF).copy(alpha = 0.62f)
+val GlassFillDark     = Color(0xFFFFFFFF).copy(alpha = 0.07f)
+val GlassFillSubtle   = Color(0xFFFFFFFF).copy(alpha = 0.38f)
+val GlassFillSubtleDark = Color(0xFFFFFFFF).copy(alpha = 0.04f)
+val GlassBorder       = Color(0xFFFFFFFF).copy(alpha = 0.85f)
+val GlassBorderDark   = Color(0xFFFFFFFF).copy(alpha = 0.13f)
 
-// Dark surfaces
-val DarkBackground     = Color(0xFF121212)
-val DarkSurface        = Color(0xFF1C1C1E)
-val DarkSurfaceLow     = Color(0xFF161618)
-val DarkSurfaceHigh    = Color(0xFF232326)
-val DarkSurfaceHighest = Color(0xFF2C2C2E)
-val DarkBorder         = Color(0xFF2E2E30)
+// Rules / grid lines
+val Rule     = Color(0xFF201E1D).copy(alpha = 0.14f)
+val RuleDark = Color(0xFFFFFFFF).copy(alpha = 0.11f)
 
-// Dark text
-val DarkOnSurface    = Color(0xFFF2F2F2)
-val DarkOnSurfaceVar = Color(0xFFA1A1A6)
+// Elevation tint (never pure black)
+val ShadowTint     = Color(0xFF2D2B2B).copy(alpha = 0.13f)
+val ShadowTintDark = Color(0xFF000000).copy(alpha = 0.50f)
+
+// Status — same hue in both themes
+val StatusAvailable  = Color(0xFF16A34A)
+val StatusOnDuty     = Color(0xFFF97316)
+val StatusOnDutyText = Color(0xFFC2410C)
+val StatusDueFill    = Color(0xFFEC3013).copy(alpha = 0.14f)
+val StatusDueText    = Color(0xFFAE1800)
+
+// General semantic (kept for existing error/success call sites across all roles)
+val DangerRed    = Color(0xFFDC2626)
+val SuccessGreen = Color(0xFF16A34A)

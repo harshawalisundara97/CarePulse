@@ -73,6 +73,7 @@
     <string name="empty_no_messages">පණිවුඩ නැත</string>
     <string name="empty_no_bookings">වෙන්කිරීම් නැත</string>
     <string name="empty_no_vitals">වැදගත් දත්ත ඇතුළත් කර නැත</string>
+    <string name="empty_no_agencies_to_chat">කතා කිරීමට ඉඩ ඇති ඒජෙන්සි නැත.</string>
 
     <!-- Widget -->
     <string name="widget_title">වැදගත් දත්ත</string>
@@ -81,4 +82,32 @@
     <string name="widget_mood">මනෝභාවය: %1$s</string>
     <string name="widget_no_data">—</string>
     <string name="vitals_widget_description">CarePulse වැදගත් දත්ත එක් බැල්මකින්</string>
+
+    <!-- Pulse dashboard -->
+    <string name="pulse_title">නාඩි උපකරණ පුවරුව</string>
+    <string name="pulse_today">අද</string>
+    <string name="pulse_meals">ආහාර</string>
+    <string name="pulse_meals_unit">/ 3 අද</string>
+    <string name="pulse_hr_7_days">හෘද ස්පන්දනය — දින 7</string>
+    <string name="pulse_bp_7_days">රුධිර පීඩනය — දින 7</string>
+    <string name="pulse_mood_7_entries">මනෝභාවය — අවසන් ඇතුළත් කිරීම් 7</string>
+    <string name="pulse_systolic">සිස්ටෝලික්</string>
+    <string name="pulse_diastolic">ඩයස්ටෝලික්</string>
+    <string name="pulse_avg_hr">සාමාන්‍ය හෘද ස්පන්දනය</string>
+    <string name="pulse_avg_bp">සාමාන්‍ය රුධිර පීඩනය</string>
+    <string name="pulse_top_mood">බහුල මනෝභාවය</string>
+    <string name="pulse_shift_summary">වැඩ මුර සාරාංශය</string>
+    <string name="pulse_by">විසින්</string>
+    <string name="pulse_med_given">ලබා දී ඇත</string>
+    <string name="pulse_med_not_given">ලබා දී නැත</string>
+    <string name="pulse_video_call">වීඩියෝ ඇමතුම ආරම්භ කරන්න</string>
+    <string name="pulse_hr_chart_description">හෘද ස්පන්දන ප්‍රස්තාරය, කියවීම් %1$d, %2$d සිට %3$d bpm දක්වා</string>
+    <string name="pulse_bp_chart_description">රුධිර පීඩන ප්‍රස්තාරය, කියවීම් %1$d, නවතම %2$d/%3$d</string>
+
+    <!-- Messages -->
+    <string name="messages_send">පණිවුඩය යවන්න</string>
+
+    <!-- Caregiver detail -->
+    <string name="caregiver_detail_availability_cell_available">%1$s %2$s: ලබා ගත හැක</string>
+    <string name="caregiver_detail_availability_cell_unavailable">%1$s %2$s: ලබා ගත නොහැක</string>
 </resources>

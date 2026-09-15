@@ -11,4 +11,10 @@ object Spacing {
     val SectionSpacing = 32.dp
     val SectionSpacingCompact = 24.dp
     val ItemGap = 8.dp
+    val CardGap = 12.dp
+    val InCardGap = 12.dp
+    val SheetSides = 20.dp
+    val SheetBottom = 26.dp
+    val NavBarSides = 14.dp
+    val NavBarBottom = 12.dp
 }

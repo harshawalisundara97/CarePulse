@@ -1,5 +1,8 @@
 package com.carepulse.app.ui.screens.customer
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
+import android.provider.Settings
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -26,9 +29,9 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MonitorHeart
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.VideoCall
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,15 +53,43 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.carepulse.app.R
 import com.carepulse.app.data.model.Mood
 import com.carepulse.app.data.model.VitalsLog
-import com.carepulse.app.ui.components.PastelCard
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.theme.DangerRed
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Motion
+import com.carepulse.app.ui.theme.Radii
+import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.TypeLabel
+import com.carepulse.app.ui.theme.TypeNumericM
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
 import kotlin.math.roundToInt
+
+/**
+ * True when the device has animations turned off system-wide (developer options or an
+ * accessibility preference sets the animator duration scale to 0). Animation-heavy surfaces
+ * must degrade to a static/faded state rather than animating when this is true.
+ */
+@Composable
+private fun rememberReduceMotion(): Boolean {
+    val context = LocalContext.current
+    return remember(context) {
+        Settings.Global.getFloat(
+            context.contentResolver,
+            Settings.Global.ANIMATOR_DURATION_SCALE,
+            1f
+        ) == 0f
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,60 +103,80 @@ fun PulseDashboardScreen(
     val today = vitalsList.firstOrNull()
     val last7 = vitalsList.take(7)
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Pulse Dashboard", color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    if (onBack != null) {
-                        IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = MaterialTheme.colorScheme.onSurface)
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            stringResource(R.string.pulse_title),
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    navigationIcon = {
+                        if (onBack != null) {
+                            IconButton(onClick = onBack) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.common_back),
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                         }
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            contentWindowInsets = tabContentWindowInsets(),
+            containerColor = Color.Transparent
+        ) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding.withoutBottom())
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+                .padding(horizontal = Spacing.ScreenPaddingCompact)
+                .padding(bottom = padding.calculateBottomPadding()),
+            verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
         ) {
-            PatientStrip(name = "Mr. Lee", subtitle = "Admitted · Brookside Care", onVideoCall = onVideoCall)
+            PatientStrip(
+                name = "Mr. Lee",
+                subtitle = "Admitted · Brookside Care",
+                onVideoCall = onVideoCall,
+                hazeState = hazeState
+            )
 
             if (today != null) {
                 // Animated vital cards with count-up
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.ItemGap)) {
                     AnimatedVitalCard(
                         Modifier.weight(1f),
                         icon = Icons.Filled.Favorite,
-                        title = "Heart rate",
+                        title = stringResource(R.string.vitals_heart_rate),
                         targetValue = today.heartRate,
                         unit = "bpm",
-                        accent = DangerRed
+                        accent = DangerRed,
+                        hazeState = hazeState
                     )
                     AnimatedVitalCard(
                         Modifier.weight(1f),
                         icon = Icons.Filled.MonitorHeart,
-                        title = "Blood pressure",
+                        title = stringResource(R.string.vitals_blood_pressure),
                         targetValue = today.bloodPressureSystolic,
                         unit = "/${today.bloodPressureDiastolic} mmHg",
-                        accent = MaterialTheme.colorScheme.primary
+                        accent = MaterialTheme.colorScheme.primary,
+                        hazeState = hazeState
                     )
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(Spacing.ItemGap)) {
                     // Mood card (static — mood is categorical)
                     Box(
                         Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(20.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(14.dp)
+                            .glassCard(Radii.StatTile, hazeState)
+                            .padding(Spacing.CardPaddingCompact)
                     ) {
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -143,39 +194,51 @@ fun PulseDashboardScreen(
                                     )
                                 }
                                 Spacer(Modifier.width(8.dp))
-                                Text("Mood", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                Text(
+                                    stringResource(R.string.vitals_mood),
+                                    style = TypeLabel,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
                             }
                             Spacer(Modifier.height(8.dp))
                             Text(
                                 today.mood.label,
-                                style = MaterialTheme.typography.headlineMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.Bold
+                                style = TypeNumericM,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
-                            Text("today", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                stringResource(R.string.pulse_today),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                     AnimatedVitalCard(
                         Modifier.weight(1f),
                         icon = Icons.Filled.Restaurant,
-                        title = "Meals",
+                        title = stringResource(R.string.pulse_meals),
                         targetValue = today.mealsEaten,
-                        unit = "/ 3 today",
-                        accent = MaterialTheme.colorScheme.outline
+                        unit = stringResource(R.string.pulse_meals_unit),
+                        accent = MaterialTheme.colorScheme.primary,
+                        hazeState = hazeState
                     )
                 }
 
                 // Weekly summary stats
-                WeeklyStatsStrip(last7)
+                WeeklyStatsStrip(last7, hazeState)
 
                 // Heart rate trend chart
-                PastelCard {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(Radii.Card, hazeState)
+                        .padding(Spacing.CardPaddingCompact)
+                ) {
                     Column {
                         Text(
-                            "Heart rate — 7 days",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold
+                            stringResource(R.string.pulse_hr_7_days),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(8.dp))
                         HeartRateChart(last7.map { it.heartRate.toFloat() }.reversed())
@@ -184,18 +247,28 @@ fun PulseDashboardScreen(
 
                 // Blood pressure trend chart
                 if (last7.size >= 2) {
-                    PastelCard {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .glassCard(Radii.Card, hazeState)
+                            .padding(Spacing.CardPaddingCompact)
+                    ) {
                         Column {
                             Text(
-                                "Blood pressure — 7 days",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.SemiBold
+                                stringResource(R.string.pulse_bp_7_days),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(Modifier.height(4.dp))
                             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                ChartLegendDot(MaterialTheme.colorScheme.primary, "Systolic")
-                                ChartLegendDot(MaterialTheme.colorScheme.primary.copy(alpha = 0.4f), "Diastolic")
+                                ChartLegendDot(
+                                    MaterialTheme.colorScheme.primary,
+                                    stringResource(R.string.pulse_systolic)
+                                )
+                                ChartLegendDot(
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                    stringResource(R.string.pulse_diastolic)
+                                )
                             }
                             Spacer(Modifier.height(8.dp))
                             BpChart(
@@ -208,13 +281,17 @@ fun PulseDashboardScreen(
 
                 // Mood distribution
                 if (last7.isNotEmpty()) {
-                    PastelCard {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .glassCard(Radii.Card, hazeState)
+                            .padding(Spacing.CardPaddingCompact)
+                    ) {
                         Column {
                             Text(
-                                "Mood — last 7 entries",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                fontWeight = FontWeight.SemiBold
+                                stringResource(R.string.pulse_mood_7_entries),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(Modifier.height(10.dp))
                             MoodDistributionBar(last7)
@@ -225,34 +302,48 @@ fun PulseDashboardScreen(
 
             // Latest shift report
             reports.firstOrNull()?.let { report ->
-                PastelCard {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(Radii.Card, hazeState)
+                        .padding(Spacing.CardPaddingCompact)
+                ) {
                     Column {
                         Text(
-                            "Shift Summary · ${report.dateLabel}",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold
+                            "${stringResource(R.string.pulse_shift_summary)} · ${report.dateLabel}",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "By ${report.caregiverName}",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            "${stringResource(R.string.pulse_by)} ${report.caregiverName}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(8.dp))
-                        Text(report.daySummary, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
+                        Text(
+                            report.daySummary,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
                         Spacer(Modifier.height(10.dp))
                         report.medicationsGiven.forEach { m ->
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Box(
                                     Modifier
                                         .size(10.dp)
-                                        .clip(RoundedCornerShape(5.dp))
-                                        .background(if (m.administered) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.outline)
+                                        .clip(CircleShape)
+                                        .background(
+                                            if (m.administered) MaterialTheme.colorScheme.primary
+                                            else MaterialTheme.colorScheme.outline
+                                        )
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
-                                    "${m.name} · ${m.dose}",
+                                    "${m.name} · ${m.dose} · " + stringResource(
+                                        if (m.administered) R.string.pulse_med_given
+                                        else R.string.pulse_med_not_given
+                                    ),
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
@@ -262,7 +353,8 @@ fun PulseDashboardScreen(
                 }
             }
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
+        }
         }
     }
 }
@@ -270,7 +362,7 @@ fun PulseDashboardScreen(
 // ── Weekly stats strip ────────────────────────────────────────────────────────
 
 @Composable
-private fun WeeklyStatsStrip(vitals: List<VitalsLog>) {
+private fun WeeklyStatsStrip(vitals: List<VitalsLog>, hazeState: HazeState) {
     if (vitals.isEmpty()) return
     val avgHr = vitals.map { it.heartRate }.average().roundToInt()
     val avgSys = vitals.map { it.bloodPressureSystolic }.average().roundToInt()
@@ -279,33 +371,28 @@ private fun WeeklyStatsStrip(vitals: List<VitalsLog>) {
 
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.ItemGap)
     ) {
-        StatChip(Modifier.weight(1f), "Avg HR", "$avgHr bpm", DangerRed)
-        StatChip(Modifier.weight(1f), "Avg BP", "$avgSys/$avgDia", MaterialTheme.colorScheme.primary)
+        StatChip(Modifier.weight(1f), stringResource(R.string.pulse_avg_hr), "$avgHr bpm", hazeState)
+        StatChip(Modifier.weight(1f), stringResource(R.string.pulse_avg_bp), "$avgSys/$avgDia", hazeState)
         if (topMood != null) {
-            StatChip(Modifier.weight(1f), "Top mood", topMood.label, topMood.color)
+            StatChip(Modifier.weight(1f), stringResource(R.string.pulse_top_mood), topMood.label, hazeState)
         }
     }
 }
 
 @Composable
-private fun StatChip(modifier: Modifier, label: String, value: String, accent: Color) {
+private fun StatChip(modifier: Modifier, label: String, value: String, hazeState: HazeState) {
     Box(
         modifier
-            .clip(RoundedCornerShape(14.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .glassCard(Radii.StatTile, hazeState)
             .padding(10.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Text(
-                value,
-                style = MaterialTheme.typography.titleSmall,
-                color = accent,
-                fontWeight = FontWeight.Bold
-            )
+            Text(label, style = TypeLabel, color = MaterialTheme.colorScheme.onSurface)
+            Spacer(Modifier.height(2.dp))
+            Text(value, style = TypeNumericM, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
@@ -326,11 +413,11 @@ private fun MoodDistributionBar(vitals: List<VitalsLog>) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(mood.icon, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(16.dp))
+            Icon(mood.icon, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
             Text(
                 mood.label,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.width(48.dp)
             )
             Box(
@@ -348,7 +435,7 @@ private fun MoodDistributionBar(vitals: List<VitalsLog>) {
                         .background(mood.color)
                 )
             }
-            Text("$count", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("$count", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
@@ -362,7 +449,7 @@ private fun ChartLegendDot(color: Color, label: String) {
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Box(Modifier.size(8.dp).clip(CircleShape).background(color))
-        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
@@ -373,19 +460,24 @@ private fun AnimatedVitalCard(
     title: String,
     targetValue: Int,
     unit: String,
-    accent: Color
+    accent: Color,
+    hazeState: HazeState
 ) {
+    val reduceMotion = rememberReduceMotion()
     val animatable = remember { Animatable(0f) }
-    LaunchedEffect(targetValue) {
-        animatable.animateTo(targetValue.toFloat(), animationSpec = tween(800))
+    LaunchedEffect(targetValue, reduceMotion) {
+        if (reduceMotion) {
+            animatable.snapTo(targetValue.toFloat())
+        } else {
+            animatable.animateTo(targetValue.toFloat(), animationSpec = tween(800))
+        }
     }
     val displayValue = animatable.value.roundToInt()
 
     Box(
         modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(14.dp)
+            .glassCard(Radii.StatTile, hazeState)
+            .padding(Spacing.CardPaddingCompact)
     ) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -399,28 +491,27 @@ private fun AnimatedVitalCard(
                     Icon(icon, null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(16.dp))
                 }
                 Spacer(Modifier.width(8.dp))
-                Text(title, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(title, style = TypeLabel, color = MaterialTheme.colorScheme.onSurface)
             }
             Spacer(Modifier.height(8.dp))
-            Text(
-                "$displayValue",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
-            )
-            Text(unit, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("$displayValue", style = TypeNumericM, color = MaterialTheme.colorScheme.onSurface)
+            Text(unit, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface)
         }
     }
 }
 
 @Composable
-private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit) {
+private fun PatientStrip(
+    name: String,
+    subtitle: String,
+    onVideoCall: () -> Unit,
+    hazeState: HazeState
+) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(22.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(16.dp),
+            .glassCard(Radii.CardLarge, hazeState)
+            .padding(Spacing.CardPaddingCompact),
         verticalAlignment = Alignment.CenterVertically
     ) {
         GeneratedAvatar(seed = name.hashCode(), initials = "ML", size = 56)
@@ -429,13 +520,12 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
             Text(
                 name,
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f)
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
         IconButton(
@@ -443,9 +533,13 @@ private fun PatientStrip(name: String, subtitle: String, onVideoCall: () -> Unit
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.primary)
         ) {
-            Icon(Icons.Filled.VideoCall, null, tint = MaterialTheme.colorScheme.onSurface)
+            Icon(
+                Icons.Filled.VideoCall,
+                contentDescription = stringResource(R.string.pulse_video_call),
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }
@@ -457,19 +551,31 @@ private fun BpChart(systolic: List<Float>, diastolic: List<Float>) {
     val min = allValues.min()
     val max = allValues.max().coerceAtLeast(min + 1f)
 
+    val reduceMotion = rememberReduceMotion()
     var animated by remember { mutableStateOf(0f) }
     val progress by animateFloatAsState(
         targetValue = animated,
-        animationSpec = tween(900),
+        animationSpec = tween(
+            durationMillis = Motion.SparklineDraw,
+            easing = Motion.Emphasized
+        ),
         label = "bpChart"
     )
     LaunchedEffect(Unit) { animated = 1f }
+    val drawProgress = if (reduceMotion) 1f else progress
     val lineColor = MaterialTheme.colorScheme.primary
+    val description = stringResource(
+        R.string.pulse_bp_chart_description,
+        systolic.size,
+        systolic.last().roundToInt(),
+        diastolic.last().roundToInt()
+    )
 
     Canvas(
         Modifier
             .fillMaxWidth()
             .height(120.dp)
+            .semantics { contentDescription = description }
     ) {
         val w = size.width
         val h = size.height
@@ -486,7 +592,7 @@ private fun BpChart(systolic: List<Float>, diastolic: List<Float>) {
             return p
         }
 
-        clipRect(right = w * progress) {
+        clipRect(right = w * drawProgress) {
             drawPath(buildPath(systolic), color = lineColor, style = Stroke(width = 5f))
             drawPath(buildPath(diastolic), color = lineColor.copy(alpha = 0.4f), style = Stroke(width = 3f))
         }
@@ -499,20 +605,32 @@ private fun HeartRateChart(values: List<Float>) {
     val min = values.min()
     val max = values.max().coerceAtLeast(min + 1f)
 
+    val reduceMotion = rememberReduceMotion()
     var animated by remember { mutableStateOf(0f) }
     val progress by animateFloatAsState(
         targetValue = animated,
-        animationSpec = tween(900),
+        animationSpec = tween(
+            durationMillis = Motion.SparklineDraw,
+            easing = Motion.Emphasized
+        ),
         label = "hrChart"
     )
     LaunchedEffect(Unit) { animated = 1f }
+    val drawProgress = if (reduceMotion) 1f else progress
     val pointColor = MaterialTheme.colorScheme.onSurface
     val hrLineColor = MaterialTheme.colorScheme.primary
+    val description = stringResource(
+        R.string.pulse_hr_chart_description,
+        values.size,
+        min.roundToInt(),
+        max.roundToInt()
+    )
 
     Canvas(
         Modifier
             .fillMaxWidth()
             .height(140.dp)
+            .semantics { contentDescription = description }
     ) {
         val w = size.width
         val h = size.height
@@ -524,7 +642,7 @@ private fun HeartRateChart(values: List<Float>) {
             val y = h - padding - ((v - min) / (max - min)) * (h - padding * 2)
             if (i == 0) path.moveTo(x, y) else path.lineTo(x, y)
         }
-        clipRect(right = w * progress) {
+        clipRect(right = w * drawProgress) {
             drawPath(path = path, color = hrLineColor, style = Stroke(width = 6f))
         }
         values.forEachIndexed { i, v ->

@@ -1,5 +1,6 @@
 package com.carepulse.app.ui.screens.caregiver
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -100,6 +101,7 @@ fun CaregiverDashboardScreen(
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         },
+        contentWindowInsets = tabContentWindowInsets(),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(

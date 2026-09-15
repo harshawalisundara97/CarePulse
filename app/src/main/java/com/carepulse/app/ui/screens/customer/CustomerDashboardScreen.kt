@@ -2,9 +2,13 @@
 
 package com.carepulse.app.ui.screens.customer
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,17 +26,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -40,6 +40,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -54,16 +55,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.carepulse.app.R
 import com.carepulse.app.data.model.Caregiver
 import com.carepulse.app.ui.components.CarePulseTextField
 import com.carepulse.app.ui.components.GeneratedAvatar
 import com.carepulse.app.ui.components.LoadingShimmerList
 import com.carepulse.app.ui.components.PastelChip
 import com.carepulse.app.ui.components.RatingRow
+import com.carepulse.app.ui.theme.GlassScreen
+import com.carepulse.app.ui.theme.Motion
+import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.TypeNumericM
+import com.carepulse.app.ui.theme.glassCard
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,98 +102,146 @@ fun CustomerDashboardScreen(
             (specFilter == null || it.specializations.contains(specFilter))
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Column {
-                        Text("Hello, ${displayName.split(" ").first()}",
-                            style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text("Find care today",
-                            style = MaterialTheme.typography.headlineMedium,
-                            color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
-                    }
-                },
-                actions = {
-                    IconButton(onClick = onSignOut) {
-                        Icon(Icons.Filled.Logout, contentDescription = "Sign out", tint = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onRequestCare,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text("Request care") }
-            )
-        },
-        containerColor = MaterialTheme.colorScheme.background
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = Spacing.ScreenPaddingCompact)
-        ) {
-            PulseBanner(onClick = onOpenPulse)
-
-            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
-            CarePulseTextField(
-                value = area,
-                onValueChange = vm::setAreaFilter,
-                label = "Area or zip code",
-                placeholder = "e.g. 90210"
-            )
-
-            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
-            Text("Specialization", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onSurface)
-            FlowRow(
-                Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+    GlassScreen { hazeState ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text(
+                                "Hello, ${displayName.split(" ").first()}",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                "Find care today",
+                                style = MaterialTheme.typography.headlineMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = onSignOut) {
+                            Icon(
+                                Icons.Filled.Logout,
+                                contentDescription = stringResource(R.string.auth_sign_out),
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                )
+            },
+            floatingActionButton = {
+                ExtendedFloatingActionButton(
+                    onClick = onRequestCare,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                    text = { Text("Request care", style = MaterialTheme.typography.titleMedium) }
+                )
+            },
+            contentWindowInsets = tabContentWindowInsets(),
+            containerColor = Color.Transparent
+        ) { padding ->
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding.withoutBottom())
+                    .padding(horizontal = Spacing.ScreenPaddingCompact)
             ) {
-                PastelChip("All", selected = specFilter == null,
-                    onClick = { vm.setSpecializationFilter(null) })
-                allSpecs.forEach {
-                    PastelChip(it, selected = specFilter == it,
-                        onClick = { vm.setSpecializationFilter(it) })
-                }
-            }
+                PulseBanner(hazeState = hazeState, onClick = onOpenPulse)
 
-            Spacer(Modifier.height(Spacing.SectionSpacingCompact))
-            Text("Minimum rating: ${"%.1f".format(minRating)}",
-                style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Slider(
-                value = minRating,
-                onValueChange = vm::setMinRating,
-                valueRange = 0f..5f,
-                steps = 9
-            )
+                Spacer(Modifier.height(Spacing.CardGap))
 
-            if (loading) {
-                LoadingShimmerList()
-            } else {
-                AnimatedVisibility(
-                    visible = true,
-                    enter = fadeIn() + slideInVertically(),
-                    exit = fadeOut()
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .glassCard(radius = Radii.Card, hazeState = hazeState)
+                        .padding(Spacing.CardPaddingCompact),
+                    verticalArrangement = Arrangement.spacedBy(Spacing.InCardGap)
                 ) {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        itemsIndexed(filtered, key = { _, c -> c.id }) { index, c ->
-                            var visible by remember(c.id) { mutableStateOf(false) }
-                            LaunchedEffect(c.id) {
-                                delay(index * 60L)
-                                visible = true
-                            }
-                            AnimatedVisibility(
-                                visible = visible,
-                                enter = slideInVertically(initialOffsetY = { it / 3 }, animationSpec = tween(350)) +
-                                        fadeIn(animationSpec = tween(350))
-                            ) {
-                                CaregiverCard(c) { onOpenCaregiver(c.id) }
+                    CarePulseTextField(
+                        value = area,
+                        onValueChange = vm::setAreaFilter,
+                        label = "Area or zip code",
+                        placeholder = "e.g. 90210"
+                    )
+
+                    Text(
+                        "Specialization",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    FlowRow(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        PastelChip(
+                            "All", selected = specFilter == null,
+                            onClick = { vm.setSpecializationFilter(null) }
+                        )
+                        allSpecs.forEach {
+                            PastelChip(
+                                it, selected = specFilter == it,
+                                onClick = { vm.setSpecializationFilter(it) }
+                            )
+                        }
+                    }
+
+                    Text(
+                        "Minimum rating: ${"%.1f".format(minRating)}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Slider(
+                        value = minRating,
+                        onValueChange = vm::setMinRating,
+                        valueRange = 0f..5f,
+                        steps = 9,
+                        colors = SliderDefaults.colors(
+                            thumbColor = MaterialTheme.colorScheme.primary,
+                            activeTrackColor = MaterialTheme.colorScheme.primary
+                        )
+                    )
+                }
+
+                Spacer(Modifier.height(Spacing.CardGap))
+
+                if (loading) {
+                    LoadingShimmerList()
+                } else {
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn() + slideInVertically(),
+                        exit = fadeOut()
+                    ) {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(Spacing.CardGap),
+                            contentPadding = PaddingValues(bottom = padding.calculateBottomPadding())
+                        ) {
+                            itemsIndexed(filtered, key = { _, c -> c.id }) { index, c ->
+                                var visible by remember(c.id) { mutableStateOf(false) }
+                                LaunchedEffect(c.id) {
+                                    val step = minOf(index, Motion.ListStaggerMax) * Motion.ListStaggerStep.toLong()
+                                    delay(step)
+                                    visible = true
+                                }
+                                AnimatedVisibility(
+                                    visible = visible,
+                                    enter = slideInVertically(
+                                        initialOffsetY = { (it * 0.06f).toInt() },
+                                        animationSpec = tween(Motion.ListItemDuration, easing = Motion.Emphasized)
+                                    ) +
+                                        fadeIn(animationSpec = tween(Motion.ListItemDuration, easing = Motion.Emphasized)) +
+                                        scaleIn(
+                                            initialScale = 0.985f,
+                                            animationSpec = tween(Motion.ListItemDuration, easing = Motion.Emphasized)
+                                        )
+                                ) {
+                                    CaregiverCard(c, hazeState) { onOpenCaregiver(c.id) }
+                                }
                             }
                         }
                     }
@@ -196,50 +252,52 @@ fun CustomerDashboardScreen(
 }
 
 @Composable
-private fun PulseBanner(onClick: () -> Unit) {
+private fun PulseBanner(hazeState: HazeState, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(96.dp)
-            .clip(RoundedCornerShape(22.dp))
-            .background(MaterialTheme.colorScheme.primaryContainer)
+            .glassCard(radius = Radii.CardLarge, hazeState = hazeState)
             .clickable { onClick() }
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = Spacing.CardPaddingCompact),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             Modifier
                 .size(56.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.7f)),
+                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(Icons.Filled.Favorite, null, tint = MaterialTheme.colorScheme.onSurface)
+            Icon(Icons.Filled.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         }
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
-            Text("The Pulse Dashboard",
+            Text(
+                "The Pulse Dashboard",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Bold)
-            Text("Check today's vitals & video call",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f))
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                "Check today's vitals & video call",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }
 
 @Composable
-private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
-    Card(
+private fun CaregiverCard(c: Caregiver, hazeState: HazeState, onClick: () -> Unit) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .glassCard(radius = Radii.Card, hazeState = hazeState)
+            .clickable(onClick = onClick)
+            .padding(Spacing.CardPaddingCompact)
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(Spacing.CardPaddingCompact),
+            Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             GeneratedAvatar(
@@ -249,24 +307,35 @@ private fun CaregiverCard(c: Caregiver, onClick: () -> Unit) {
             )
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
-                Text(c.name, style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.SemiBold)
+                Text(
+                    c.name, style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Filled.LocationOn, null, tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(14.dp))
+                    Icon(
+                        Icons.Filled.LocationOn, contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(14.dp)
+                    )
                     Spacer(Modifier.width(4.dp))
-                    Text(c.area, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        c.area, style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     RatingRow(c.rating, c.ratingCount)
                     Spacer(Modifier.width(8.dp))
-                    Text("· \$${c.hourlyRate}/hr",
-                        style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                    Text(
+                        "\$${c.hourlyRate}/hr",
+                        style = TypeNumericM,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 Spacer(Modifier.height(6.dp))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.outline) }
+                    c.specializations.forEach { PastelChip(it, color = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)) }
                 }
             }
         }

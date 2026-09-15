@@ -1,5 +1,7 @@
 package com.carepulse.app.ui.theme
 
+import android.app.ActivityManager
+import android.content.Context
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,67 +12,69 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 
 private val LightBrandScheme = lightColorScheme(
     primary = AccentPrimary,
-    onPrimary = CardSurface,
-    primaryContainer = AccentContainerLight,
-    onPrimaryContainer = TextPrimary,
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = AccentPrimary.copy(alpha = 0.14f),
+    onPrimaryContainer = AccentPressed,
     secondary = TextPrimary,
-    onSecondary = CardSurface,
-    secondaryContainer = SurfaceLow,
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = GlassFillSubtle,
     onSecondaryContainer = TextPrimary,
-    tertiary = WarningAmber,
-    onTertiary = CardSurface,
+    tertiary = StatusOnDuty,
+    onTertiary = Color(0xFFFFFFFF),
     background = Background,
     onBackground = TextPrimary,
-    surface = CardSurface,
+    surface = GlassFill,
     onSurface = TextPrimary,
-    surfaceVariant = SurfaceLow,
-    onSurfaceVariant = TextSecondary,
-    surfaceContainerLow = SurfaceLow,
-    surfaceContainerHigh = SurfaceHigh,
-    surfaceContainerHighest = SurfaceHighest,
-    outline = BorderLine,
+    surfaceVariant = GlassFillSubtle,
+    onSurfaceVariant = TextMuted,
+    surfaceContainerLow = GroundDeep,
+    surfaceContainerHigh = GlassFill,
+    surfaceContainerHighest = Color(0xFFFFFFFF),
+    outline = Rule,
     error = DangerRed,
-    onError = CardSurface
+    onError = Color(0xFFFFFFFF)
 )
 
 private val DarkBrandScheme = darkColorScheme(
     primary = AccentPrimaryDark,
-    onPrimary = DarkBackground,
-    primaryContainer = AccentContainerDark,
-    onPrimaryContainer = DarkOnSurface,
-    secondary = DarkOnSurface,
-    onSecondary = DarkBackground,
-    secondaryContainer = DarkSurfaceLow,
-    onSecondaryContainer = DarkOnSurface,
-    tertiary = WarningAmber,
-    onTertiary = DarkBackground,
-    background = DarkBackground,
-    onBackground = DarkOnSurface,
-    surface = DarkSurface,
-    onSurface = DarkOnSurface,
-    surfaceVariant = DarkSurfaceLow,
-    onSurfaceVariant = DarkOnSurfaceVar,
-    surfaceContainerLow = DarkSurfaceLow,
-    surfaceContainerHigh = DarkSurfaceHigh,
-    surfaceContainerHighest = DarkSurfaceHighest,
-    outline = DarkBorder,
+    onPrimary = BackgroundDark,
+    primaryContainer = AccentPrimaryDark.copy(alpha = 0.18f),
+    onPrimaryContainer = AccentPressedDark,
+    secondary = TextPrimaryDark,
+    onSecondary = BackgroundDark,
+    secondaryContainer = GlassFillSubtleDark,
+    onSecondaryContainer = TextPrimaryDark,
+    tertiary = StatusOnDuty,
+    onTertiary = BackgroundDark,
+    background = BackgroundDark,
+    onBackground = TextPrimaryDark,
+    surface = GlassFillDark,
+    onSurface = TextPrimaryDark,
+    surfaceVariant = GlassFillSubtleDark,
+    onSurfaceVariant = TextMutedDark,
+    surfaceContainerLow = GroundDeepDark,
+    surfaceContainerHigh = GlassFillDark,
+    surfaceContainerHighest = Color(0xFF1C1A19),
+    outline = RuleDark,
     error = DangerRed,
-    onError = CardSurface
+    onError = Color(0xFFFFFFFF)
 )
 
 private val CarePulseShapes = Shapes(
-    extraSmall = RoundedCornerShape(8.dp),
-    small = RoundedCornerShape(12.dp),
-    medium = RoundedCornerShape(Radii.Input),
-    large = RoundedCornerShape(Radii.Button),
-    extraLarge = RoundedCornerShape(Radii.Card)
+    extraSmall = RoundedCornerShape(Radii.IconButton),
+    small = RoundedCornerShape(Radii.Input),
+    medium = RoundedCornerShape(Radii.Button),
+    large = RoundedCornerShape(Radii.Card),
+    extraLarge = RoundedCornerShape(Radii.CardLarge)
 )
 
 @Composable
@@ -79,6 +83,14 @@ fun CarePulseTheme(
     content: @Composable () -> Unit
 ) {
     val context = LocalContext.current
+    // Haze has no real backdrop blur below API 31, and drawing it on a low-RAM device risks
+    // jank/OOM -- gate the whole glass pipeline off in both cases so those devices render the
+    // opaque glassCard/GlassGround fallback instead (see LocalGlassEnabled's doc in Glass.kt).
+    val glassEnabled = remember {
+        val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+        val isLowRam = activityManager?.isLowRamDevice == true
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !isLowRam
+    }
     val themePreference = remember { ThemePreference(context) }
     val mode = themePreference.themeMode.collectAsState(initial = ThemeMode.SYSTEM).value
 
@@ -96,10 +108,19 @@ fun CarePulseTheme(
         else -> LightBrandScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = CarePulseTypography,
-        shapes = CarePulseShapes,
-        content = content
-    )
+    // Glass surfaces (Glass.kt) must key off the app's *resolved* dark/light flag, not the raw
+    // system setting — isSystemInDarkTheme() disagrees with `useDark` whenever the user has
+    // overridden the theme (ThemeMode.LIGHT/DARK) away from ThemeMode.SYSTEM. Exposing it here
+    // keeps every glass consumer in sync with whatever ColorScheme MaterialTheme resolves below.
+    CompositionLocalProvider(
+        LocalIsDarkTheme provides useDark,
+        LocalGlassEnabled provides glassEnabled,
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = CarePulseTypography,
+            shapes = CarePulseShapes,
+            content = content
+        )
+    }
 }

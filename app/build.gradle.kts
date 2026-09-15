@@ -31,12 +31,14 @@ android {
     buildFeatures { compose = true }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+    testOptions { unitTests { isIncludeAndroidResources = true } }
 }
 
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
+    testImplementation(composeBom)
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -79,7 +81,15 @@ dependencies {
 
     // Material3 pull-to-refresh + swipe-to-dismiss
     implementation("androidx.compose.material3:material3:1.3.0")
+    // Backdrop blur for the glass-on-grid design system
+    implementation("dev.chrisbanes.haze:haze:0.7.3")
+    implementation("dev.chrisbanes.haze:haze-materials:0.7.3")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // JVM unit tests (no emulator needed, so they run in CI)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.12.2")
+    testImplementation("androidx.compose.ui:ui-test-junit4")
 }

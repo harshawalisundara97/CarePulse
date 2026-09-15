@@ -2,6 +2,8 @@
 
 package com.carepulse.app.ui.screens.settings
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -144,14 +146,16 @@ fun SettingsScreen(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
+        contentWindowInsets = tabContentWindowInsets(),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding.withoutBottom())
                 .padding(horizontal = Spacing.ScreenPadding)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = padding.calculateBottomPadding()),
             verticalArrangement = Arrangement.spacedBy(Spacing.SectionSpacing)
         ) {
             // Profile header with tappable avatar

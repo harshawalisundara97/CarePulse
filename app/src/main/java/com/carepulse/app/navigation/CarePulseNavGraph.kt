@@ -1,9 +1,34 @@
 package com.carepulse.app.navigation
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.EventNote
 import androidx.compose.material.icons.automirrored.outlined.EventNote
@@ -24,30 +49,22 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -55,6 +72,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.carepulse.app.data.auth.AuthState
 import com.carepulse.app.data.model.UserRole
+import com.carepulse.app.ui.theme.LocalBottomNavClearance
 import com.carepulse.app.ui.screens.activity.ActivityScreen
 import com.carepulse.app.ui.screens.agency.AgencyBillingScreen
 import com.carepulse.app.ui.screens.agency.AgencyCaregiversScreen
@@ -75,9 +93,16 @@ import com.carepulse.app.ui.screens.messages.ConversationScreen
 import com.carepulse.app.ui.screens.messages.MessagesScreen
 import com.carepulse.app.ui.screens.onboarding.RoleSelectionScreen
 import com.carepulse.app.ui.screens.settings.SettingsScreen
+import com.carepulse.app.ui.theme.Motion
 import com.carepulse.app.ui.theme.Radii
 import com.carepulse.app.ui.theme.Spacing
+import com.carepulse.app.ui.theme.TypeNav
+import com.carepulse.app.ui.theme.elevatedGlassBlurRadius
+import com.carepulse.app.ui.theme.glassCard
+import com.carepulse.app.ui.theme.rememberHazeState
 import com.carepulse.app.viewmodel.CarePulseViewModel
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.haze
 
 /** Type-safe route constants for the nav graph. */
 object Routes {
@@ -112,7 +137,7 @@ object Routes {
 }
 
 /** One bottom-navigation tab. Filled icon shown when selected, outlined when not. */
-private data class TabItem(
+internal data class TabItem(
     val route: String,
     val label: String,
     val icon: ImageVector,
@@ -120,7 +145,7 @@ private data class TabItem(
 )
 
 /** Tab labels/icons differ by role; the underlying routes stay the same. */
-private fun tabsFor(role: UserRole?): List<TabItem> = when (role) {
+internal fun tabsFor(role: UserRole?): List<TabItem> = when (role) {
     UserRole.AGENCY -> listOf(
         TabItem(Routes.Home, "Dashboard", Icons.Filled.Home, Icons.Outlined.Home),
         TabItem(Routes.Pulse, "Caregivers", Icons.Filled.Groups, Icons.Outlined.Groups),
@@ -141,6 +166,9 @@ private val tabRoutes = setOf(
     Routes.Home, Routes.Pulse, Routes.Messages, Routes.Activity, Routes.Settings
 )
 
+/** Height of the floating glass bottom nav bar, per the glass-on-grid spec. */
+private val BottomNavHeight = 66.dp
+
 @Composable
 fun CarePulseNavGraph() {
     val navController = rememberNavController()
@@ -157,23 +185,37 @@ fun CarePulseNavGraph() {
         }
     }
 
+    val hazeState = rememberHazeState()
+    // Under edge-to-edge (enableEdgeToEdge() in MainActivity), the outer Scaffold must NOT also
+    // consume the status-bar inset -- every redesigned screen owns its own top inset via its own
+    // Scaffold/TopAppBar (see F4 in the final whole-branch review). The floating bottom nav has
+    // no per-screen owner though, so it reads the navigation-bar inset directly below instead of
+    // relying on this Scaffold's contentPadding.
+    val navBarInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
-        bottomBar = {
-            if (showBottomBar) {
-                BottomBar(
-                    navController = navController,
-                    currentRoute = currentRoute,
-                    tabs = tabsFor(role)
-                )
-            }
-        }
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { scaffoldPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Routes.Splash,
-            modifier = Modifier.padding(scaffoldPadding),
-            enterTransition = {
+        // The bottom nav is rendered as a floating overlay (not the Scaffold bottomBar slot) so
+        // it can genuinely blur the NavHost content behind it via a shared HazeState -- see
+        // Glass.kt's glassCard/haze doc comments. The NavHost therefore stays full-height: tab
+        // screens draw behind the bar and read LocalBottomNavClearance to pad their scroll
+        // content, so the last item can still scroll clear of the overlay.
+        val bottomNavClearance = if (showBottomBar) {
+            BottomNavHeight + Spacing.NavBarBottom + navBarInset
+        } else {
+            0.dp
+        }
+        Box(Modifier.fillMaxSize().padding(scaffoldPadding)) {
+            CompositionLocalProvider(LocalBottomNavClearance provides bottomNavClearance) {
+            NavHost(
+                navController = navController,
+                startDestination = Routes.Splash,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .haze(hazeState),
+                enterTransition = {
                 slideInHorizontally(initialOffsetX = { it / 4 }, animationSpec = tween(300)) +
                 fadeIn(animationSpec = tween(300))
             },
@@ -375,50 +417,104 @@ fun CarePulseNavGraph() {
                 )
             }
         }
-    }
-}
+            }
 
-@Composable
-private fun BottomBar(
-    navController: NavHostController,
-    currentRoute: String?,
-    tabs: List<TabItem>
-) {
-    NavigationBar(
-        modifier = Modifier
-            .padding(horizontal = Spacing.ScreenPaddingCompact, vertical = 12.dp)
-            .clip(RoundedCornerShape(Radii.BottomNav)),
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 1.dp
-    ) {
-        tabs.forEach { tab ->
-            val selected = currentRoute == tab.route
-            NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    if (currentRoute != tab.route) {
-                        navController.navigate(tab.route) {
+            if (showBottomBar) {
+                BottomBar(
+                    currentRoute = currentRoute,
+                    tabs = tabsFor(role),
+                    hazeState = hazeState,
+                    onTabSelected = { route ->
+                        navController.navigate(route) {
                             popUpTo(Routes.Home) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
-                },
-                icon = {
-                    Icon(
-                        if (selected) tab.icon else tab.outlinedIcon,
-                        contentDescription = tab.label
-                    )
-                },
-                label = { Text(tab.label) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .windowInsetsPadding(WindowInsets.navigationBars)
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Floating glass bottom nav. [onTabSelected] is called with a tab's route only when that tab is
+ * not already the current one.
+ */
+@Composable
+internal fun BottomBar(
+    currentRoute: String?,
+    tabs: List<TabItem>,
+    hazeState: HazeState,
+    onTabSelected: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
+
+    Box(
+        modifier
+            .padding(horizontal = Spacing.NavBarSides, vertical = Spacing.NavBarBottom)
+            .height(BottomNavHeight)
+            .fillMaxWidth()
+            .glassCard(radius = Radii.BottomNav, hazeState = hazeState, blurRadius = elevatedGlassBlurRadius())
+    ) {
+        val slotFraction = 1f / tabs.size
+        val indicatorOffset by animateFloatAsState(
+            targetValue = selectedIndex * slotFraction,
+            animationSpec = tween(Motion.TabIndicator, easing = Motion.Standard),
+            label = "tabIndicator"
+        )
+
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            val indicatorWidth = maxWidth * slotFraction
+            Box(
+                Modifier
+                    .offset(x = maxWidth * indicatorOffset)
+                    .width(indicatorWidth)
+                    .height(3.dp)
+                    .align(Alignment.TopStart)
+                    .background(MaterialTheme.colorScheme.primary)
             )
+
+            Row(
+                Modifier
+                    .fillMaxSize()
+                    .selectableGroup(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                tabs.forEach { tab ->
+                    val selected = currentRoute == tab.route
+                    val iconColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .sizeIn(minWidth = 48.dp, minHeight = 48.dp)
+                            .selectable(
+                                selected = selected,
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                role = Role.Tab
+                            ) {
+                                if (currentRoute != tab.route) onTabSelected(tab.route)
+                            },
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            if (selected) tab.icon else tab.outlinedIcon,
+                            contentDescription = tab.label,
+                            tint = iconColor,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(tab.label.uppercase(), style = TypeNav, color = iconColor)
+                    }
+                }
+            }
         }
     }
 }
