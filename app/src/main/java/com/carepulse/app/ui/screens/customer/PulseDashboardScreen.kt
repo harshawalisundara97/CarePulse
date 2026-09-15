@@ -1,5 +1,7 @@
 package com.carepulse.app.ui.screens.customer
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
 import android.provider.Settings
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
@@ -127,14 +129,16 @@ fun PulseDashboardScreen(
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
                 )
             },
+            contentWindowInsets = tabContentWindowInsets(),
             containerColor = Color.Transparent
         ) { padding ->
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding.withoutBottom())
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = Spacing.ScreenPaddingCompact),
+                .padding(horizontal = Spacing.ScreenPaddingCompact)
+                .padding(bottom = padding.calculateBottomPadding()),
             verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
         ) {
             PatientStrip(

@@ -2,6 +2,9 @@
 
 package com.carepulse.app.ui.screens.activity
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -76,9 +79,10 @@ fun ActivityScreen(
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
                 )
             },
+            contentWindowInsets = tabContentWindowInsets(),
             containerColor = Color.Transparent
         ) { padding ->
-            Column(Modifier.fillMaxSize().padding(padding)) {
+            Column(Modifier.fillMaxSize().padding(padding.withoutBottom())) {
                 TabRow(
                     selectedTabIndex = selectedTab,
                     containerColor = Color.Transparent,
@@ -95,7 +99,10 @@ fun ActivityScreen(
 
                 val list = if (selectedTab == 0) upcoming else past
                 if (list.isEmpty()) {
-                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.fillMaxSize().padding(bottom = padding.calculateBottomPadding()),
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
                             "No ${tabs[selectedTab].lowercase()} bookings.",
                             color = MaterialTheme.colorScheme.onSurface,
@@ -107,7 +114,8 @@ fun ActivityScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(horizontal = Spacing.ScreenPaddingCompact),
-                        verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
+                        verticalArrangement = Arrangement.spacedBy(Spacing.CardGap),
+                        contentPadding = PaddingValues(bottom = padding.calculateBottomPadding())
                     ) {
                         item { Spacer(Modifier.height(8.dp)) }
                         items(list) { booking ->

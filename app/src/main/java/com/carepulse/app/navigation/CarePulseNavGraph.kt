@@ -52,6 +52,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -72,6 +73,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.carepulse.app.data.auth.AuthState
 import com.carepulse.app.data.model.UserRole
+import com.carepulse.app.ui.theme.LocalBottomNavClearance
 import com.carepulse.app.ui.screens.activity.ActivityScreen
 import com.carepulse.app.ui.screens.agency.AgencyBillingScreen
 import com.carepulse.app.ui.screens.agency.AgencyCaregiversScreen
@@ -198,22 +200,22 @@ fun CarePulseNavGraph() {
     ) { scaffoldPadding ->
         // The bottom nav is rendered as a floating overlay (not the Scaffold bottomBar slot) so
         // it can genuinely blur the NavHost content behind it via a shared HazeState -- see
-        // Glass.kt's glassCard/haze doc comments. Tab content gets extra bottom padding below so
-        // nothing sits permanently hidden under the overlay.
+        // Glass.kt's glassCard/haze doc comments. The NavHost therefore stays full-height: tab
+        // screens draw behind the bar and read LocalBottomNavClearance to pad their scroll
+        // content, so the last item can still scroll clear of the overlay.
+        val bottomNavClearance = if (showBottomBar) {
+            BottomNavHeight + Spacing.NavBarBottom + navBarInset
+        } else {
+            0.dp
+        }
         Box(Modifier.fillMaxSize().padding(scaffoldPadding)) {
+            CompositionLocalProvider(LocalBottomNavClearance provides bottomNavClearance) {
             NavHost(
                 navController = navController,
                 startDestination = Routes.Splash,
                 modifier = Modifier
                     .fillMaxSize()
-                    .haze(hazeState)
-                    .then(
-                        if (showBottomBar) {
-                            Modifier.padding(bottom = BottomNavHeight + Spacing.NavBarBottom + navBarInset)
-                        } else {
-                            Modifier
-                        }
-                    ),
+                    .haze(hazeState),
                 enterTransition = {
                 slideInHorizontally(initialOffsetX = { it / 4 }, animationSpec = tween(300)) +
                 fadeIn(animationSpec = tween(300))
@@ -416,6 +418,7 @@ fun CarePulseNavGraph() {
                 )
             }
         }
+            }
 
             if (showBottomBar) {
                 BottomBar(

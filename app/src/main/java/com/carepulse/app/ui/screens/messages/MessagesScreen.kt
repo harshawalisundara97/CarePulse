@@ -2,6 +2,9 @@
 
 package com.carepulse.app.ui.screens.messages
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,6 +65,7 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
                 )
             },
+            contentWindowInsets = tabContentWindowInsets(),
             containerColor = Color.Transparent
         ) { padding ->
             if (agencies.isEmpty()) {
@@ -79,9 +83,10 @@ fun MessagesScreen(vm: CarePulseViewModel, onOpenChat: (String) -> Unit) {
                 LazyColumn(
                     Modifier
                         .fillMaxSize()
-                        .padding(padding)
+                        .padding(padding.withoutBottom())
                         .padding(horizontal = Spacing.ScreenPaddingCompact),
-                    verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)
+                    verticalArrangement = Arrangement.spacedBy(Spacing.CardGap),
+                    contentPadding = PaddingValues(bottom = padding.calculateBottomPadding())
                 ) {
                     item { Spacer(Modifier.padding(top = 4.dp)) }
                     items(agencies) { agency ->

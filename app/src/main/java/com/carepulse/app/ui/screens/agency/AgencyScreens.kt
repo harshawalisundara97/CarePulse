@@ -2,6 +2,7 @@
 
 package com.carepulse.app.ui.screens.agency
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -121,6 +122,7 @@ fun AgencyCaregiversScreen(vm: CarePulseViewModel) {
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) { Icon(Icons.Filled.Add, contentDescription = "Add caregiver") }
         },
+        contentWindowInsets = tabContentWindowInsets(),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         val mod = Modifier.fillMaxSize().padding(padding).padding(horizontal = 16.dp)
@@ -407,6 +409,7 @@ private fun AgencyScaffold(title: String, content: @Composable (Modifier) -> Uni
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         },
+        contentWindowInsets = tabContentWindowInsets(),
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         content(

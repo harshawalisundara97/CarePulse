@@ -2,6 +2,9 @@
 
 package com.carepulse.app.ui.screens.customer
 
+import com.carepulse.app.ui.theme.tabContentWindowInsets
+import com.carepulse.app.ui.theme.withoutBottom
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -139,12 +142,13 @@ fun CustomerDashboardScreen(
                     text = { Text("Request care", style = MaterialTheme.typography.titleMedium) }
                 )
             },
+            contentWindowInsets = tabContentWindowInsets(),
             containerColor = Color.Transparent
         ) { padding ->
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(padding)
+                    .padding(padding.withoutBottom())
                     .padding(horizontal = Spacing.ScreenPaddingCompact)
             ) {
                 PulseBanner(hazeState = hazeState, onClick = onOpenPulse)
@@ -213,7 +217,10 @@ fun CustomerDashboardScreen(
                         enter = fadeIn() + slideInVertically(),
                         exit = fadeOut()
                     ) {
-                        LazyColumn(verticalArrangement = Arrangement.spacedBy(Spacing.CardGap)) {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(Spacing.CardGap),
+                            contentPadding = PaddingValues(bottom = padding.calculateBottomPadding())
+                        ) {
                             itemsIndexed(filtered, key = { _, c -> c.id }) { index, c ->
                                 var visible by remember(c.id) { mutableStateOf(false) }
                                 LaunchedEffect(c.id) {

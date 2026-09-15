@@ -5,10 +5,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.compositionLocalOf
@@ -17,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.HazeState
@@ -39,6 +48,48 @@ val LocalGlassEnabled: ProvidableCompositionLocal<Boolean> = compositionLocalOf 
  * (e.g. app forced to LIGHT while the system is in dark mode).
  */
 val LocalIsDarkTheme: ProvidableCompositionLocal<Boolean> = compositionLocalOf { false }
+
+/**
+ * Vertical space the floating glass bottom nav occupies at the bottom of a tab screen (bar
+ * height + its bottom margin + the system navigation-bar inset), or 0.dp when no bottom nav is
+ * showing. Provided by `CarePulseNavGraph`. Tab content draws edge-to-edge *behind* the bar so
+ * the bar has something to blur; scroll containers add this as bottom content padding so their
+ * last item can still scroll clear of it. See [tabContentWindowInsets] and [withoutBottom].
+ */
+val LocalBottomNavClearance: ProvidableCompositionLocal<Dp> = compositionLocalOf { 0.dp }
+
+/**
+ * Scaffold `contentWindowInsets` for a tab screen: the default insets with the bottom replaced
+ * by [LocalBottomNavClearance], so the Scaffold's content padding (and its FAB position) clear
+ * the floating nav without also adding the navigation-bar inset a second time. Falls back to the
+ * Material defaults when no bottom nav is showing.
+ */
+@Composable
+fun tabContentWindowInsets(): WindowInsets {
+    val clearance = LocalBottomNavClearance.current
+    return if (clearance == 0.dp) {
+        ScaffoldDefaults.contentWindowInsets
+    } else {
+        ScaffoldDefaults.contentWindowInsets
+            .only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+            .add(WindowInsets(bottom = clearance))
+    }
+}
+
+/**
+ * These padding values without their bottom edge. Apply this to a scroll container's outer
+ * modifier and pass `calculateBottomPadding()` as its *content* padding instead, so items scroll
+ * underneath the floating glass nav rather than being clipped above it.
+ */
+@Composable
+fun PaddingValues.withoutBottom(): PaddingValues {
+    val layoutDirection = LocalLayoutDirection.current
+    return PaddingValues(
+        start = calculateStartPadding(layoutDirection),
+        top = calculateTopPadding(),
+        end = calculateEndPadding(layoutDirection),
+    )
+}
 
 /** Standard Haze blur radius per the glass-on-grid spec: 20dp in light, 26dp in dark. */
 private fun standardBlurRadius(dark: Boolean): Dp = if (dark) 26.dp else 20.dp
