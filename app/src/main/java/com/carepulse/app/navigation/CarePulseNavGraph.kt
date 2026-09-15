@@ -64,7 +64,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -138,7 +137,7 @@ object Routes {
 }
 
 /** One bottom-navigation tab. Filled icon shown when selected, outlined when not. */
-private data class TabItem(
+internal data class TabItem(
     val route: String,
     val label: String,
     val icon: ImageVector,
@@ -146,7 +145,7 @@ private data class TabItem(
 )
 
 /** Tab labels/icons differ by role; the underlying routes stay the same. */
-private fun tabsFor(role: UserRole?): List<TabItem> = when (role) {
+internal fun tabsFor(role: UserRole?): List<TabItem> = when (role) {
     UserRole.AGENCY -> listOf(
         TabItem(Routes.Home, "Dashboard", Icons.Filled.Home, Icons.Outlined.Home),
         TabItem(Routes.Pulse, "Caregivers", Icons.Filled.Groups, Icons.Outlined.Groups),
@@ -422,10 +421,16 @@ fun CarePulseNavGraph() {
 
             if (showBottomBar) {
                 BottomBar(
-                    navController = navController,
                     currentRoute = currentRoute,
                     tabs = tabsFor(role),
                     hazeState = hazeState,
+                    onTabSelected = { route ->
+                        navController.navigate(route) {
+                            popUpTo(Routes.Home) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .windowInsetsPadding(WindowInsets.navigationBars)
@@ -435,12 +440,16 @@ fun CarePulseNavGraph() {
     }
 }
 
+/**
+ * Floating glass bottom nav. [onTabSelected] is called with a tab's route only when that tab is
+ * not already the current one.
+ */
 @Composable
-private fun BottomBar(
-    navController: NavHostController,
+internal fun BottomBar(
     currentRoute: String?,
     tabs: List<TabItem>,
     hazeState: HazeState,
+    onTabSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val selectedIndex = tabs.indexOfFirst { it.route == currentRoute }.coerceAtLeast(0)
@@ -490,13 +499,7 @@ private fun BottomBar(
                                 indication = null,
                                 role = Role.Tab
                             ) {
-                                if (currentRoute != tab.route) {
-                                    navController.navigate(tab.route) {
-                                        popUpTo(Routes.Home) { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }
+                                if (currentRoute != tab.route) onTabSelected(tab.route)
                             },
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center

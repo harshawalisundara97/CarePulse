@@ -197,6 +197,13 @@ private fun StepPick(
     }
 }
 
+/** Length in hours of every bookable time slot. */
+internal const val BookingSlotHours = 4
+
+/** Booking total for [hours] at [hourlyRate], formatted for display, e.g. "LKR 22,200". */
+internal fun formatBookingTotal(hourlyRate: Int, hours: Int = BookingSlotHours): String =
+    "LKR " + NumberFormat.getNumberInstance(Locale.US).format(hourlyRate * hours)
+
 @Composable
 private fun StepConfirm(
     caregiverName: String, hourlyRate: Int,
@@ -210,9 +217,8 @@ private fun StepConfirm(
     // for the pre-existing "hours" hardcode this screen and the ViewModel share, which is out of
     // this styling task's scope. Only the display formatting (LKR + thousands separator) below
     // is new; the multiplication itself is unchanged.
-    val estimatedHours = 4
-    val total = hourlyRate * estimatedHours
-    val formattedTotal = "LKR " + NumberFormat.getNumberInstance(Locale.US).format(total)
+    val estimatedHours = BookingSlotHours
+    val formattedTotal = formatBookingTotal(hourlyRate, estimatedHours)
 
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("2 of 3 — Confirm details",
