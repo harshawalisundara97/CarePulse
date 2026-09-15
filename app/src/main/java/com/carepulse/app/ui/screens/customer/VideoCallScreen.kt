@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -61,6 +62,9 @@ fun VideoCallScreen(onEndCall: () -> Unit) {
         Modifier
             .fillMaxSize()
             .background(Color(0xFF121212))
+            // Edge-to-edge: keep the self-preview and call controls clear of the status bar and
+            // the system navigation bar (this route has no Scaffold to apply insets for it).
+            .systemBarsPadding()
     ) {
         // "Remote" view
         Column(
