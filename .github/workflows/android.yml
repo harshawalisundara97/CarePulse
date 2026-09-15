@@ -17,12 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
 
       - uses: gradle/actions/setup-gradle@v4
+
+      # gradle.properties pins org.gradle.java.home to a local macOS JDK path; use the runner's JDK.
+      - name: Use runner JDK
+        run: sed -i '/^org.gradle.java.home=/d' gradle.properties
 
       # google-services.json is kept out of git. Use the real one from a repository secret when
       # it is configured, otherwise a placeholder that is only good enough to compile.
